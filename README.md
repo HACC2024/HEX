@@ -68,9 +68,7 @@ cd HEX
 <hr />
 
 <h2 id="exporting-static-files">4. Exporting Static Files</h2>
-<p>Next.js provides a feature to export your project as static files. This is crucial for deploying the app to Firebase Hosting. Run the following command:</p>
-
-<pre><code>npm run export</code></pre>
+<p>Next.js provides a feature to export your project as static files. This is crucial for deploying the app to Firebase Hosting. With the recent updates in Next.js, you do not need to run <code>npm run export</code>. Instead, the build process itself (using <code>npm run build</code>) automatically prepares your application for static export based on your configuration in <code>next.config.mjs</code>.</p>
 
 <p>This will export your static site to the <code>out</code> directory.</p>
 
