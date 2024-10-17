@@ -77,7 +77,7 @@ cd HEX
 <h2 id="deploying-to-firebase-hosting">5. Deploying to Firebase Hosting</h2>
 <p>Follow these steps to deploy the project on Firebase Hosting:</p>
 
-<h3>5.1. Initialize Firebase Hosting</h3>
+<h3><strong>SKIP</strong>: 5.1. Initialize Firebase Hosting</h3>
 <p>If you haven't initialized Firebase Hosting for this project yet, run the following command:</p>
 
 <pre><code>firebase init hosting</code></pre>
