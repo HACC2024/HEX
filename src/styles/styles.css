@@ -1,0 +1,101 @@
+/* Global Styles */
+body {
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Main Container */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all main content */
+    width: 100%; /* Take full width */
+}
+
+/* Section Styles */
+#introduction,
+#category,
+#how-it-works {
+    padding: 240px; /* Increased padding for sections */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #1f1f1f; /* Dark background for sections */
+    margin: 20px 0; /* Adjusted margin for sections to prevent side scrolling */
+    text-align: center; /* Center text within sections */
+}
+
+h2 {
+    margin-bottom: 20px; /* Space below headings */
+}
+
+/* Navbar Styles */
+nav {
+    background-color: black; /* Darker background for navbar */
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    position: fixed; /* Fix position to the top */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    right: 0; /* Align to the right */
+    z-index: 1000; /* Ensure navbar is above other content */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex; /* Use flexbox for horizontal layout */
+    justify-content: center; /* Center navbar items */
+}
+
+nav ul li {
+    margin: 0 20px; /* Space between navbar items */
+}
+
+nav a {
+    color: #00bcd4; /* Bright cyan color for links */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+/* Smaller text size for navbar links on smaller screens */
+@media (max-width: 768px) {
+    nav a {
+        font-size: 14px; /* Smaller font size for navbar links */
+    }
+}
+
+nav a:hover {
+    color: #80deea; /* Lighter cyan on hover */
+}
+
+/* Footer Styles */
+footer {
+    background-color: black; /* Dark background for footer */
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    margin-top: 10px; /* Add margin to separate from content above */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    nav ul li {
+        display: block; /* Stack navbar items on smaller screens */
+        margin: 10px 20px; /* Margin for vertical spacing */
+    }
+    nav {
+        padding: 5px; /* Reduce padding for navbar on smaller screens */
+    }
+
+    #introduction,
+    #category,
+    #how-it-works {
+        margin: 10px 0; /* Smaller margin for sections on smaller screens */
+        padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
+    }
+}
