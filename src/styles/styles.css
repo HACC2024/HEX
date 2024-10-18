@@ -1,7 +1,6 @@
 /* Global Styles */
 body {
-    background-color: #121212; /* Dark background */
-    color: #e0e0e0; /* Light text color */
+    color: #000000;
     font-family: monospace;
     margin: 0;
     padding: 0;
@@ -12,7 +11,6 @@ body {
 main {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center all main content */
     width: 100%; /* Take full width */
 }
 
@@ -33,11 +31,10 @@ h2 {
 
 /* Navbar Styles */
 nav {
-    background-color: black; /* Darker background for navbar */
+    background-color: white; /* Darker background for navbar */
     padding: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
-    position: fixed; /* Fix position to the top */
-    top: 0; /* Align to the top */
+    position: fixed;
     left: 0; /* Align to the left */
     right: 0; /* Align to the right */
     z-index: 1000; /* Ensure navbar is above other content */
@@ -45,13 +42,13 @@ nav {
 
 nav ul {
     list-style: none;
-    padding: 0;
     display: flex; /* Use flexbox for horizontal layout */
     justify-content: center; /* Center navbar items */
 }
 
 nav ul li {
-    margin: 0 20px; /* Space between navbar items */
+    margin: 0 30px -10px; /* Top, horizontal, and bottom margin */
+
 }
 
 nav a {
@@ -74,7 +71,7 @@ nav a:hover {
 
 /* Footer Styles */
 footer {
-    background-color: black; /* Dark background for footer */
+    color: #00bcd4;
     text-align: center;
     padding: 20px;
     width: 100%;
