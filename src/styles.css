@@ -1,0 +1,36 @@
+body{
+    overflow-x:hidden;
+}
+.HomeImageCt{
+    background-image: url("/homeWallpaper.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 450px;
+    display: flex;
+    padding-top:center;
+}
+.CatIcons {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; /* Center items horizontally */
+    padding-top: 20px; /* Optional: Adjust padding as needed */
+    background-color: darkgrey;
+    border-radius: 100%; /* Make it circular */
+    height: 150px; /* Set height */
+    width: 150px; /* Set width */
+}
+.CatDiv{
+    height:400px;
+}
+hr{
+    height:10px;
+    background-color: rgb(15, 118, 48);
+}
+p{
+    font-size: 15px;
+    font-weight: bold;
+}
+.IntroDiv{
+    background-color: rgb(218, 240, 253);
+}
