@@ -1,5 +1,6 @@
 // src/app/layout.tsx
 import React from "react";
+import Navbar from '../components/navbar';
 
 export const metadata = {
   title: "Hex Opendata App",
@@ -9,7 +10,9 @@ export const metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <body>{children}</body>
+    <body>
+      {children}
+    </body>
     </html>
   );
 };
