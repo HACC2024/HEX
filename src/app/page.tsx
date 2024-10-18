@@ -2,7 +2,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles.css';
 import "../styles/styles.css";
-import Navbar from "../components/navbar.tsx";
+import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { Container, Nav, Row, Col } from "react-bootstrap";
 import {
