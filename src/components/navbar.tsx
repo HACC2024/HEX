@@ -21,6 +21,9 @@ const Navbar: React.FC = () => {
         <li>
           <Link href="/test">Test AI</Link>
         </li>
+        <li>
+          <Link href="/Admin">Admin Portal</Link>
+        </li>
       </ul>
     </nav>
   );
