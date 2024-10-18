@@ -5,23 +5,26 @@ body{
     background-image: url("/homeWallpaper.jpg");
     background-size: cover;
     background-position: center;
-    height: 450px;
+    height: 500px;
     display: flex;
-    padding-top:center;
+    padding-top: 0;
+}
+.CatContainer {
+    padding-top: 30px;
 }
 .CatIcons {
     display: flex;
+    font-size: 18px;
     flex-direction: column; 
     justify-content: center; 
     align-items: center; /* Center items horizontally */
-    padding-top: 20px; /* Optional: Adjust padding as needed */
-    background-color: darkgrey;
+    background-color: #00bcd4;
     border-radius: 100%; /* Make it circular */
-    height: 150px; /* Set height */
-    width: 150px; /* Set width */
+    height: 200px; /* Set height */
+    width: 200px; /* Set width */
 }
 .CatDiv{
-    height:400px;
+    height:350px;
 }
 hr{
     height:10px;
