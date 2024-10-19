@@ -33,4 +33,112 @@ p{
 }
 .IntroDiv{
     background-color: rgb(218, 240, 253);
+    padding-bottom: 3rem;
 }
+.IntroBox {
+    opacity: 0;
+    transform: translateY(100px); 
+    transition: opacity 5s ease-out, transform 5s ease-out; 
+    width: 100%;
+    max-width: 330px;
+    min-height: 200px; 
+    border-radius: 12px; 
+    background-color: white;
+    margin: 0 10px; 
+    max-width: 300px;
+}
+
+.IntroBox.show {
+    opacity: 1;
+    transform: translateY(0); 
+}
+
+.IntroBox[data-box="2"].show {
+    transition-delay: 0.1s; 
+}
+
+.IntroBox[data-box="3"].show {
+    transition-delay: 0.2s; 
+}
+.card-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.2), 0 15px 20px -5px rgba(0, 0, 0, 0.2);
+}
+
+.HowItWorksBox {
+    width: 100%;
+    width: 300px; 
+    min-height: 50px;
+    border-radius: 12px;
+    background-color: white;
+    border: 2px solid rgb(78, 183, 239); 
+    box-shadow: 
+        0 0 10px rgba(0, 123, 255, 0.3),  
+        0 0 20px rgba(0, 200, 255, 0.3); 
+    margin-left: auto;
+    margin-right: auto; 
+    opacity: 0;
+    transform: translateY(70px); /* Slightly below initial position */
+    transition: opacity 3s ease, transform 3s ease; 
+}
+
+/* Hover state with expanding drop shadow */
+.HowItWorksBox:hover {
+    filter: drop-shadow(0 0 20px rgba(104, 215, 221, 0.41)) drop-shadow(0 0 40px rgba(182, 231, 238, 0.5)) drop-shadow(0 0 60px rgba(111, 159, 159, 0.4));
+    transition: filter 0.6s ease-in-out;
+}
+
+.HowItWorksBox.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-up {
+    transform: translateY(-30px); 
+    transition: transform 1s ease-out;
+}
+
+.scroll-down {
+    transform: translateY(30px); 
+    transition: transform 1s ease-out;
+}
+
+@media (max-width: 768px) {
+    .HowItWorksBox {
+        margin-left: 0 !important; /* Ensure centering on smaller screens */
+        margin-right: 0 !important; /* Ensure centering on smaller screens */
+    }
+}
+
+.HowItWorksImageWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.HowItWorksImage {
+    width: 100%; 
+    max-width: 750px; 
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+}
+
+.BiggerBox {
+    width: 100%;
+    max-width: 700px; 
+    min-height: 300px;
+    border-radius: 12px;
+    background-color: white;
+    border: 2px solid rgb(90, 171, 208);
+    box-shadow: 
+        0 0 10px rgba(0, 123, 255, 0.3),  
+        0 0 20px rgba(0, 200, 255, 0.3); 
+}
+
