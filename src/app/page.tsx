@@ -4,7 +4,8 @@ import '../styles.css';
 import "../styles/styles.css";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-import { Container, Nav, Row, Col } from "react-bootstrap";
+import Link from "next/link";
+import { Container, Row, Col } from "react-bootstrap";
 import {
     PeopleFill,
     BusFrontFill,
@@ -36,12 +37,12 @@ const Categories = () => (
             <Row>
                 {categoryData.map((category, index) => (
                     <Col key={index} className="d-flex flex-column align-items-center">
-                        <Nav.Link href="/test" className="text-center">
+                        <Link href="/test" className="text-center custom-link">
                             <div className="CatIcons">
                                 {category.icon}
                                 <strong>{category.name}</strong>
                             </div>
-                        </Nav.Link>
+                        </Link>
                     </Col>
                 ))}
             </Row>

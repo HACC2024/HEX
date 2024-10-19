@@ -1,6 +1,7 @@
 import React from "react";
 import "../styles/styles.css";
 import { Container, Nav } from "react-bootstrap";
+import Link from "next/link";
 import {
     Instagram,
     Globe,
@@ -21,7 +22,9 @@ const Footer: React.FC = () => {
 
                     {/* Right-aligned Section */}
                     <Nav>
-                        <Nav.Link href="Admin">Admin Portal</Nav.Link>
+                        <Link href="Admin" className="custom-link">
+                            Admin Portal
+                        </Link>
                     </Nav>
                 </Nav>
             </Container>

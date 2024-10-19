@@ -29,6 +29,11 @@ h2 {
     margin-bottom: 20px; /* Space below headings */
 }
 
+.custom-link {
+    color: black;
+    text-decoration: none;
+}
+
 /* Navbar Styles */
 nav {
     background-color: white; /* Darker background for navbar */
