@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import DownloadFile from "../../components/DataCards";
 import UserUpload from "../../components/UserUpload";

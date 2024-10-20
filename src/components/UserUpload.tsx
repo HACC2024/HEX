@@ -108,7 +108,7 @@ const UserUpload: React.FC = () => {
 
   return (
     <div>
-      <h1>Upload File into AI database</h1>
+      <h3>Upload File into AI database</h3>
 
       {/* Name input */}
       <div>
