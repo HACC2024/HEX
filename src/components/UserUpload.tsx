@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef } from "react";
-import { storage, database } from "../firebase"; // Replace firestoreDb with database
+import { storage, database } from "../../.firebase/firebase"; // Replace firestoreDb with database
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
 
