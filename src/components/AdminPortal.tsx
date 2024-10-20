@@ -13,6 +13,7 @@ import { ref as dbRef, push } from "firebase/database"; // Realtime Database met
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 import "../styles.css";
+import {Container} from "react-bootstrap";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -317,10 +318,14 @@ const AdminPortal: React.FC = () => {
         />
       </div>
 
-      <div className="d-flex justify-content-between">
+      <Container className="d-flex justify-content-between">
         <button onClick={handleFileUpload} className="btn btn-primary">Upload</button>
-        <button onClick={handleReset} className="btn btn-secondary">Start Over</button>
-      </div>
+        <div>
+          <button className="btn btn-danger me-3" onClick={handleLogout}>Logout</button>
+          <button onClick={handleReset} className="btn btn-secondary">Start Over</button>
+
+        </div>
+      </Container>
 
       {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
     </div>
