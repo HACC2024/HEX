@@ -1,14 +1,13 @@
-"use client";
 import React, { useState, useEffect } from "react";
 import { ref as dbRef, onValue } from "firebase/database";
-import { database } from "../firebase"; // Use the initialized database
+import { database } from "../firebase"; // Import initialized Firebase
 
-const DownloadCSVFiles: React.FC = () => {
+const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<{ name: string; file: string }[]>([]);
-  const [loading, setLoading] = useState(true); // Start as loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const dbRefPath = dbRef(database, "Admin"); // Reference to the uploads path
+    const dbRefPath = dbRef(database, "Admin"); // Reference to the Admin path
 
     // Set up a listener for real-time updates
     const unsubscribe = onValue(
@@ -17,15 +16,19 @@ const DownloadCSVFiles: React.FC = () => {
         if (snapshot.exists()) {
           const fileList = snapshot.val();
 
-          const filesArray = Object.keys(fileList).map((key) => ({
-            name: fileList[key].name,
-            file: fileList[key].file,
-          }));
+          // Filter files by category
+          const filteredFiles = Object.keys(fileList)
+            .map((key) => ({
+              name: fileList[key].name,
+              file: fileList[key].file,
+              category: fileList[key].category,
+            }))
+            .filter((file) => file.category === category);
 
-          setFiles(filesArray);
+          setFiles(filteredFiles);
         } else {
           console.log("No data available");
-          setFiles([]); // Clear files if no data
+          setFiles([]);
         }
         setLoading(false); // Set loading to false after fetching
       },
@@ -37,7 +40,7 @@ const DownloadCSVFiles: React.FC = () => {
 
     // Clean up the listener on component unmount
     return () => unsubscribe();
-  }, []);
+  }, [category]); // Fetch files again if the category changes
 
   const downloadFile = (fileUrl: string, fileName: string) => {
     const a = document.createElement("a");
@@ -52,31 +55,18 @@ const DownloadCSVFiles: React.FC = () => {
 
   return (
     <div>
-      <h1>
-        Download {category.charAt(0).toUpperCase() + category.slice(1)} CSV
-        Files
-      </h1>
+      <h1>Download CSV Files for {category}</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="cards-container">
-          {files.map((file) => (
-            <div key={file.file} className="data-card">
-              <img
-                src="https://via.placeholder.com/150"
-                alt={file.name}
-                className="data-card-image"
-              />
-              <h3 className="data-card-title">{file.name}</h3>
-              <button
-                className="data-card-download"
-                onClick={() => downloadFile(file.file, file.name)}
-              >
-                Download
-              </button>
-            </div>
-          ))}
-        </div>
+        files.map((file) => (
+          <button
+            key={file.file}
+            onClick={() => downloadFile(file.file, file.name)} // Use the file URL for downloading
+          >
+            Download {file.name}
+          </button>
+        ))
       )}
     </div>
   );

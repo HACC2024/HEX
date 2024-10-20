@@ -4,9 +4,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { storage, database } from "../firebase"; // Replace firestoreDb with database
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
-import 'react-quill/dist/quill.snow.css'; // Import Quill styles
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
-import "../styles.css"
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
+import "../styles.css";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -16,7 +16,7 @@ const AdminPortal: React.FC = () => {
   const [description, setDescription] = useState<string>(""); // New state for description
   const [selectedCategory, setSelectedCategory] = useState<string>(""); // New state for dropdown
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<string>(""); 
+  const [uploadStatus, setUploadStatus] = useState<string>("");
 
   // Ref for the file input to reset it
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -104,10 +104,12 @@ const AdminPortal: React.FC = () => {
             name: name, // Save the name
             description: description, // Save the description
             category: selectedCategory, // Save the category
-            file: url,  // Save the file URL
+            file: url, // Save the file URL
             uploadedAt: new Date().toISOString(),
           });
-          setUploadStatus("File, name, description, and category saved to Realtime Database");
+          setUploadStatus(
+            "File, name, description, and category saved to Realtime Database"
+          );
 
           // Clear input fields after successful upload
           handleReset();
@@ -163,7 +165,11 @@ const AdminPortal: React.FC = () => {
 
       <div className="mb-3">
         <label className="form-label">Category:</label>
-        <select value={selectedCategory} onChange={handleCategoryChange} className="form-select">
+        <select
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="form-select"
+        >
           <option value="">Select an option</option>
           <option value="Transportation">Transportation</option>
           <option value="Community">Community</option>
@@ -186,8 +192,12 @@ const AdminPortal: React.FC = () => {
       </div>
 
       <div className="d-flex justify-content-between">
-        <button onClick={handleFileUpload} className="btn btn-primary">Upload</button>
-        <button onClick={handleReset} className="btn btn-secondary">Start Over</button>
+        <button onClick={handleFileUpload} className="btn btn-primary">
+          Upload
+        </button>
+        <button onClick={handleReset} className="btn btn-secondary">
+          Start Over
+        </button>
       </div>
 
       {/* Status message */}

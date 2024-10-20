@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import DownloadCSVFiles from "../../components/DataCards";
 import UserUpload from "../../components/UserUpload";
@@ -8,7 +9,7 @@ const TestPage = () => {
   return (
   <div>
     <h1>This is the Test AI page.</h1>
-    <DownloadCSVFiles />
+    <DownloadCSVFiles category="Health"/>
     <UserUpload />
   </div>
   );
