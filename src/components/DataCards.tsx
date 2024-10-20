@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { ref as dbRef, onValue } from 'firebase/database';
-import { database } from "../firebase"; // Use the initialized database
+import { database } from "../../.firebase/firebase"; // Use the initialized database
 
 const DownloadCSVFiles: React.FC = () => {
     const [files, setFiles] = useState<{ name: string; file: string }[]>([]);
