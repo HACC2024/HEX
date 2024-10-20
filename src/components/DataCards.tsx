@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { ref as dbRef, onValue } from 'firebase/database';
 import { database } from "../firebase"; // Use the initialized database
@@ -9,7 +8,7 @@ const DownloadCSVFiles: React.FC = () => {
     const [loading, setLoading] = useState(true); // Start as loading
 
     useEffect(() => {
-        const dbRefPath = dbRef(database, 'uploads'); // Reference to the uploads path
+        const dbRefPath = dbRef(database, 'Admin'); // Reference to the uploads path
 
         // Set up a listener for real-time updates
         const unsubscribe = onValue(dbRefPath, (snapshot) => {
