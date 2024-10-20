@@ -1,10 +1,24 @@
 {
   "hosting": {
-    "public": "out",
+    "public": "out", // This should be the directory where your exported files are located
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/Admin",
+        "destination": "/Admin.html" 
+      },
+      {
+        "source": "/test",
+        "destination": "/test.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   }
 }
