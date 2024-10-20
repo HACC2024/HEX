@@ -7,11 +7,11 @@ import "../../styles/styles.css";
 
 const TestPage = () => {
   return (
-  <div>
-    <h1>This is the Test AI page.</h1>
-    <DownloadCSVFiles category="Health"/>
-    <UserUpload />
-  </div>
+    <div>
+      <h1>This is the Test AI page.</h1>
+      <DownloadCSVFiles category="Transportation" />
+      <UserUpload />
+    </div>
   );
 };
 

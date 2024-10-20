@@ -3,7 +3,9 @@ import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../firebase"; // Import initialized Firebase
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
-  const [files, setFiles] = useState<{ name: string; file: string }[]>([]);
+  const [files, setFiles] = useState<
+    { name: string; file: string; image: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,6 +23,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
             .map((key) => ({
               name: fileList[key].name,
               file: fileList[key].file,
+              image: fileList[key].image,
               category: fileList[key].category,
             }))
             .filter((file) => file.category === category);
@@ -59,14 +62,24 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        files.map((file) => (
-          <button
-            key={file.file}
-            onClick={() => downloadFile(file.file, file.name)} // Use the file URL for downloading
-          >
-            Download {file.name}
-          </button>
-        ))
+        <div className="file-list">
+          {files.map((file) => (
+            <div key={file.file} className="file-card">
+              {/* Display the image and the download button */}
+              <button
+                onClick={() => downloadFile(file.file, file.name)}
+                className="download-button"
+              >
+                <img
+                  src={file.image}
+                  alt="DataCard Image"
+                  style={{ width: "50px", height: "50px", marginRight: "10px" }} // Adjust size as needed
+                />
+                Download {file.name}
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
