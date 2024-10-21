@@ -6,6 +6,7 @@ import {
     Instagram,
     Globe,
     Linkedin,
+    Person
 } from 'react-bootstrap-icons';
 
 const Footer: React.FC = () => {
@@ -23,7 +24,7 @@ const Footer: React.FC = () => {
                     {/* Right-aligned Section */}
                     <Nav>
                         <Link href="Admin" className="custom-link">
-                            Admin Portal
+                            <Person/>
                         </Link>
                     </Nav>
                 </Nav>

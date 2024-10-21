@@ -1,18 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import dynamic from "next/dynamic";
 import React, { useState, useRef, useEffect } from "react";
-import { storage, database } from "../firebase"; // Firebase imports
+import Swal from "sweetalert2";
+import { toggleSignIn, toggleSignOut, stateChange } from "../../.firebase/auth";
+import { storage, database } from "../../.firebase/firebase"; // Firebase imports
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 import "../styles.css";
+import { Container } from "react-bootstrap";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const AdminPortal: React.FC = () => {
   const [name, setName] = useState<string>(""); // New state for name
+  const [user, setUser] = useState<any>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [description, setDescription] = useState<string>(""); // New state for description
   const [selectedCategory, setSelectedCategory] = useState<string>(""); // New state for dropdown
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // For file upload
@@ -29,6 +37,48 @@ const AdminPortal: React.FC = () => {
   useEffect(() => {
     setIsMounted(true); // Avoid hydration mismatch by rendering only after mount
   }, []);
+
+  /**
+   * Effect to listen for user authentication state changes.
+   * Animates the component's fade-in and translation effects.
+   * @param - none
+   * @return {void}
+   */
+  useEffect(() => {
+    const unsubscribe = stateChange((currentUser) => {
+      setUser(currentUser);
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  /**
+   * Handles the user login process.
+   * @param {React.FormEvent} e - The event triggered by the form submission.
+   * @return {Promise<void>}
+   */
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await toggleSignIn(email, password);
+      Swal.fire("Success", "Logged in successfully", "success");
+    } catch (error: any) {
+      Swal.fire("Error", error.message, "error");
+    }
+  };
+
+  /**
+   * Handles the user logout process.
+   * @return {Promise<void>}
+   */
+  const handleLogout = async () => {
+    try {
+      await toggleSignOut();
+      Swal.fire("Success", "Logged out successfully", "success");
+    } catch (error: any) {
+      Swal.fire("Error", error.message, "error");
+    }
+  };
 
   // Handle file input change (validate accepted formats)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +224,42 @@ const AdminPortal: React.FC = () => {
   };
 
   if (!isMounted) return null;
+  if (isLoading) return <div>Loading...</div>;
+  if (!user) {
+    return (
+      <div className="container mt-5">
+        <h3 className="text-center mb-4">Admin Portal</h3>
+
+        <form onSubmit={handleLogin} className="mb-3">
+          <div className="mb-3">
+            <label className="form-label">Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="form-control"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="form-control"
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary">
+            Login
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
@@ -238,14 +324,19 @@ const AdminPortal: React.FC = () => {
         />
       </div>
 
-      <div className="d-flex justify-content-between">
+      <Container className="d-flex justify-content-between">
         <button onClick={handleFileUpload} className="btn btn-primary">
           Upload
         </button>
-        <button onClick={handleReset} className="btn btn-secondary">
-          Start Over
-        </button>
-      </div>
+        <div>
+          <button className="btn btn-danger me-3" onClick={handleLogout}>
+            Logout
+          </button>
+          <button onClick={handleReset} className="btn btn-secondary">
+            Start Over
+          </button>
+        </div>
+      </Container>
 
       {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
     </div>

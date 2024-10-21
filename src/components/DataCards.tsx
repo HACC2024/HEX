@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { ref as dbRef, onValue } from "firebase/database";
-import { database } from "../firebase"; // Import initialized Firebase
 import { Image } from "react-bootstrap";
+import { ref as dbRef, onValue } from "firebase/database";
+import { database } from "../../.firebase/firebase"; // Use the initialized database
 import "../styles/DataCard.css";
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
