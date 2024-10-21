@@ -134,5 +134,5 @@ To learn more about Next.js, take a look at the following resources:
 
 <h2>Flask-Backend</h2>
 
-<p>Backend Prod: https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com</p><br>
+<p>Backend Prod: https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com</p>
 <p>Backend Dev: http://127.0.0.1:5000</p>
