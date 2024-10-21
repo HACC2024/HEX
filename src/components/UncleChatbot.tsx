@@ -21,7 +21,11 @@ const UncleChatbot: React.FC = () => {
             setResponse(result);
         } catch (err) {
             console.error("Error during submission:", err); // Log the error for debugging
-            setError(err.message || 'An error occurred. Please try again.');
+            if (err instanceof Error) {
+                setError(err.message || 'An error occurred. Please try again.');
+            } else {
+                setError('An error occurred. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -50,7 +54,7 @@ const UncleChatbot: React.FC = () => {
             {error && <p className="error-message">Error: {error}</p>}
             {response && (
                 <div className="response">
-                    <h2>Uncle HEX's Response:</h2>
+                    <h2>Uncle HEXs Response:</h2>
                     <div className="response-content" dangerouslySetInnerHTML={{ __html: response }} />
                 </div>
             )}
