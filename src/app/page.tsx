@@ -40,7 +40,7 @@ const Categories = () => (
         <hr/>
         <Row>
             <Col className="d-flex flex-column align-items-center">
-                <Nav.Link href="/categories.html" className="text-center">
+                <Nav.Link href="/categoriesPage?category=community" className="text-center">
                     <div className="CatIcons">
                         <PeopleFill className="fs-1"/>
                         <strong>Community</strong>
@@ -48,7 +48,7 @@ const Categories = () => (
                 </Nav.Link>
             </Col>
             <Col className="d-flex flex-column align-items-center">
-                <Nav.Link href="/categories.html" className="text-center">
+                <Nav.Link href="/categoriesPage?category=transportation" className="text-center">
                     <div className="CatIcons">
                         <BusFrontFill className="fs-1"/>
                         <strong>Transportation</strong>
@@ -56,7 +56,7 @@ const Categories = () => (
                 </Nav.Link>
             </Col>
             <Col className="d-flex flex-column align-items-center">
-                <Nav.Link href="/categories.html" className="text-center">
+                <Nav.Link href="/categoriesPage?category=school" className="text-center">
                     <div className="CatIcons">
                         <Book className="fs-1"/>
                         <strong>School</strong>

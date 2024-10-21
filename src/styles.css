@@ -34,3 +34,7 @@ p{
 .IntroDiv{
     background-color: rgb(218, 240, 253);
 }
+.CatContentDiv{
+    background-color: darkseagreen;
+    height: 100px;
+}
