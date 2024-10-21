@@ -2,6 +2,8 @@
 import React from "react";
 import DownloadCSVFiles from "../../components/DataCards";
 import UserUpload from "../../components/UserUpload";
+import Chatbot from "../../components/Chatbot";
+import UncleChatbot from "../../components/UncleChatbot";
 import "../../styles/styles.css";
 
 const TestPage = () => {
@@ -9,7 +11,9 @@ const TestPage = () => {
   <div>
     <h1>This is the Test AI page.</h1>
     <DownloadCSVFiles />
+    <Chatbot />
     <UserUpload />
+    <UncleChatbot />
   </div>
   );
 };
