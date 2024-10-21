@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "out", // This should be the directory where your exported files are located
+    "public": "out",
     "ignore": [
       "firebase.json",
       "**/.*",
