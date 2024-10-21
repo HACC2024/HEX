@@ -125,6 +125,11 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 
 <hr />
 
+<h2>Flask-Backend</h2>
+
+Backend Prod: https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com/
+Backend Dev: http://127.0.0.1:5000
+
 
 ## Learn More
 
