@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Image } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase"; // Use the initialized database
+import { Download } from "react-bootstrap-icons";
 import "../styles/DataCard.css";
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<
-    { name: string; file: string; image: string }[]
+    { name: string; file: string; category: string; image: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
@@ -72,12 +73,17 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                 alt="DataCard Image"
                 className="card-image"
               />
-              <button
-                onClick={() => downloadFile(file.file, file.name)}
-                className="download-button"
-              >
-                Download
-              </button>
+              <div className="card-content">
+                <h3>{file.name}</h3>
+                <span>{file.category}</span>
+                <p className="description">...</p>
+                <button
+                  onClick={() => downloadFile(file.file, file.name)}
+                  className="download-button"
+                >
+                  Download <Download />
+                </button>
+              </div>
             </div>
           ))}
         </div>

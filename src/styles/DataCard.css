@@ -1,44 +1,51 @@
 .file-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
+  padding-left: 25px;
 }
-
 .file-card {
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
+  background-color: white;
+  border: 1px solid gray;
   border-radius: 20px;
-  padding: 0;
+  display: flex;
+  flex-direction: row;
+  width: 450px;
+  height: 200px;
+  overflow: hidden;
+}
+.card-image {
+  width: 40%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 20px 0 0 20px;
+}
+.card-content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  width: 320px;
-  height: 300px;
-  overflow: hidden;
+  padding: 15px;
+  width: 60%;
 }
-
-.card-image {
-  width: 100%;
-  height: 35%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 8px 8px 0 0;
+h3 {
+  margin: 0;
+  padding: 0;
 }
-
+.description {
+  margin: 10px 0;
+  flex-grow: 1;
+}
 .download-button {
-  background-color: #4caf50;
+  background-color: black;
   color: white;
   border: none;
   padding: 10px 15px;
   border-radius: 25px;
   cursor: pointer;
-  width: 60%;
+  width: 100%;
   text-align: center;
-  margin-top: 10px;
-  margin-bottom: 15px;
 }
-
 .download-button:hover {
-  background-color: #45a049;
+  background-color: darkgray;
 }
