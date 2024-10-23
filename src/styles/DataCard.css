@@ -8,33 +8,53 @@
   background-color: white;
   border: 1px solid gray;
   border-radius: 20px;
-  display: flex;
-  flex-direction: row;
-  width: 450px;
-  height: 200px;
-  overflow: hidden;
-}
-.card-image {
-  width: 40%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 20px 0 0 20px;
-}
-.card-content {
+  padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 15px;
-  width: 60%;
+  justify-content: space-between; 
+  width: 260px;
+  height: 350px;
+  overflow: hidden;
+  position: relative;
 }
-h3 {
+.card-image {
+  width: 150px;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px 8px 0 0;
+}
+.file-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  padding: 10px; 
+  flex-grow: 1; 
+}
+.file-name {
+  margin: 5px 0;
+  word-wrap: break-word; 
+  word-break: break-all; 
+  white-space: normal; 
+  overflow-wrap: break-word; 
+}
+.file-category,
+.file-description {
   margin: 0;
-  padding: 0;
+  color: gray;
+  font-size: 14px;
 }
-.description {
-  margin: 10px 0;
-  flex-grow: 1;
+.button-container {
+  width: 100%;
+  position: absolute;
+  bottom: 0; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.button-border {
+  width: 100%;
+  border-top: 1px solid gray;
 }
 .download-button {
   background-color: black;
@@ -43,9 +63,38 @@ h3 {
   padding: 10px 15px;
   border-radius: 25px;
   cursor: pointer;
-  width: 100%;
+  width: 60%;
   text-align: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 .download-button:hover {
   background-color: darkgray;
+}
+
+.justify-content-center {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+h3.file-name {
+  font-size: 20px;
+}
+p.file-category {
+  font-size: 12px;
+}
+.file-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; 
+  margin-top: 5px;
+}
+
+.file-tag {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 12px;
+  margin-right: 5px; 
+  margin-bottom: 5px; 
 }

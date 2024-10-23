@@ -11,7 +11,7 @@ const TestPage = () => {
   return (
     <div>
       <h1>This is the Test AI page.</h1>
-      <DownloadCSVFiles category="Community" />
+      <DownloadCSVFiles category="Transportation" />
       <Chatbot />
       <UserUpload />
       <UncleChatbot />
