@@ -10,6 +10,8 @@ import { ref as dbRef, push, onValue } from "firebase/database"; // Realtime Dat
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 import "../styles.css";
+import DataCards from "./DataCards";
+import DownloadCSVFiles from "./DataCards";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -374,30 +376,9 @@ const AdminPortal: React.FC = () => {
 
         <div className="mt-5">
           <h4>Uploaded Files</h4>
-          {uploadsData.length > 0 ? (
-              <ul>
-                {uploadsData.map((upload) => (
-                    <li key={upload.id}>
-                      <strong>{upload.name}</strong>
-                      <p>{upload.description}</p>
-                      <p>Category: {upload.category}</p>
-                      <a href={upload.file} target="_blank" rel="noopener noreferrer">
-                        View File
-                      </a>
-                      <br />
-                      {upload.image && (
-                          <img
-                              src={upload.image}
-                              alt={upload.name}
-                              style={{ maxWidth: '200px', marginTop: '10px' }}
-                          />
-                      )}
-                    </li>
-                ))}
-              </ul>
-          ) : (
-              <p>No files uploaded yet.</p>
-          )}
+          {["Transportation", "Health", "Education", "Energy"].map((category, index) => (
+              <DownloadCSVFiles key={index} category={category}/>
+          ))}
         </div>
       </div>
   );
