@@ -3,13 +3,14 @@ import React, { useState, useRef } from "react";
 import { storage, database } from "../../.firebase/firebase"; // Replace firestoreDb with database
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 
 const UserUpload: React.FC = () => {
   const [name, setName] = useState<string>(""); // New state for name
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
   const [downloadURL, setDownloadURL] = useState<string>("");
-  
+
   // Ref for the file input to reset it
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -78,7 +79,7 @@ const UserUpload: React.FC = () => {
           const uploadsRef = dbRef(database, "AI"); // Realtime Database reference
           await push(uploadsRef, {
             name: name, // Save the name
-            file: url,  // Save the file URL
+            file: url, // Save the file URL
             uploadedAt: new Date().toISOString(),
           });
           setUploadStatus("File and Title saved to Realtime Database");
@@ -136,7 +137,9 @@ const UserUpload: React.FC = () => {
       <button onClick={handleFileUpload}>Upload</button>
 
       {/* Start Over button */}
-      <button onClick={handleReset} style={{ marginLeft: "10px" }}>Start Over</button>
+      <button onClick={handleReset} style={{ marginLeft: "10px" }}>
+        Start Over
+      </button>
 
       {/* Status message */}
       <p>{uploadStatus}</p>
