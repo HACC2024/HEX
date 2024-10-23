@@ -33,10 +33,12 @@ hr{
 p{
     font-size: 15px;
 }
+
 .IntroDiv{
-    background-color: rgb(218, 240, 253);
+    background: linear-gradient(135deg, #c1e5f8 0%, #d3d9fc 100%);
     padding-bottom: 3rem;
 }
+
 .IntroBox {
     opacity: 0;
     transform: translateY(100px); 
@@ -47,7 +49,6 @@ p{
     border-radius: 12px; 
     background-color: white;
     margin: 0 10px; 
-    max-width: 300px;
 }
 
 .IntroBox.show {
@@ -74,24 +75,23 @@ p{
 
 .HowItWorksBox {
     width: 100%;
-    width: 300px; 
-    min-height: 50px;
+    width: 300px;
+    min-height: 80px;
     border-radius: 12px;
     background-color: white;
-    border: 2px solid rgb(78, 183, 239); 
+    border: 2px solid rgb(202, 200, 255); 
     box-shadow: 
-        0 0 10px rgba(0, 123, 255, 0.3),  
-        0 0 20px rgba(0, 200, 255, 0.3); 
+        0 0 10px rgba(183, 166, 254, 0.3),  
+        0 0 20px rgba(206, 188, 255, 0.3); 
     margin-left: auto;
     margin-right: auto; 
     opacity: 0;
     transform: translateY(70px); /* Slightly below initial position */
-    transition: opacity 3s ease, transform 3s ease; 
+    transition: opacity 1s ease, transform 1s ease; 
 }
 
-/* Hover state with expanding drop shadow */
 .HowItWorksBox:hover {
-    filter: drop-shadow(0 0 20px rgba(104, 215, 221, 0.41)) drop-shadow(0 0 40px rgba(182, 231, 238, 0.5)) drop-shadow(0 0 60px rgba(111, 159, 159, 0.4));
+    filter: drop-shadow(0 0 20px rgba(110, 170, 235, 0.41)) drop-shadow(0 0 40px rgba(148, 198, 254, 0.5)) drop-shadow(0 0 60px rgba(111, 159, 159, 0.4));
     transition: filter 0.6s ease-in-out;
 }
 
@@ -99,6 +99,7 @@ p{
     opacity: 1;
     transform: translateY(0);
 }
+
 
 .scroll-up {
     transform: translateY(-30px); 
@@ -117,30 +118,107 @@ p{
     }
 }
 
+.custom-background {
+    background-color: white; /* Light blue background */
+    padding: 0px; /* Optional padding to give some spacing */
+    border-radius: 8px; /* Optional rounded corners */
+}
+
+.how-it-works-section {
+    background-color: white;
+    padding: 20px;
+}
+
+.custom-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #b9e5fd, #cbc0ff ); 
+    background-clip: text; /* Standard property */
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent;
+}
+
 .HowItWorksImageWrapper {
     width: 100%;
-    display: flex;
+    display: inline-block;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .HowItWorksImage {
     width: 100%; 
-    max-width: 750px; 
+    max-width: 700px; 
     height: auto;
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
 }
 
+.stepsbox {
+    width: 100%;
+    max-width: 450px;
+    height: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #b4d5ff;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.stepsbox:hover {
+    background-color: #c2cfff;
+    transform: scale(1.05);
+}
+
+.stepsbox:hover .circlenumber {
+    color: #aec6e6;
+}
+
+.stepsbox:hover .steps-text {
+    color: #ffffff;
+}
+
+.circlenumber-container {
+    margin-bottom: 70px; 
+}
+
+.circlenumber {
+    width: 90px;
+    height: 90px;
+    background-color: white;
+    color: #b4d5ff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.steps-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 15px; 
+}
+
+.second-img {
+    max-width: 100%;
+    height: 300px;
+    border-radius: 3%;
+}
+
 .BiggerBox {
     width: 100%;
-    max-width: 700px; 
-    min-height: 300px;
+    max-width: 500px; 
+    min-height: 600px;
     border-radius: 12px;
-    background-color: white;
-    border: 2px solid rgb(90, 171, 208);
-    box-shadow: 
-        0 0 10px rgba(0, 123, 255, 0.3),  
-        0 0 20px rgba(0, 200, 255, 0.3); 
+    background-color: rgb(208, 231, 245);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
