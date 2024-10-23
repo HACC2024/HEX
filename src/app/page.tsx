@@ -1,9 +1,9 @@
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
-import '../styles.css'; 
+import '../styles.css';
 import "../styles/styles.css";
 import { Container, Nav, NavDropdown, Navbar, Row, Col } from "react-bootstrap";
-import { Facebook, Twitter, PeopleFill, Pinterest, Instagram, HouseFill, Search, PersonFill, Cart, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons'; 
+import { Facebook, Twitter, PeopleFill, Pinterest, Instagram, HouseFill, Search, PersonFill, Cart, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "../components/footer";
@@ -12,17 +12,17 @@ const TopMenu = () => (
     <Navbar bg="light" expand="lg">
         <Container>
             <Nav className="me-auto">
-                <Nav.Link><Facebook/></Nav.Link>
-                <Nav.Link><Twitter/></Nav.Link>
-                <Nav.Link><Pinterest/></Nav.Link>
-                <Nav.Link><Instagram/></Nav.Link>
+                <Nav.Link><Facebook /></Nav.Link>
+                <Nav.Link><Twitter /></Nav.Link>
+                <Nav.Link><Pinterest /></Nav.Link>
+                <Nav.Link><Instagram /></Nav.Link>
             </Nav>
             <Nav className="justify-content-end">
                 <Nav.Link href="#Introduction">Introduction</Nav.Link>
-                <Nav.Link><HouseFill/> </Nav.Link>
-                <Nav.Link><Search/> </Nav.Link>
-                <Nav.Link><PersonFill/> </Nav.Link>
-                <NavDropdown title={<Cart/>}>
+                <Nav.Link><HouseFill /> </Nav.Link>
+                <Nav.Link><Search /> </Nav.Link>
+                <Nav.Link><PersonFill /> </Nav.Link>
+                <NavDropdown title={<Cart />}>
                     <NavDropdown.Item></NavDropdown.Item>
                     <NavDropdown.ItemText>Your cart is currently empty.</NavDropdown.ItemText>
                 </NavDropdown>
@@ -38,32 +38,34 @@ const HomeImage = () => (
 );
 
 const categoryData = [
-    {name: "Community", icon: <PeopleFill className="fs-1"/>, link: "/categories.html"},
-    {name: "Transportation", icon: <BusFrontFill className="fs-1"/>, link: "/categories.html"},
-    {name: "School", icon: <Book className="fs-1"/>, link: "/categories.html" },
+    { name: "Community", icon: <PeopleFill className="fs-1" />, link: "/categories.html" },
+    { name: "Transportation", icon: <BusFrontFill className="fs-1" />, link: "/categories.html" },
+    { name: "School", icon: <Book className="fs-1" />, link: "/categories.html" },
     { name: "Employment", icon: <Briefcase className="fs-1" />, link: "/categories.html" },
     { name: "Public Safety", icon: <Shield className="fs-1" />, link: "/categories.html" },
 ];
 
 const Categories = () => (
-
+    <div style={{ backgroundColor: '#f0f2ff', padding: '20px' }}>
         <div className="CatDiv">
-            <h1 className="px-5 pt-3 text-center">DATASET CATEGORIES</h1>
+            <h1 className="px-5 pt-3 text-center mt-5">DATASET CATEGORIES</h1>
             <Container className="CatContainer">
-            <Row>
-                {categoryData.map((category, index) => (
-                    <Col key={index} className="d-flex flex-column align-items-center">
-                        <Link href="/test" className="text-center custom-link">
-                            <div className="CatIcons">
-                                {category.icon}
-                                <strong>{category.name}</strong>
-                            </div>
-                        </Link>
-                    </Col>
-                ))}
-            </Row>
+                <div className="BigCircle">Categories</div>
+                <Row>
+                    {categoryData.map((category, index) => (
+                        <Col key={index} className="d-flex flex-column align-items-center">
+                            <Link href="/test" className="text-center custom-link">
+                                <div className={`CatIcons position-circle${index + 1}`}>
+                                    {category.icon}
+                                    <strong>{category.name}</strong>
+                                </div>
+                            </Link>
+                        </Col>
+                    ))}
+                </Row>
             </Container>
         </div>
+    </div>
 );
 
 const IntroContainer = () => {
@@ -126,7 +128,7 @@ const IntroContainer = () => {
         <div id="Introduction" className="IntroDiv px-5 pt-5">
             <Row className="d-flex justify-content-center align-items-center gap-2">
                 <Col xs={12} md={3} className="d-flex flex-column align-items-center mb-4">
-                    
+
                     {/* Box 1 */}
                     <div className="IntroBox p-4 text-center border card-shadow" data-box="1">
                         <h3 style={{ color: '#b4d5ff' }}>Box 1</h3>
@@ -134,7 +136,7 @@ const IntroContainer = () => {
                     </div>
                 </Col>
                 <Col xs={12} md={3} className="d-flex flex-column align-items-center mb-4">
-                    
+
                     {/* Box 2 */}
                     <div className="IntroBox p-4 text-center border card-shadow" data-box="2">
                         <h3 style={{ color: '#b4d5ff' }}>Box 2</h3>
@@ -142,7 +144,7 @@ const IntroContainer = () => {
                     </div>
                 </Col>
                 <Col xs={12} md={3} className="d-flex flex-column align-items-center mb-4">
-                    
+
                     {/* Box 3 */}
                     <div className="IntroBox p-4 text-center border card-shadow" data-box="3">
                         <h3 style={{ color: '#b4d5ff' }}>Box 3</h3>
@@ -251,11 +253,11 @@ export default function Home() {
     return (
         <main>
             <Navbar />
-            <TopMenu/>
-            <HomeImage/>
-            <Categories/>
-            <IntroContainer/>
-            <HowItWorks/>
+            <TopMenu />
+            <HomeImage />
+            <Categories />
+            <IntroContainer />
+            <HowItWorks />
             <Footer />
         </main>
     );

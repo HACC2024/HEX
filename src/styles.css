@@ -10,22 +10,78 @@ body{
     padding-top: 0;
 }
 .CatContainer {
-    padding-top: 30px;
+    position: relative;
+    height: 650px;
+    width: 600px;
+    margin: 0 auto;
 }
-.CatIcons {
+
+.BigCircle {
+    background: #c3ceff;
+    border-radius: 100%;
+    color: white;
+    height: 150px;
+    width: 150px;
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 20px;
+    box-shadow: inset -10px -10px 20px rgba(104, 104, 104, 0.2), 
+                10px 10px 20px rgba(134, 130, 130, 0.1);   
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.CatIcons {
+    position: absolute;
     font-size: 18px;
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; /* Center items horizontally */
-    background-color: #00bcd4;
-    border-radius: 100%; /* Make it circular */
-    height: 200px; /* Set height */
-    width: 200px; /* Set width */
+    background: #a3cfff; 
+    color: white;
+    border-radius: 100%;
+    height: 180px;
+    width: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.2), 
+                10px 10px 20px rgba(0, 0, 0, 0.1);  
 }
-.CatDiv{
-    height:350px;
+
+.position-circle1 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(0deg) translateX(200px) rotate(0deg);
 }
+
+.position-circle2 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(72deg) translateX(200px) rotate(-72deg);
+}
+
+.position-circle3 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(144deg) translateX(200px) rotate(-144deg);
+}
+
+.position-circle4 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(216deg) translateX(200px) rotate(-216deg);
+}
+
+.position-circle5 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(288deg) translateX(200px) rotate(-288deg);
+}
+
 hr{
     height:10px;
     background-color: rgb(15, 118, 48);
