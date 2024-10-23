@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { toggleSignIn, toggleSignOut, stateChange } from "../../.firebase/auth";
 import { storage, database } from "../../.firebase/firebase"; // Firebase imports
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
+import { ref as dbRef, push, onValue } from "firebase/database"; // Realtime Database methods
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 import "../styles.css";
-import { Container } from "react-bootstrap";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -26,6 +25,8 @@ const AdminPortal: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // For file upload
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // For image upload
   const [uploadStatus, setUploadStatus] = useState<string>("");
+
+  const [uploadsData, setUploadsData] = useState<any[]>([]);
 
   // Ref for the file and image input to reset them
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -51,6 +52,8 @@ const AdminPortal: React.FC = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  // LOGIN FUNCTIONS
 
   /**
    * Handles the user login process.
@@ -79,6 +82,8 @@ const AdminPortal: React.FC = () => {
       Swal.fire("Error", error.message, "error");
     }
   };
+
+  // CREATE FUNCTIONS
 
   // Handle file input change (validate accepted formats)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,6 +228,33 @@ const AdminPortal: React.FC = () => {
     if (imageInputRef.current) imageInputRef.current.value = "";
   };
 
+  // READ FUNCTIONS
+
+  /**
+   * Fetches the uploaded data from the Firebase Realtime Database.
+   * Updates the state with the fetched uploads.
+   * @return {void}
+   */
+  const fetchUploads = () => {
+    const uploadsRef = dbRef(database, "Admin");
+
+    onValue(uploadsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const uploadsList = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        setUploadsData(uploadsList); // Update state with fetched uploads
+      }
+    });
+  };
+
+  // Fetch the uploaded data when the component mounts
+  useEffect(() => {
+    fetchUploads();
+  }, []);
+
   if (!isMounted) return null;
   if (isLoading) return <div>Loading...</div>;
   if (!user) {
@@ -262,85 +294,114 @@ const AdminPortal: React.FC = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <h3 className="text-center mb-4">Upload File and Image</h3>
+      <div className="container mt-5">
+        <h3 className="text-center mb-4">Upload File and Image</h3>
 
-      <div className="mb-3">
-        <label className="form-label">Title:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={handleNameChange}
-          placeholder="Enter the title"
-          className="form-control"
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Description:</label>
-        <ReactQuill
-          value={description}
-          onChange={handleDescriptionChange}
-          theme="snow"
-          className="border"
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Category:</label>
-        <select
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          className="form-select"
-        >
-          <option value="">Select a category</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Community">Community</option>
-          <option value="School">School</option>
-          <option value="Employment">Employment</option>
-          <option value="Public Safety">Public Safety</option>
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">File (CSV, HTML, XLSX, RDF):</label>
-        <input
-          type="file"
-          accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
-          onChange={handleFileChange}
-          ref={fileInputRef}
-          className="form-control"
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Image (PNG, JPEG):</label>
-        <input
-          type="file"
-          accept=".png,.jpeg,.jpg"
-          onChange={handleImageChange}
-          ref={imageInputRef}
-          className="form-control"
-        />
-      </div>
-
-      <Container className="d-flex justify-content-between">
-        <button onClick={handleFileUpload} className="btn btn-primary">
-          Upload
-        </button>
-        <div>
-          <button className="btn btn-danger me-3" onClick={handleLogout}>
-            Logout
-          </button>
-          <button onClick={handleReset} className="btn btn-secondary">
-            Start Over
-          </button>
+        <div className="mb-3">
+          <label className="form-label">Title:</label>
+          <input
+              type="text"
+              value={name}
+              onChange={handleNameChange}
+              placeholder="Enter the title"
+              className="form-control"
+          />
         </div>
-      </Container>
 
-      {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
-    </div>
+        <div className="mb-3">
+          <label className="form-label">Description:</label>
+          <ReactQuill
+              value={description}
+              onChange={handleDescriptionChange}
+              theme="snow"
+              className="border"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Category:</label>
+          <select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              className="form-select"
+          >
+            <option value="">Select a category</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Community">Community</option>
+            <option value="School">School</option>
+            <option value="Employment">Employment</option>
+            <option value="Public Safety">Public Safety</option>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">File (CSV, HTML, XLSX, RDF):</label>
+          <input
+              type="file"
+              accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              className="form-control"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Image (PNG, JPEG):</label>
+          <input
+              type="file"
+              accept=".png,.jpeg,.jpg"
+              onChange={handleImageChange}
+              ref={imageInputRef}
+              className="form-control"
+          />
+        </div>
+
+        <div className="d-flex justify-content-between">
+          <button onClick={handleFileUpload} className="btn btn-primary">
+            Upload
+          </button>
+          <div>
+            <button className="btn btn-danger me-3" onClick={handleLogout}>
+              Logout
+            </button>
+            <button onClick={handleReset} className="btn btn-secondary">
+              Start Over
+            </button>
+          </div>
+        </div>
+
+        {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
+
+        <div className="mt-5">
+          <h4>Uploaded Files</h4>
+          {uploadsData.length > 0 ? (
+              <ul>
+                {uploadsData.map((upload) => (
+                    <li key={upload.id}>
+                      <strong>{upload.name}</strong>
+                      <p>{upload.description}</p>
+                      <p>Category: {upload.category}</p>
+                      <a href={upload.file} target="_blank" rel="noopener noreferrer">
+                        View File
+                      </a>
+                      <br />
+                      {upload.image && (
+                          <img
+                              src={upload.image}
+                              alt={upload.name}
+                              style={{ maxWidth: '200px', marginTop: '10px' }}
+                          />
+                      )}
+                    </li>
+                ))}
+              </ul>
+          ) : (
+              <p>No files uploaded yet.</p>
+          )}
+        </div>
+      </div>
   );
 };
 
 export default AdminPortal;
+
