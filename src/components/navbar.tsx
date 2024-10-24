@@ -17,6 +17,9 @@ const Navbar: React.FC = () => {
         <li>
           <Link href="#how-it-works">How It Works</Link>
         </li>
+        <li>
+          <Link href="test">Chatbots</Link>
+        </li>
       </ul>
     </nav>
   );

@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles.css';
 import "../styles/styles.css";
-import { Container, Nav, NavDropdown, Row, Col } from "react-bootstrap";
-import { Facebook, Twitter, PeopleFill, Pinterest, Instagram, HouseFill, Search, PersonFill, Cart, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
+import { Container, Row, Col } from "react-bootstrap";
+import { PeopleFill, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "../components/footer";
@@ -18,12 +19,13 @@ const HomeImage = () => (
 );
 
 const categoryData = [
-    {name: "Community", icon: <PeopleFill className="fs-1"/>, link: "/categoriesPage?category=community"},
-    {name: "Transportation", icon: <BusFrontFill className="fs-1"/>, link: "/categoriesPage?category=transportation"},
-    {name: "School", icon: <Book className="fs-1"/>, link: "/categoriesPage?category=school" },
-    { name: "Employment", icon: <Briefcase className="fs-1" />, link: "/categoriesPage?category=employment" },
-    { name: "Public Safety", icon: <Shield className="fs-1" />, link: "/categoriesPage?category=publicSafety" },
+    { name: "Community", icon: <PeopleFill className="fs-1" />, link: "/Categories/community" },
+    { name: "Transportation", icon: <BusFrontFill className="fs-1" />, link: "/Categories/transportation" },
+    { name: "School", icon: <Book className="fs-1" />, link: "/Categories/school" },
+    { name: "Employment", icon: <Briefcase className="fs-1" />, link: "/Categories/employment" },
+    { name: "Public Safety", icon: <Shield className="fs-1" />, link: "/Categories/publicSafety" },
 ];
+
 const Categories = () => (
     <div style={{ backgroundColor: '#f0f2ff', padding: '20px' }}>
         <div className="CatDiv">
@@ -46,6 +48,7 @@ const Categories = () => (
         </div>
     </div>
 );
+
 const IntroContainer = () => {
     const [scrollDirection, setScrollDirection] = useState('down');
 

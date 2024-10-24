@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from "react";
-import { Image, Dropdown } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";

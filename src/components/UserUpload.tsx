@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { storage, database } from "../../.firebase/firebase"; // Replace firestoreDb with database
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
+import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods\
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 
 const UserUpload: React.FC = () => {
@@ -107,14 +107,16 @@ const UserUpload: React.FC = () => {
   };
 
   return (
-    <div>
-      <h3>Upload File into AI database</h3>
+    <div className="container bg-dark text-white p-5 rounded">
+      <h3 className="mb-4 text-center">Upload File to Uncle HEX</h3>
 
       {/* Name input */}
-      <div>
-        <label>Title:</label>
+      <div className="form-group">
+        <label htmlFor="fileTitle" className="form-label">Title:</label>
         <input
           type="text"
+          id="fileTitle"
+          className="form-control bg-secondary text-white"
           value={name}
           onChange={handleNameChange}
           placeholder="Enter file title"
@@ -122,10 +124,12 @@ const UserUpload: React.FC = () => {
       </div>
 
       {/* File input */}
-      <div>
-        <label>File (CSV, HTML, XLSX, RDF):</label>
+      <div className="form-group mt-3">
+        <label htmlFor="fileInput" className="form-label">File (CSV, JSON, HTML, XLSX, RDF):</label>
         <input
           type="file"
+          id="fileInput"
+          className="form-control bg-secondary text-white"
           accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
           onChange={handleFileChange}
           ref={fileInputRef} // Use the ref to clear the field
@@ -133,18 +137,36 @@ const UserUpload: React.FC = () => {
       </div>
 
       {/* Upload button */}
-      <button onClick={handleFileUpload}>Upload</button>
+      <button
+        onClick={handleFileUpload}
+        className="btn btn-primary mt-4"
+        disabled={!selectedFile || !name}
+      >
+        Upload
+      </button>
 
       {/* Start Over button */}
-      <button onClick={handleReset} style={{ marginLeft: "10px" }}>
+      <button
+        onClick={handleReset}
+        className="btn btn-outline-light mt-4 ml-3"
+        style={{ marginLeft: "10px" }}
+      >
         Start Over
       </button>
 
       {/* Status message */}
-      <p>{uploadStatus}</p>
+      {uploadStatus && (
+        <p className="mt-3 alert alert-info">{uploadStatus}</p>
+      )}
 
       {/* Show download link if available */}
-      {downloadURL && <a href={downloadURL}>Download File</a>}
+      {downloadURL && (
+        <div className="mt-3">
+          <a href={downloadURL} className="btn btn-success">
+            Download File
+          </a>
+        </div>
+      )}
     </div>
   );
 };
