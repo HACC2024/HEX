@@ -1,6 +1,110 @@
-body{
-    overflow-x:hidden;
+
+/* Global Styles */
+body {
+    color: #000000;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
+
+/* Main Container */
+main {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Take full width */
+}
+
+/* Section Styles */
+#introduction,
+#category,
+#how-it-works {
+    padding: 240px; /* Increased padding for sections */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #1f1f1f; /* Dark background for sections */
+    margin: 20px 0; /* Adjusted margin for sections to prevent side scrolling */
+    text-align: center; /* Center text within sections */
+}
+
+h2 {
+    margin-bottom: 20px; /* Space below headings */
+}
+
+.custom-link {
+    color: black;
+    text-decoration: none;
+}
+
+/* Navbar Styles */
+nav {
+    background-color: white; /* Darker background for navbar */
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    position: fixed;
+    left: 0; /* Align to the left */
+    right: 0; /* Align to the right */
+    z-index: 1000; /* Ensure navbar is above other content */
+}
+
+nav ul {
+    list-style: none;
+    display: flex; /* Use flexbox for horizontal layout */
+    justify-content: center; /* Center navbar items */
+}
+
+nav ul li {
+    margin: 0 30px -10px; /* Top, horizontal, and bottom margin */
+
+}
+
+nav a {
+    color: #00bcd4; /* Bright cyan color for links */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+/* Smaller text size for navbar links on smaller screens */
+@media (max-width: 768px) {
+    nav a {
+        font-size: 14px; /* Smaller font size for navbar links */
+    }
+}
+
+nav a:hover {
+    color: #80deea; /* Lighter cyan on hover */
+}
+
+/* Footer Styles */
+footer {
+    color: #00bcd4;
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    margin-top: 10px; /* Add margin to separate from content above */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    nav ul li {
+        display: block; /* Stack navbar items on smaller screens */
+        margin: 10px 20px; /* Margin for vertical spacing */
+    }
+    nav {
+        padding: 5px; /* Reduce padding for navbar on smaller screens */
+    }
+
+    #introduction,
+    #category,
+    #how-it-works {
+        margin: 10px 0; /* Smaller margin for sections on smaller screens */
+        padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
+    }
+}
+
+/*                                                         */
+
 .HomeImageCt{
     background-image: url("/homeWallpaper.jpg");
     background-size: cover;
@@ -10,22 +114,78 @@ body{
     padding-top: 0;
 }
 .CatContainer {
-    padding-top: 30px;
+    position: relative;
+    height: 650px;
+    width: 600px;
+    margin: 0 auto;
 }
-.CatIcons {
+
+.BigCircle {
+    background: #c3ceff;
+    border-radius: 100%;
+    color: white;
+    height: 150px;
+    width: 150px;
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 20px;
+    box-shadow: inset -10px -10px 20px rgba(104, 104, 104, 0.2), 
+                10px 10px 20px rgba(134, 130, 130, 0.1);   
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.CatIcons {
+    position: absolute;
     font-size: 18px;
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; /* Center items horizontally */
-    background-color: #00bcd4;
-    border-radius: 100%; /* Make it circular */
-    height: 200px; /* Set height */
-    width: 200px; /* Set width */
+    background: #a3cfff; 
+    color: white;
+    border-radius: 100%;
+    height: 180px;
+    width: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.2), 
+                10px 10px 20px rgba(0, 0, 0, 0.1);  
 }
-.CatDiv{
-    height:350px;
+
+.position-circle1 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(0deg) translateX(200px) rotate(0deg);
 }
+
+.position-circle2 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(72deg) translateX(200px) rotate(-72deg);
+}
+
+.position-circle3 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(144deg) translateX(200px) rotate(-144deg);
+}
+
+.position-circle4 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(216deg) translateX(200px) rotate(-216deg);
+}
+
+.position-circle5 { 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(288deg) translateX(200px) rotate(-288deg);
+}
+
 hr{
     height:10px;
     background-color: rgb(15, 118, 48);
@@ -33,6 +193,192 @@ hr{
 p{
     font-size: 15px;
 }
+
 .IntroDiv{
-    background-color: rgb(218, 240, 253);
+    background: linear-gradient(135deg, #c1e5f8 0%, #d3d9fc 100%);
+    padding-bottom: 3rem;
 }
+
+.IntroBox {
+    opacity: 0;
+    transform: translateY(100px); 
+    transition: opacity 5s ease-out, transform 5s ease-out; 
+    width: 100%;
+    max-width: 330px;
+    min-height: 200px; 
+    border-radius: 12px; 
+    background-color: white;
+    margin: 0 10px; 
+}
+
+.IntroBox.show {
+    opacity: 1;
+    transform: translateY(0); 
+}
+
+.IntroBox[data-box="2"].show {
+    transition-delay: 0.1s; 
+}
+
+.IntroBox[data-box="3"].show {
+    transition-delay: 0.2s; 
+}
+.card-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.2), 0 15px 20px -5px rgba(0, 0, 0, 0.2);
+}
+
+.HowItWorksBox {
+    width: 100%;
+    width: 300px;
+    min-height: 80px;
+    border-radius: 12px;
+    background-color: white;
+    border: 2px solid rgb(202, 200, 255); 
+    box-shadow: 
+        0 0 10px rgba(183, 166, 254, 0.3),  
+        0 0 20px rgba(206, 188, 255, 0.3); 
+    margin-left: auto;
+    margin-right: auto; 
+    opacity: 0;
+    transform: translateY(70px); /* Slightly below initial position */
+    transition: opacity 1s ease, transform 1s ease; 
+}
+
+.HowItWorksBox:hover {
+    filter: drop-shadow(0 0 20px rgba(110, 170, 235, 0.41)) drop-shadow(0 0 40px rgba(148, 198, 254, 0.5)) drop-shadow(0 0 60px rgba(111, 159, 159, 0.4));
+    transition: filter 0.6s ease-in-out;
+}
+
+.HowItWorksBox.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.scroll-up {
+    transform: translateY(-30px); 
+    transition: transform 1s ease-out;
+}
+
+.scroll-down {
+    transform: translateY(30px); 
+    transition: transform 1s ease-out;
+}
+
+@media (max-width: 768px) {
+    .HowItWorksBox {
+        margin-left: 0 !important; /* Ensure centering on smaller screens */
+        margin-right: 0 !important; /* Ensure centering on smaller screens */
+    }
+}
+
+.custom-background {
+    background-color: white; /* Light blue background */
+    padding: 0px; /* Optional padding to give some spacing */
+    border-radius: 8px; /* Optional rounded corners */
+}
+
+.how-it-works-section {
+    background-color: white;
+    padding: 20px;
+}
+
+.custom-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #b9e5fd, #cbc0ff ); 
+    background-clip: text; /* Standard property */
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent;
+}
+
+.HowItWorksImageWrapper {
+    width: 100%;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.HowItWorksImage {
+    width: 100%; 
+    max-width: 700px; 
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+}
+
+.stepsbox {
+    width: 100%;
+    max-width: 450px;
+    height: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #b4d5ff;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.stepsbox:hover {
+    background-color: #c2cfff;
+    transform: scale(1.05);
+}
+
+.stepsbox:hover .circlenumber {
+    color: #aec6e6;
+}
+
+.stepsbox:hover .steps-text {
+    color: #ffffff;
+}
+
+.circlenumber-container {
+    margin-bottom: 70px; 
+}
+
+.circlenumber {
+    width: 90px;
+    height: 90px;
+    background-color: white;
+    color: #b4d5ff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.steps-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 15px; 
+}
+
+.second-img {
+    max-width: 100%;
+    height: 300px;
+    border-radius: 3%;
+}
+
+.BiggerBox {
+    width: 100%;
+    max-width: 500px; 
+    min-height: 600px;
+    border-radius: 12px;
+    background-color: rgb(208, 231, 245);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
