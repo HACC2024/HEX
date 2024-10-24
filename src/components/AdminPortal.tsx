@@ -3,18 +3,14 @@
 import dynamic from "next/dynamic";
 import React, { useState, useRef, useEffect } from "react";
 import Swal from "sweetalert2";
-import {
-  toggleSignIn,
-  toggleSignOut,
-  stateChange,
-} from "../../.firebase/auth";
+import { toggleSignIn, toggleSignOut, stateChange } from "../../.firebase/auth";
 import { storage, database } from "../../.firebase/firebase"; // Firebase imports
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
-import 'react-quill/dist/quill.snow.css'; // Import Quill styles
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 import "../styles.css";
-import {Container} from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -157,7 +153,8 @@ const AdminPortal: React.FC = () => {
       fileUploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setUploadStatus(`File upload is ${progress}% done`);
         },
         (error) => {
@@ -174,7 +171,8 @@ const AdminPortal: React.FC = () => {
           imageUploadTask.on(
             "state_changed",
             (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               setUploadStatus(`Image upload is ${progress}% done`);
             },
             (error) => {
@@ -182,7 +180,9 @@ const AdminPortal: React.FC = () => {
               setUploadStatus("Error uploading image");
             },
             async () => {
-              const imageUrl = await getDownloadURL(imageUploadTask.snapshot.ref);
+              const imageUrl = await getDownloadURL(
+                imageUploadTask.snapshot.ref
+              );
               setUploadStatus("File and image uploaded successfully");
 
               // Save the data to Realtime Database
@@ -227,37 +227,38 @@ const AdminPortal: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (!user) {
     return (
-        <div className="container mt-5">
-            <h3 className="text-center mb-4">Admin Portal</h3>
+      <div className="container mt-5">
+        <h3 className="text-center mb-4">Admin Portal</h3>
 
-            <form onSubmit={handleLogin} className="mb-3">
-            <div className="mb-3">
-                <label className="form-label">Email:</label>
-                <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="form-control"
-                />
-            </div>
+        <form onSubmit={handleLogin} className="mb-3">
+          <div className="mb-3">
+            <label className="form-label">Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="form-control"
+            />
+          </div>
 
-            <div className="mb-3">
-                <label className="form-label">Password:</label>
-                <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="form-control"
-                />
-            </div>
+          <div className="mb-3">
+            <label className="form-label">Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="form-control"
+            />
+          </div>
 
-            <button type="submit" className="btn btn-primary">Login</button>
-            </form>
-
-        </div>
-    )
+          <button type="submit" className="btn btn-primary">
+            Login
+          </button>
+        </form>
+      </div>
+    );
   }
 
   return (
@@ -287,7 +288,11 @@ const AdminPortal: React.FC = () => {
 
       <div className="mb-3">
         <label className="form-label">Category:</label>
-        <select value={selectedCategory} onChange={handleCategoryChange} className="form-select">
+        <select
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="form-select"
+        >
           <option value="">Select a category</option>
           <option value="Transportation">Transportation</option>
           <option value="Community">Community</option>
@@ -320,11 +325,16 @@ const AdminPortal: React.FC = () => {
       </div>
 
       <Container className="d-flex justify-content-between">
-        <button onClick={handleFileUpload} className="btn btn-primary">Upload</button>
+        <button onClick={handleFileUpload} className="btn btn-primary">
+          Upload
+        </button>
         <div>
-          <button className="btn btn-danger me-3" onClick={handleLogout}>Logout</button>
-          <button onClick={handleReset} className="btn btn-secondary">Start Over</button>
-
+          <button className="btn btn-danger me-3" onClick={handleLogout}>
+            Logout
+          </button>
+          <button onClick={handleReset} className="btn btn-secondary">
+            Start Over
+          </button>
         </div>
       </Container>
 
