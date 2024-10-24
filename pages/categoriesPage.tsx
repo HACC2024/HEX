@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-implicit-any */
 
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../src/styles.css'; 
 import { useRouter } from 'next/router';
-import { Container, Nav, NavDropdown, Navbar, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 const TopMenu = ({ category }) => {
     const content = {
@@ -14,7 +15,7 @@ const TopMenu = ({ category }) => {
     };
 
     // Check if category is defined to avoid errors
-    const formattedCategory = category ? category.charAt(0).toUpperCase() + category.slice(1) : "Categories";
+    // const formattedCategory = category ? category.charAt(0).toUpperCase() + category.slice(1) : "Categories";
 
     return (
         <div>

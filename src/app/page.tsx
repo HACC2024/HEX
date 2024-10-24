@@ -2,8 +2,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles.css';
 import "../styles/styles.css";
-import { Container, Nav, NavDropdown, Row, Col } from "react-bootstrap";
-import { Facebook, Twitter, PeopleFill, Pinterest, Instagram, HouseFill, Search, PersonFill, Cart, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
+import { Container, Row, Col } from "react-bootstrap";
+import { PeopleFill, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "../components/footer";
@@ -47,7 +47,7 @@ const Categories = () => (
     </div>
 );
 const IntroContainer = () => {
-    const [scrollDirection, setScrollDirection] = useState('down');
+    const [setScrollDirection] = useState('down');
 
     useEffect(() => {
         const boxes = document.querySelectorAll('.IntroBox');
