@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../src/styles.css'; 
