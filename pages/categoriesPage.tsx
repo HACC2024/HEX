@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-implicit-any */
 
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,7 +6,7 @@ import '../src/styles.css';
 import { useRouter } from 'next/router';
 import { Container } from "react-bootstrap";
 
-const TopMenu = ({ category }) => {
+const TopMenu = ({ category }: { category: string }) => {
     const content = {
         community: "Category Page for Community",
         transportation: "Category Page for Transportation", 
@@ -19,7 +18,7 @@ const TopMenu = ({ category }) => {
 
     return (
         <div>
-            <h1>{content[category]}</h1>
+            <h1>{content[category as keyof typeof content]}</h1>
             <hr/>
         </div>
     );
@@ -51,7 +50,7 @@ const SchoolContent = () => (
     </div>
 );
 
-const DataContent = ({ category }) => {
+const DataContent = ({ category }: { category: string }) => {
     const contentMap = {
         community: <CommunityContent/>,
         transportation: <TransportationContent/>,
@@ -59,7 +58,7 @@ const DataContent = ({ category }) => {
     }
     return (
         <div>
-            {contentMap[category]}
+            {contentMap[category as keyof typeof contentMap]}
         </div>
     )
 
@@ -69,11 +68,12 @@ const DataContent = ({ category }) => {
 export default function CategoriesPage() {
     const router = useRouter();
     const { category } = router.query;
+    const categoryStr = Array.isArray(category) ? category[0] : category || '';
 
     return (
         <div>
-            <TopMenu category={category} />
-            <DataContent category={category} />
+            <TopMenu category={categoryStr} />
+            <DataContent category={categoryStr} />
         </div>
     );
 }

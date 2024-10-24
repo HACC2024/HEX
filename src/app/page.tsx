@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles.css';
@@ -47,7 +48,7 @@ const Categories = () => (
     </div>
 );
 const IntroContainer = () => {
-    const [setScrollDirection] = useState('down');
+    const [scrollDirection, setScrollDirection] = useState('down');
 
     useEffect(() => {
         const boxes = document.querySelectorAll('.IntroBox');
