@@ -1,68 +1,69 @@
-/* UncleChatbot.css */
-
+/* styles/UncleChatbot.css */
 .chatbox {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
-}
-
-.chatbox h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.chatbox-form {
-    display: flex;
-    flex-direction: column;
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.question-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 16px;
-}
-
-.send-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+    background-color: #1f1f1f;
+    border: 1px solid #444;
+    color: #f0f0f0;
+  }
+  
+  .chatbox h3 {
+    color: #a3d5ff;
+  }
+  
+  .chatbox-form .input-group {
+    margin-bottom: 1rem;
+  }
+  
+  .chatbox-form .form-control {
+    background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #555;
+  }
+  
+  .chatbox-form .btn {
+    background-color: #a3d5ff;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.send-button:disabled {
-    background-color: #ccc;
-}
-
-.error-message {
-    color: red;
-    text-align: center;
-}
-
-.response {
-    margin-top: 20px;
-}
-
-.response-content {
+    color: #333;
+  }
+  
+  .chatbox-form .btn-info {
+    background-color: #34495e;
+    border-color: #2c3e50;
+    color: #f0f0f0;
+  }
+  
+  .chatbox .chat-history {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .chatbox .chat-entry {
+    background-color: #2b2b2b;
     padding: 10px;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    background-color: #e9f4ff;
-}
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .chatbox .chat-entry p {
+    margin: 0;
+  }
+  
+  .chatbox .chat-entry strong {
+    color: #a3d5ff;
+  }
+  
+  .chatbox .chat-entry .btn-danger {
+    background-color: #ff6b6b;
+    border: none;
+    color: white;
+  }
+  
+  .chatbox .alert-danger {
+    background-color: #ff6b6b;
+    border: none;
+  }
+
+  
