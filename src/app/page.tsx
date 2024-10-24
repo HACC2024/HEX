@@ -2,34 +2,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles.css';
 import "../styles/styles.css";
-import { Container, Nav, NavDropdown, Navbar, Row, Col } from "react-bootstrap";
+import { Container, Nav, NavDropdown, Row, Col } from "react-bootstrap";
 import { Facebook, Twitter, PeopleFill, Pinterest, Instagram, HouseFill, Search, PersonFill, Cart, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "../components/footer";
+import Navbar from "../components/navbar";
 
-const TopMenu = () => (
-    <Navbar bg="light" expand="lg">
-        <Container>
-            <Nav className="me-auto">
-                <Nav.Link><Facebook /></Nav.Link>
-                <Nav.Link><Twitter /></Nav.Link>
-                <Nav.Link><Pinterest /></Nav.Link>
-                <Nav.Link><Instagram /></Nav.Link>
-            </Nav>
-            <Nav className="justify-content-end">
-                <Nav.Link href="#Introduction">Introduction</Nav.Link>
-                <Nav.Link><HouseFill /> </Nav.Link>
-                <Nav.Link><Search /> </Nav.Link>
-                <Nav.Link><PersonFill /> </Nav.Link>
-                <NavDropdown title={<Cart />}>
-                    <NavDropdown.Item></NavDropdown.Item>
-                    <NavDropdown.ItemText>Your cart is currently empty.</NavDropdown.ItemText>
-                </NavDropdown>
-            </Nav>
-        </Container>
-    </Navbar>
-);
+
 
 const HomeImage = () => (
     <div className="HomeImageCt p-0 m-0 d-flex justify-content-center align-items-center">
@@ -38,13 +18,12 @@ const HomeImage = () => (
 );
 
 const categoryData = [
-    { name: "Community", icon: <PeopleFill className="fs-1" />, link: "/categories.html" },
-    { name: "Transportation", icon: <BusFrontFill className="fs-1" />, link: "/categories.html" },
-    { name: "School", icon: <Book className="fs-1" />, link: "/categories.html" },
-    { name: "Employment", icon: <Briefcase className="fs-1" />, link: "/categories.html" },
-    { name: "Public Safety", icon: <Shield className="fs-1" />, link: "/categories.html" },
+    {name: "Community", icon: <PeopleFill className="fs-1"/>, link: "/categoriesPage?category=community"},
+    {name: "Transportation", icon: <BusFrontFill className="fs-1"/>, link: "/categoriesPage?category=transportation"},
+    {name: "School", icon: <Book className="fs-1"/>, link: "/categoriesPage?category=school" },
+    { name: "Employment", icon: <Briefcase className="fs-1" />, link: "/categoriesPage?category=employment" },
+    { name: "Public Safety", icon: <Shield className="fs-1" />, link: "/categoriesPage?category=publicSafety" },
 ];
-
 const Categories = () => (
     <div style={{ backgroundColor: '#f0f2ff', padding: '20px' }}>
         <div className="CatDiv">
@@ -54,7 +33,7 @@ const Categories = () => (
                 <Row>
                     {categoryData.map((category, index) => (
                         <Col key={index} className="d-flex flex-column align-items-center">
-                            <Link href="/test" className="text-center custom-link">
+                            <Link href={category.link} className="text-center custom-link">
                                 <div className={`CatIcons position-circle${index + 1}`}>
                                     {category.icon}
                                     <strong>{category.name}</strong>
@@ -67,7 +46,6 @@ const Categories = () => (
         </div>
     </div>
 );
-
 const IntroContainer = () => {
     const [scrollDirection, setScrollDirection] = useState('down');
 
@@ -252,12 +230,11 @@ const HowItWorks = () => {
 export default function Home() {
     return (
         <main>
-            <Navbar />
-            <TopMenu />
-            <HomeImage />
-            <Categories />
-            <IntroContainer />
-            <HowItWorks />
+            <Navbar/>
+            <HomeImage/>
+            <Categories/>
+            <IntroContainer/>
+            <HowItWorks/>
             <Footer />
         </main>
     );
