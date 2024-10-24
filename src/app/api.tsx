@@ -1,4 +1,4 @@
-// pages/api.tsx
+// app/api.tsx
 
 // Fetch response from the chatbot API
 export const fetchChatbotResponse = async (question: string) => {
