@@ -9,13 +9,13 @@ const Navbar: React.FC = () => {
           <Link href="/">Home</Link>
         </li>
         <li>
-          <Link href="#introduction">Introduction</Link>
+          <Link href="#Introduction">Introduction</Link>
         </li>
         <li>
-          <Link href="#category">Category</Link>
+          <Link href="#CatDiv">Category</Link>
         </li>
         <li>
-          <Link href="#how-it-works">How It Works</Link>
+          <Link href="#HowItWorks">How It Works</Link>
         </li>
       </ul>
     </nav>
