@@ -2,14 +2,13 @@
 import React, { useState, useRef } from "react";
 import { storage, database } from "../../.firebase/firebase"; // Replace firestoreDb with database
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
+import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods\
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 
 const UserUpload: React.FC = () => {
   const [name, setName] = useState<string>(""); // New state for name
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
-  
   // Ref for the file input to reset it
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 

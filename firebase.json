@@ -16,6 +16,30 @@
         "destination": "/test.html"
       },
       {
+        "source": "/Categories",
+        "destination": "/Categories/[category]"
+      },
+      {
+        "source": "/Categories/community",
+        "destination": "/Categories/community.html"
+      },
+      {
+        "source": "/Categories/transportation",
+        "destination": "/Categories/transportation.html"
+      },
+      {
+        "source": "/Categories/school",
+        "destination": "/Categories/school.html"
+      },
+      {
+        "source": "/Categories/employment",
+        "destination": "/Categories/employment.html"
+      },
+      {
+        "source": "/Categories/publicSafety",
+        "destination": "/Categories/publicSafety.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
