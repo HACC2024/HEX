@@ -20,9 +20,6 @@ const Navbar: React.FC = () => {
         <li>
           <Link href="test">Chatbots</Link>
         </li>
-        <li>
-          <Link href="test">Chatbots</Link>
-        </li>
       </ul>
     </nav>
   );
