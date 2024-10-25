@@ -23,7 +23,7 @@ const AdminPortal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [description, setDescription] = useState<string>(""); // New state for description
   const [selectedCategory, setSelectedCategory] = useState<string>(""); // New state for dropdown
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // For file upload
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]); // For file upload
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // For image upload
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
@@ -88,27 +88,34 @@ const AdminPortal: React.FC = () => {
 
   // Handle file input change (validate accepted formats)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files); // Get actual file objects
       const acceptedTypes = [
-        "text/csv",
-        "text/html",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+        "text/csv", // CSV
+        "application/json", // JSON
         "application/rdf+xml", // RDF
+        "application/xml", // XML
       ];
 
-      if (acceptedTypes.includes(file.type)) {
-        setSelectedFile(file);
+      // Filter files based on accepted types and update state
+      const validFiles = filesArray.filter((file) =>
+        acceptedTypes.includes(file.type)
+      );
+      setSelectedFiles(filesArray.map(file => file.name));
+
+      if (validFiles.length < filesArray.length) {
+        setUploadStatus("Some files were not accepted due to unsupported types (Only CSV, JSON, RDF, and XML are allowed)");
       } else {
-        setUploadStatus("Only CSV, HTML, XLSX, and RDF files are allowed");
+        setUploadStatus("");
       }
     }
   };
 
   // Handle image input change (validate PNG and JPEG)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const image = e.target.files[0];
+    const files = e.target.files;
+    if (files && e.target.files.length > 0) {
+      const image = files[0];
       const acceptedImageTypes = ["image/png", "image/jpeg"];
 
       if (acceptedImageTypes.includes(image.type)) {
@@ -141,7 +148,7 @@ const AdminPortal: React.FC = () => {
       return;
     }
 
-    if (!selectedFile) {
+    if (selectedFiles?.length === 0) {
       setUploadStatus("No file selected");
       return;
     }
@@ -152,67 +159,76 @@ const AdminPortal: React.FC = () => {
     }
 
     try {
-      // Upload the file to Firebase Storage
-      const storageRef = ref(storage, `Test/${selectedFile.name}`);
-      const fileUploadTask = uploadBytesResumable(storageRef, selectedFile);
+      const fileData: { [key: string]: string } = {};
 
-      fileUploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadStatus(`File upload is ${progress}% done`);
-        },
-        (error) => {
-          console.error("Error uploading file:", error);
-          setUploadStatus("Error uploading file");
-        },
-        async () => {
-          const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
+      for (const file of selectedFiles) {
+        const storageRef = ref(storage, `Test/${file.name}`);
+        const fileUploadTask = uploadBytesResumable(storageRef, file);
 
-          // Upload the image to Firebase Storage
-          const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
-          const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
-
-          imageUploadTask.on(
+        await new Promise<void>((resolve, reject) => {
+          fileUploadTask.on(
             "state_changed",
             (snapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadStatus(`Image upload is ${progress}% done`);
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadStatus(`File "${file.name}" upload is ${progress}% done`);
             },
             (error) => {
-              console.error("Error uploading image:", error);
-              setUploadStatus("Error uploading image");
+              console.error("Error uploading file:", error);
+              setUploadStatus("Error uploading file");
+              reject(error);
             },
             async () => {
-              const imageUrl = await getDownloadURL(
-                imageUploadTask.snapshot.ref
-              );
-              setUploadStatus("File and image uploaded successfully");
+              const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
+              const fileType = file.type;
 
-              // Save the data to Realtime Database
-              const uploadsRef = dbRef(database, "Test");
-              await push(uploadsRef, {
-                name: name, // Save the name
-                description: description, // Save the description
-                category: selectedCategory, // Save the category
-                file: {
-                  CSV: fileUrl,
-                  JSON: fileUrl,
-                  RDF: fileUrl,
-                  XML: fileUrl,
-                }, // Save the file URL
-                image: imageUrl, // Save the image URL
-                uploadedAt: new Date().toISOString(),
-              });
-
-              setUploadStatus("Data saved to Realtime Database");
-
-              // Clear input fields after successful upload
-              handleReset();
+              if (fileType === "text/csv") {
+                fileData.CSV = fileUrl;
+              } else if (fileType === "application/json") {
+                fileData.JSON = fileUrl;
+              } else if (fileType === "application/rdf+xml") {
+                fileData.RDF = fileUrl;
+              } else if (fileType === "application/xml") {
+                fileData.XML = fileUrl;
+              }
+              resolve();
             }
           );
+        });
+      }
+
+      // Upload the image to Firebase Storage
+      const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
+      const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
+
+      imageUploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadStatus(`Image upload is ${progress}% done`);
+        },
+        (error) => {
+          console.error("Error uploading image:", error);
+          setUploadStatus("Error uploading image");
+        },
+        async () => {
+          const imageUrl = await getDownloadURL(imageUploadTask.snapshot.ref);
+          setUploadStatus("File and image uploaded successfully");
+
+          // Save the data to Realtime Database
+          const uploadsRef = dbRef(database, "Test");
+          await push(uploadsRef, {
+            name: name, // Save the name
+            description: description, // Save the description
+            category: selectedCategory, // Save the category
+            file: fileData, // Save the file URL
+            image: imageUrl, // Save the image URL
+            uploadedAt: new Date().toISOString(),
+          });
+
+          setUploadStatus("Data saved to Realtime Database");
+
+          // Clear input fields after successful upload
+          handleReset();
         }
       );
     } catch (error) {
@@ -221,17 +237,22 @@ const AdminPortal: React.FC = () => {
     }
   };
 
+
   // Handle resetting the form fields
   const handleReset = () => {
     setName("");
     setDescription("");
     setSelectedCategory("");
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setSelectedImage(null);
     setUploadStatus("");
 
-    if (fileInputRef.current) fileInputRef.current.value = "";
-    if (imageInputRef.current) imageInputRef.current.value = "";
+    if (fileInputRef.current) {
+      (fileInputRef.current as HTMLInputElement).value = "";
+    }
+    if (imageInputRef.current) {
+      (imageInputRef.current as HTMLInputElement).value = "";
+    }
   };
 
   // READ FUNCTIONS
@@ -341,14 +362,22 @@ const AdminPortal: React.FC = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">File (CSV, HTML, XLSX, RDF):</label>
+          <label className="form-label">File (CSV, JSON, XML, RDF):</label>
           <input
               type="file"
               accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
               onChange={handleFileChange}
               ref={fileInputRef}
+              multiple
               className="form-control"
           />
+          {selectedFiles.length > 0 && (
+            <ul className="mt-2">
+              {selectedFiles.map((fileName, index) => (
+                <li key={index}>{fileName}</li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="mb-3">
