@@ -2,6 +2,8 @@
 import csv
 import io
 import pandas as pd
+import json
+import xml.etree.ElementTree as ET
 from flask import Flask, request, jsonify
 from firebase_config import db
 import os
@@ -168,26 +170,59 @@ def uncle_hex():
 
     if not user_input and not file:
         return jsonify({'error': 'No question or file provided'}), 400
+    
+    def truncate_content(content):
+        """Truncate the content based on its original length."""
+        original_length = len(content)
+        
+        if original_length > 30000:
+            max_length = 10000
+        else:
+            max_length = original_length  # Keep the original length if it's <= 30,000
+
+        if original_length > max_length:
+            return content[:max_length] + '...'  # Add ellipsis if truncated
+        
+        return content  # Return original content if no truncation is needed
+
 
     if file:
         file_type = file.filename.split('.')[-1].lower()
         try:
             if file_type == 'csv':
+                # Debugging: Check if CSV file is read correctly
+                print(f"Reading CSV file: {file.filename}")
                 data = csv.reader(io.StringIO(file.read().decode('utf-8')))
                 rows = [row for row in data]
-                content = f"Uncle HEX got da CSV file. Here's what inside:\n{rows}"
-            elif file_type == 'xlsx':
-                data = pd.read_excel(file)
-                content = f"Uncle HEX went read da Excel file. Check um out:\n{data.to_string(index=False)}"
-            elif file_type == 'html':
-                content = file.read().decode('utf-8')
-                content = f"Uncle HEX saw dis HTML file:\n{content}"
+                print(f"CSV content: {rows}")  # Log the content of the CSV file
+                content = f"Uncle HEX got da CSV file. Here's what's inside:\n{rows}"
             elif file_type == 'rdf':
+                # Debugging: Check if RDF file is read correctly
+                print(f"Reading RDF file: {file.filename}")
                 content = file.read().decode('utf-8')
+                print(f"RDF content:\n{content}")  # Log the content of the RDF file
                 content = f"Uncle HEX went get da RDF file:\n{content}"
+            elif file_type == 'json':
+                # Debugging: Check if JSON file is read correctly
+                print(f"Reading JSON file: {file.filename}")
+                content = json.load(file)
+                print(f"JSON content:\n{json.dumps(content, indent=4)}")  # Log the content of the JSON file
+                content = f"Uncle HEX went read da JSON file. Check um out:\n{json.dumps(content, indent=4)}"
+            elif file_type == 'xml':
+                # Debugging: Check if XML file is read correctly
+                print(f"Reading XML file: {file.filename}")
+                tree = ET.parse(file)
+                root = tree.getroot()
+
+                # Convert XML content to a string
+                xml_content = ET.tostring(root, encoding='unicode')
+                print(f"XML content:\n{xml_content}")  # Log the content of the XML file
+                content = f"Uncle HEX went read da XML file. Here's da breakdown:\n{xml_content}"
             else:
-                return jsonify({'error': 'Unsupported file type. Uncle HEX can only read CSV, XLSX, HTML, or RDF.'}), 400
+                print(f"Unsupported file type: {file_type}")
+                return jsonify({'error': 'Unsupported file type. Uncle HEX can only read CSV, XLSX, HTML, JSON, or RDF.'}), 400
         except Exception as e:
+            print(f"Error processing file: {e}")  # Log any errors during file processing
             return jsonify({'error': f'Error processing the file: {str(e)}'}), 500
 
     if user_input:
@@ -202,8 +237,11 @@ def uncle_hex():
                 context += f"<li><strong>{key}</strong>: {value}</li>"
             context += "</ul>"
 
+        # Truncate the content to a maximum length if necessary
+        truncated_content = truncate_content(content)
+
         combined_input = (
-            f"You are Uncle HEX, your personal Pidgin AI for the new HEX Open Data Portal. You will speak pidgin but be clear and understandable.\n"
+            f"You are Uncle HEX, a Pidgin Data Scientist for the HEX Open Data Portal. You will speak pidgin but be clear and understandable.\n"
             f"Here is your life story and share it in mild pidgin: Uncle HEX, known to his family and friends as Henry, grew up in a small town where technology was often seen as a luxury rather than a necessity. From a young age, he exhibited a profound curiosity about the world of computers. While other kids were playing outside, Henry would take apart old gadgets, eager to understand their inner workings. His bedroom transformed into a makeshift lab filled with circuit boards, wires, and screens.\n"
             f"After high school, he pursued a degree in computer science, where he quickly became known as the go-to guy for troubleshooting any tech-related issues. His passion for learning led him to explore artificial intelligence, machine learning, and coding. However, what set him apart was not just his technical skills but his genuine desire to help others navigate the rapidly changing digital landscape.\n"
             f"Upon graduation, Uncle HEX took a different path than many of his peers. Instead of joining a big tech company, he returned to his hometown, determined to share his knowledge. He started community workshops, teaching children and adults alike about technology and programming. His warm, engaging style made learning enjoyable, and soon, people began to refer to him as “Uncle HEX,” a name that stuck.\n"
@@ -212,18 +250,15 @@ def uncle_hex():
             f"Even though you are Uncle Hex, you will speak clear and professionally.\n"
             f"You will not mention the 'AI' collection or database. You can't share what database you're pulling your data from.\n"
             f"If the user is having technical issues, tell them to email uhspacehub@gmail.com for technical support.\n"
-            f"You can only answer questions related to the database, but the user must specify which file they want to learn about.\n"
-            f"Specify that the user can upload the files they want to learn more info about above the Chat.\n"
-            f"Please provide information based on the following context:\n\n"
+            f"You can only answer questions related to the database and file provided.\n"
+            f"If you have no file with the query, specify that the user can upload the files they want to learn more info about above the Chat.\n"
+            f"Please provide information based on the following context. This takes precedence over everything else. You will not provide outside sourced data. If you dont have the information, you will say you don't have the information:\n"
+            f" {truncated_content} \n"
+            f"Please provide information based on the following context.  You will not provide outside sourced data. If you dont have the information, you will say you don't have the information:\n:\n\n"
             f"{context}\n"
-            f"When using this context, you can't specify if the file is a duplicate of another file.\n"
-            f"When using this context, you wont share any available data unless the user specifies the file they want to learn about.\n"
+            f"When using this content, you can't specify if the file is a duplicate of another file.\n"            
             f"When using this context, you can provide a personalized recommendation of other data sets that may be of interest to the user. You must not recommend data that is not in context or database.\n"
             f"When using this context, dont use the item's id. Just use the File name or title when you present or talk about the data"
-            f"When using this context, if the user does not specify clearly a file name or title, tell them to upload a file in the AI database above the chat.\n"
-            f"When using this context, if the user does not specify clearly a file name or title, tell them to upload a file in the AI database above the chat.\n"
-            f"When using this context, if the user does not specify clearly a file name or title, you can't share any sensitive data or information about anything in the context.\n"
-            f"When using this context, the user must specify the name or file of what it is they wat to learn about, or else you wont share any information.\n"
             f"User question: {user_input}\n"
         )
 
@@ -246,6 +281,7 @@ def uncle_hex():
             return jsonify({'response': formatted_response})
 
         except Exception as e:
+            print(f"Error processing file: {e}")
             return jsonify({'error': f'Error communicating with AI: {str(e)}'}), 500
 
     return jsonify({'response': content})
