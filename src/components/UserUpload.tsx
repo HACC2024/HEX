@@ -9,7 +9,6 @@ const UserUpload: React.FC = () => {
   const [name, setName] = useState<string>(""); // New state for name
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
-  const [downloadURL, setDownloadURL] = useState<string>("");
   // Ref for the file input to reset it
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -18,16 +17,17 @@ const UserUpload: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       const acceptedTypes = [
-        "text/csv",
-        "text/html",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+        "text/csv", // CSV
         "application/rdf+xml", // RDF
-      ];
+        "application/json", // JSON
+        "application/xml", // XML
+        "text/xml" // XML (alternative MIME type)
+    ];
 
       if (acceptedTypes.includes(file.type)) {
         setSelectedFile(file);
       } else {
-        setUploadStatus("Only CSV, HTML, XLSX, and RDF files are allowed");
+        setUploadStatus("Only CSV, JSON, XML, and RDF files are allowed");
       }
     }
   };
@@ -70,7 +70,6 @@ const UserUpload: React.FC = () => {
       async () => {
         // Handle successful upload
         const url = await getDownloadURL(uploadTask.snapshot.ref);
-        setDownloadURL(url);
         setUploadStatus("File uploaded successfully");
 
         // Save the file info along with the name to Realtime Database
@@ -98,7 +97,6 @@ const UserUpload: React.FC = () => {
     setName("");
     setSelectedFile(null);
     setUploadStatus("");
-    setDownloadURL("");
 
     // Reset the file input field using the ref
     if (fileInputRef.current) {
@@ -125,12 +123,12 @@ const UserUpload: React.FC = () => {
 
       {/* File input */}
       <div className="form-group mt-3">
-        <label htmlFor="fileInput" className="form-label">File (CSV, JSON, HTML, XLSX, RDF):</label>
+        <label htmlFor="fileInput" className="form-label">File (CSV, JSON, XML, RDF):</label>
         <input
           type="file"
           id="fileInput"
           className="form-control bg-secondary text-white"
-          accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
+          accept=".csv,.json,.xml,.rdf"
           onChange={handleFileChange}
           ref={fileInputRef} // Use the ref to clear the field
         />
@@ -157,15 +155,6 @@ const UserUpload: React.FC = () => {
       {/* Status message */}
       {uploadStatus && (
         <p className="mt-3 alert alert-info">{uploadStatus}</p>
-      )}
-
-      {/* Show download link if available */}
-      {downloadURL && (
-        <div className="mt-3">
-          <a href={downloadURL} className="btn btn-success">
-            Download File
-          </a>
-        </div>
       )}
     </div>
   );
