@@ -13,7 +13,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const dbRefPath = dbRef(database, "Admin");
+    const dbRefPath = dbRef(database, "Test");
 
     const unsubscribe = onValue(
       dbRefPath,

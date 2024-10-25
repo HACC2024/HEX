@@ -10,7 +10,6 @@ import { ref as dbRef, push, onValue } from "firebase/database"; // Realtime Dat
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 import "../styles.css";
-import DataCards from "./DataCards";
 import DownloadCSVFiles from "./DataCards";
 
 // Dynamically import ReactQuill and disable SSR
@@ -154,7 +153,7 @@ const AdminPortal: React.FC = () => {
 
     try {
       // Upload the file to Firebase Storage
-      const storageRef = ref(storage, `Admin/${selectedFile.name}`);
+      const storageRef = ref(storage, `Test/${selectedFile.name}`);
       const fileUploadTask = uploadBytesResumable(storageRef, selectedFile);
 
       fileUploadTask.on(
@@ -172,7 +171,7 @@ const AdminPortal: React.FC = () => {
           const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
 
           // Upload the image to Firebase Storage
-          const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
+          const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
           const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
 
           imageUploadTask.on(
@@ -193,12 +192,17 @@ const AdminPortal: React.FC = () => {
               setUploadStatus("File and image uploaded successfully");
 
               // Save the data to Realtime Database
-              const uploadsRef = dbRef(database, "Admin");
+              const uploadsRef = dbRef(database, "Test");
               await push(uploadsRef, {
                 name: name, // Save the name
                 description: description, // Save the description
                 category: selectedCategory, // Save the category
-                file: fileUrl, // Save the file URL
+                file: {
+                  CSV: fileUrl,
+                  JSON: fileUrl,
+                  RDF: fileUrl,
+                  XML: fileUrl,
+                }, // Save the file URL
                 image: imageUrl, // Save the image URL
                 uploadedAt: new Date().toISOString(),
               });
@@ -238,7 +242,7 @@ const AdminPortal: React.FC = () => {
    * @return {void}
    */
   const fetchUploads = () => {
-    const uploadsRef = dbRef(database, "Admin");
+    const uploadsRef = dbRef(database, "Test");
 
     onValue(uploadsRef, (snapshot) => {
       const data = snapshot.val();
