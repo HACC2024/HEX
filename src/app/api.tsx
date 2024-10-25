@@ -2,7 +2,7 @@
 
 // Fetch response from the chatbot API
 export const fetchChatbotResponse = async (question: string) => {
-    const response = await fetch('https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com/api/chatbot', {
+    const response = await fetch('http://127.0.0.1:5000//api/chatbot', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const fetchUncleHexResponse = async (question: string, file?: File | null
         formData.append('file', file);
     }
 
-    const response = await fetch('https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com/api/uncle-hex', {
+    const response = await fetch('http://127.0.0.1:5000//api/uncle-hex', {
         method: 'POST',
         body: formData, // Use FormData for multipart/form-data
     });
