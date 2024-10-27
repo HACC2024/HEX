@@ -16,6 +16,10 @@
         "destination": "/test.html"
       },
       {
+        "source": "/Dashboard",
+        "destination": "/Dashboard.html"
+      },
+      {
         "source": "/Categories",
         "destination": "/Categories/[category]"
       },
