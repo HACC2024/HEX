@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.5",
     "firebase": "^10.14.1",
     "jodit-react": "^4.1.2",
     "next": "14.2.15",
@@ -18,10 +19,12 @@
     "react": "^18",
     "react-bootstrap": "^2.10.5",
     "react-bootstrap-icons": "^1.11.4",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.27.0",
     "react-select": "^5.8.1",
+    "recharts": "^2.13.0",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.14.3"
   },
