@@ -16,6 +16,10 @@
         "destination": "/Dashboard.html"
       },
       {
+        "source": "/security-report",
+        "destination": "/security-report.html"
+      },
+      {
         "source": "/Categories",
         "destination": "/Categories/[category]"
       },
