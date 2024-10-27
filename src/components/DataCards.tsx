@@ -5,15 +5,31 @@ import { Image, Modal, Button, Nav, Tab } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
+import dynamic from "next/dynamic";
 import "../styles/DataCard.css";
 
 interface FileData {
   name: string;
   file: { [key: string]: string[] };
-  description: string;
   category: string;
   image: string;
+  description: string;
 }
+
+const CsvReader = dynamic(() => import("../components/csvTool/CsvReader"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{ height: "300px" }}
+    >
+      <div className="text-center">
+        <div className="spinner-border text-primary mb-3 mx-auto"></div>
+        <p>Loading CSV Visualizer...</p>
+      </div>
+    </div>
+  ),
+});
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<FileData[]>([]);
@@ -43,6 +59,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               file: fileList[key].file,
               image: fileList[key].image,
               category: fileList[key].category,
+              description: fileList[key].description,
             }))
             .filter((file: FileData) => file.category === category);
 
@@ -118,7 +135,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   return (
     <div>
-      <h1>Download CSV Files for {category}</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -173,12 +189,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
       )}
 
       {}
-      <Modal
-        show={showInfoModal}
-        onHide={closeInfoModal}
-        centered
-        dialogClassName="fixed-size-modal"
-      >
+      <Modal show={showInfoModal} onHide={closeInfoModal} centered size="xl">
         <Modal.Header closeButton>
           <Modal.Title>{selectedFileData?.name}</Modal.Title> {}
         </Modal.Header>
@@ -196,10 +207,10 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
               <Tab.Content>
                 <Tab.Pane eventKey="info">
-                  <p>...</p>
+                  <p>{selectedFileData.description}</p>
                 </Tab.Pane>
                 <Tab.Pane eventKey="details">
-                  <p>...</p>
+                  <CsvReader />
                 </Tab.Pane>
               </Tab.Content>
             </Tab.Container>
@@ -214,7 +225,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
         </Modal.Footer>
       </Modal>
 
-      {}
       <Modal
         show={showDownloadModal}
         onHide={closeDownloadModal}
