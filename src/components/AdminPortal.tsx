@@ -23,18 +23,35 @@ const AdminPortal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [description, setDescription] = useState<string>(""); // New state for description
   const [selectedCategory, setSelectedCategory] = useState<string>(""); // New state for dropdown
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]); // For file upload
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // For image upload
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
-  const [uploadsData, setUploadsData] = useState<any[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<{
+    csv?: File[];
+    json?: File[];
+    xml?: File[];
+    rdf?: File[];
+  }>({});
 
-  // Ref for the file and image input to reset them
+  interface UploadData {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    file: {
+      csv?: string;
+      json?: string;
+      xml?: string;
+      rdf?: string;
+    };
+    image: string;
+    uploadedAt: string;
+  }
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Hydration workaround for Next.js
   const [isMounted, setIsMounted] = useState(false);
+  const [uploadsData, setUploadsData] = useState<UploadData[]>([]);
 
   useEffect(() => {
     setIsMounted(true); // Avoid hydration mismatch by rendering only after mount
@@ -89,25 +106,34 @@ const AdminPortal: React.FC = () => {
   // Handle file input change (validate accepted formats)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files); // Get actual file objects
-      const acceptedTypes = [
-        "text/csv", // CSV
-        "application/json", // JSON
-        "application/rdf+xml", // RDF
-        "application/xml", // XML
-      ];
+      const filesArray = Array.from(e.target.files);
+      const newSelectedFiles: { [key: string]: File[] } = { ...selectedFiles };
 
-      // Filter files based on accepted types and update state
-      const validFiles = filesArray.filter((file) =>
-        acceptedTypes.includes(file.type)
-      );
-      setSelectedFiles(filesArray.map(file => file.name));
+      filesArray.forEach(file => {
+        switch (file.type) {
+          case "text/csv":
+            newSelectedFiles.csv = newSelectedFiles.csv || [];
+            newSelectedFiles.csv.push(file);
+            break;
+          case "application/json":
+            newSelectedFiles.json = newSelectedFiles.json || [];
+            newSelectedFiles.json.push(file);
+            break;
+          case "application/xml":
+          case "text/xml":
+            newSelectedFiles.xml = newSelectedFiles.xml || [];
+            newSelectedFiles.xml.push(file);
+            break;
+          case "application/rdf+xml":
+            newSelectedFiles.rdf = newSelectedFiles.rdf || [];
+            newSelectedFiles.rdf.push(file);
+            break;
+          default:
+            setUploadStatus(`File type ${file.type} is not supported`);
+        }
+      });
 
-      if (validFiles.length < filesArray.length) {
-        setUploadStatus("Some files were not accepted due to unsupported types (Only CSV, JSON, RDF, and XML are allowed)");
-      } else {
-        setUploadStatus("");
-      }
+      setSelectedFiles(newSelectedFiles);
     }
   };
 
@@ -148,7 +174,7 @@ const AdminPortal: React.FC = () => {
       return;
     }
 
-    if (selectedFiles?.length === 0) {
+    if (Object.keys(selectedFiles).length === 0) {
       setUploadStatus("No file selected");
       return;
     }
@@ -159,103 +185,103 @@ const AdminPortal: React.FC = () => {
     }
 
     try {
-      const fileData: { [key: string]: string } = {};
+      const fileUrls: { [key: string]: string[] } = {};
 
-      for (const file of selectedFiles) {
-        const storageRef = ref(storage, `Test/${file.name}`);
-        const fileUploadTask = uploadBytesResumable(storageRef, file);
+      // Upload each file type array
+      for (const [fileType, files] of Object.entries(selectedFiles)) {
+        if (!files || !Array.isArray(files)) continue;
 
-        await new Promise<void>((resolve, reject) => {
-          fileUploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadStatus(`File "${file.name}" upload is ${progress}% done`);
-            },
-            (error) => {
-              console.error("Error uploading file:", error);
-              setUploadStatus("Error uploading file");
-              reject(error);
-            },
-            async () => {
-              const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
-              const fileType = file.type;
+        const capitalizedFileType = fileType.toUpperCase();
+        fileUrls[capitalizedFileType] = [];
 
-              if (fileType === "text/csv") {
-                fileData.CSV = fileUrl;
-              } else if (fileType === "application/json") {
-                fileData.JSON = fileUrl;
-              } else if (fileType === "application/rdf+xml") {
-                fileData.RDF = fileUrl;
-              } else if (fileType === "application/xml") {
-                fileData.XML = fileUrl;
-              }
-              resolve();
-            }
-          );
-        });
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const storageRef = ref(storage, `Test/${fileType}/${file.name}`);
+          const fileUploadTask = uploadBytesResumable(storageRef, file);
+
+          await new Promise<void>((resolve, reject) => {
+            fileUploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setUploadStatus(`${capitalizedFileType} file ${i + 1} upload is ${progress}% done`);
+                },
+                (error) => {
+                  console.error(`Error uploading ${capitalizedFileType} file ${i + 1}:`, error);
+                  reject(error);
+                },
+                async () => {
+                  const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
+                  fileUrls[capitalizedFileType].push(fileUrl);
+                  resolve();
+                }
+            );
+          });
+        }
       }
 
       // Upload the image to Firebase Storage
       const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
       const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
 
-      imageUploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadStatus(`Image upload is ${progress}% done`);
-        },
-        (error) => {
-          console.error("Error uploading image:", error);
-          setUploadStatus("Error uploading image");
-        },
-        async () => {
-          const imageUrl = await getDownloadURL(imageUploadTask.snapshot.ref);
-          setUploadStatus("File and image uploaded successfully");
+      await new Promise<string>((resolve, reject) => {
+        imageUploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadStatus(`Image upload is ${progress}% done`);
+            },
+            reject,
+            async () => {
+              const imageUrl = await getDownloadURL(imageUploadTask.snapshot.ref);
+              resolve(imageUrl);
+            }
+        );
+      }).then(async (imageUrl) => {
+        // Save to Realtime Database with indexed file structure
+        const uploadsRef = dbRef(database, "Test");
+        await push(uploadsRef, {
+          name,
+          description,
+          category: selectedCategory,
+          file: fileUrls,  // This will now contain arrays of URLs for each file type
+          image: imageUrl,
+          uploadedAt: new Date().toISOString(),
+        });
 
-          // Save the data to Realtime Database
-          const uploadsRef = dbRef(database, "Test");
-          await push(uploadsRef, {
-            name: name, // Save the name
-            description: description, // Save the description
-            category: selectedCategory, // Save the category
-            file: fileData, // Save the file URL
-            image: imageUrl, // Save the image URL
-            uploadedAt: new Date().toISOString(),
-          });
-
-          setUploadStatus("Data saved to Realtime Database");
-
-          // Clear input fields after successful upload
-          handleReset();
-        }
-      );
+        setUploadStatus("Upload completed successfully");
+        handleReset();
+      });
     } catch (error) {
-      console.error("Error uploading file or image:", error);
+      console.error("Error uploading files or image:", error);
       setUploadStatus("Error during upload process");
     }
   };
-
 
   // Handle resetting the form fields
   const handleReset = () => {
     setName("");
     setDescription("");
     setSelectedCategory("");
-    setSelectedFiles([]);
+    setSelectedFiles({});
     setSelectedImage(null);
     setUploadStatus("");
 
     if (fileInputRef.current) {
-      (fileInputRef.current as HTMLInputElement).value = "";
+      fileInputRef.current.value = "";
     }
     if (imageInputRef.current) {
-      (imageInputRef.current as HTMLInputElement).value = "";
+      imageInputRef.current.value = "";
     }
   };
 
   // READ FUNCTIONS
+
+
+  // Fetch the uploaded data when the component mounts
+  useEffect(() => {
+    fetchUploads();
+  }, []);
 
   /**
    * Fetches the uploaded data from the Firebase Realtime Database.
@@ -272,15 +298,11 @@ const AdminPortal: React.FC = () => {
           id: key,
           ...data[key],
         }));
-        setUploadsData(uploadsList); // Update state with fetched uploads
+        // Update uploadsData state correctly
+        setUploadsData(uploadsList);
       }
     });
   };
-
-  // Fetch the uploaded data when the component mounts
-  useEffect(() => {
-    fetchUploads();
-  }, []);
 
   if (!isMounted) return null;
   if (isLoading) return <div>Loading...</div>;
@@ -362,22 +384,25 @@ const AdminPortal: React.FC = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">File (CSV, JSON, XML, RDF):</label>
+          <label className="form-label">Files (CSV, JSON, XML, RDF):</label>
           <input
               type="file"
-              accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
+              accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
               onChange={handleFileChange}
               ref={fileInputRef}
               multiple
               className="form-control"
           />
-          {selectedFiles.length > 0 && (
-            <ul className="mt-2">
-              {selectedFiles.map((fileName, index) => (
-                <li key={index}>{fileName}</li>
-              ))}
-            </ul>
-          )}
+          {Object.entries(selectedFiles).map(([fileType, files]) => (
+              <div key={fileType} className="mt-2">
+                <strong>{fileType.toUpperCase()} files:</strong>
+                <ul className="list-unstyled ms-3">
+                  {Array.isArray(files) && files.map((file, index) => (
+                      <li key={index}>{file.name}</li>
+                  ))}
+                </ul>
+              </div>
+          ))}
         </div>
 
         <div className="mb-3">
@@ -407,12 +432,12 @@ const AdminPortal: React.FC = () => {
 
         {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
 
-        <div className="mt-5">
+        {/*<div className="mt-5">
           <h4>Uploaded Files</h4>
           {["Transportation", "Health", "Education", "Energy"].map((category, index) => (
               <DownloadCSVFiles key={index} category={category}/>
           ))}
-        </div>
+        </div>*/}
       </div>
   );
 };
