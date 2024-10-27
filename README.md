@@ -132,7 +132,7 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-<h2>Flask-Backend</h2>
+<h2>Flask-Backend API</h2>
 
-<p>Backend Prod: https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com</p>
+<p>Backend Prod: https://uhspace.org</p>
 <p>Backend Dev: http://127.0.0.1:5000</p>
