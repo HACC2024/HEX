@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { toggleSignIn, toggleSignOut, stateChange } from "../../.firebase/auth";
 import { storage, database } from "../../.firebase/firebase"; // Firebase imports
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
+import { ref as dbRef, push, onValue } from "firebase/database"; // Realtime Database methods
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap styles
 import "../styles.css";
-import { Container } from "react-bootstrap";
+import DownloadCSVFiles from "./DataCards";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -23,16 +23,35 @@ const AdminPortal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [description, setDescription] = useState<string>(""); // New state for description
   const [selectedCategory, setSelectedCategory] = useState<string>(""); // New state for dropdown
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // For file upload
   const [selectedImage, setSelectedImage] = useState<File | null>(null); // For image upload
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
-  // Ref for the file and image input to reset them
+  const [selectedFiles, setSelectedFiles] = useState<{
+    csv?: File[];
+    json?: File[];
+    xml?: File[];
+    rdf?: File[];
+  }>({});
+
+  interface UploadData {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    file: {
+      csv?: string;
+      json?: string;
+      xml?: string;
+      rdf?: string;
+    };
+    image: string;
+    uploadedAt: string;
+  }
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Hydration workaround for Next.js
   const [isMounted, setIsMounted] = useState(false);
+  const [uploadsData, setUploadsData] = useState<UploadData[]>([]);
 
   useEffect(() => {
     setIsMounted(true); // Avoid hydration mismatch by rendering only after mount
@@ -51,6 +70,8 @@ const AdminPortal: React.FC = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  // LOGIN FUNCTIONS
 
   /**
    * Handles the user login process.
@@ -80,29 +101,47 @@ const AdminPortal: React.FC = () => {
     }
   };
 
+  // CREATE FUNCTIONS
+
   // Handle file input change (validate accepted formats)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const acceptedTypes = [
-        "text/csv",
-        "text/html",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
-        "application/rdf+xml", // RDF
-      ];
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      const newSelectedFiles: { [key: string]: File[] } = { ...selectedFiles };
 
-      if (acceptedTypes.includes(file.type)) {
-        setSelectedFile(file);
-      } else {
-        setUploadStatus("Only CSV, HTML, XLSX, and RDF files are allowed");
-      }
+      filesArray.forEach(file => {
+        switch (file.type) {
+          case "text/csv":
+            newSelectedFiles.csv = newSelectedFiles.csv || [];
+            newSelectedFiles.csv.push(file);
+            break;
+          case "application/json":
+            newSelectedFiles.json = newSelectedFiles.json || [];
+            newSelectedFiles.json.push(file);
+            break;
+          case "application/xml":
+          case "text/xml":
+            newSelectedFiles.xml = newSelectedFiles.xml || [];
+            newSelectedFiles.xml.push(file);
+            break;
+          case "application/rdf+xml":
+            newSelectedFiles.rdf = newSelectedFiles.rdf || [];
+            newSelectedFiles.rdf.push(file);
+            break;
+          default:
+            setUploadStatus(`File type ${file.type} is not supported`);
+        }
+      });
+
+      setSelectedFiles(newSelectedFiles);
     }
   };
 
   // Handle image input change (validate PNG and JPEG)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const image = e.target.files[0];
+    const files = e.target.files;
+    if (files && e.target.files.length > 0) {
+      const image = files[0];
       const acceptedImageTypes = ["image/png", "image/jpeg"];
 
       if (acceptedImageTypes.includes(image.type)) {
@@ -135,7 +174,7 @@ const AdminPortal: React.FC = () => {
       return;
     }
 
-    if (!selectedFile) {
+    if (Object.keys(selectedFiles).length === 0) {
       setUploadStatus("No file selected");
       return;
     }
@@ -146,66 +185,75 @@ const AdminPortal: React.FC = () => {
     }
 
     try {
-      // Upload the file to Firebase Storage
-      const storageRef = ref(storage, `Admin/${selectedFile.name}`);
-      const fileUploadTask = uploadBytesResumable(storageRef, selectedFile);
+      const fileUrls: { [key: string]: string[] } = {};
 
-      fileUploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadStatus(`File upload is ${progress}% done`);
-        },
-        (error) => {
-          console.error("Error uploading file:", error);
-          setUploadStatus("Error uploading file");
-        },
-        async () => {
-          const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
+      // Upload each file type array
+      for (const [fileType, files] of Object.entries(selectedFiles)) {
+        if (!files || !Array.isArray(files)) continue;
 
-          // Upload the image to Firebase Storage
-          const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
-          const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
+        const capitalizedFileType = fileType.toUpperCase();
+        fileUrls[capitalizedFileType] = [];
 
-          imageUploadTask.on(
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const storageRef = ref(storage, `Admin/${fileType}/${file.name}`);
+          const fileUploadTask = uploadBytesResumable(storageRef, file);
+
+          await new Promise<void>((resolve, reject) => {
+            fileUploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setUploadStatus(`${capitalizedFileType} file ${i + 1} upload is ${progress}% done`);
+                },
+                (error) => {
+                  console.error(`Error uploading ${capitalizedFileType} file ${i + 1}:`, error);
+                  reject(error);
+                },
+                async () => {
+                  const fileUrl = await getDownloadURL(fileUploadTask.snapshot.ref);
+                  fileUrls[capitalizedFileType].push(fileUrl);
+                  resolve();
+                }
+            );
+          });
+        }
+      }
+
+      // Upload the image to Firebase Storage
+      const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
+      const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
+
+      await new Promise<string>((resolve, reject) => {
+        imageUploadTask.on(
             "state_changed",
             (snapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               setUploadStatus(`Image upload is ${progress}% done`);
             },
-            (error) => {
-              console.error("Error uploading image:", error);
-              setUploadStatus("Error uploading image");
-            },
+            reject,
             async () => {
-              const imageUrl = await getDownloadURL(
-                imageUploadTask.snapshot.ref
-              );
-              setUploadStatus("File and image uploaded successfully");
-
-              // Save the data to Realtime Database
-              const uploadsRef = dbRef(database, "Admin");
-              await push(uploadsRef, {
-                name: name, // Save the name
-                description: description, // Save the description
-                category: selectedCategory, // Save the category
-                file: fileUrl, // Save the file URL
-                image: imageUrl, // Save the image URL
-                uploadedAt: new Date().toISOString(),
-              });
-
-              setUploadStatus("Data saved to Realtime Database");
-
-              // Clear input fields after successful upload
-              handleReset();
+              const imageUrl = await getDownloadURL(imageUploadTask.snapshot.ref);
+              resolve(imageUrl);
             }
-          );
-        }
-      );
+        );
+      }).then(async (imageUrl) => {
+        // Save to Realtime Database with indexed file structure
+        const uploadsRef = dbRef(database, "Admin");
+        await push(uploadsRef, {
+          name,
+          description,
+          category: selectedCategory,
+          file: fileUrls,  // This will now contain arrays of URLs for each file type
+          image: imageUrl,
+          uploadedAt: new Date().toISOString(),
+        });
+
+        setUploadStatus("Upload completed successfully");
+        handleReset();
+      });
     } catch (error) {
-      console.error("Error uploading file or image:", error);
+      console.error("Error uploading files or image:", error);
       setUploadStatus("Error during upload process");
     }
   };
@@ -215,12 +263,45 @@ const AdminPortal: React.FC = () => {
     setName("");
     setDescription("");
     setSelectedCategory("");
-    setSelectedFile(null);
+    setSelectedFiles({});
     setSelectedImage(null);
     setUploadStatus("");
 
-    if (fileInputRef.current) fileInputRef.current.value = "";
-    if (imageInputRef.current) imageInputRef.current.value = "";
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    if (imageInputRef.current) {
+      imageInputRef.current.value = "";
+    }
+  };
+
+  // READ FUNCTIONS
+
+
+  // Fetch the uploaded data when the component mounts
+  useEffect(() => {
+    fetchUploads();
+  }, []);
+
+  /**
+   * Fetches the uploaded data from the Firebase Realtime Database.
+   * Updates the state with the fetched uploads.
+   * @return {void}
+   */
+  const fetchUploads = () => {
+    const uploadsRef = dbRef(database, "Admin");
+
+    onValue(uploadsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const uploadsList = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        // Update uploadsData state correctly
+        setUploadsData(uploadsList);
+      }
+    });
   };
 
   if (!isMounted) return null;
@@ -262,85 +343,104 @@ const AdminPortal: React.FC = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <h3 className="text-center mb-4">Upload File and Image</h3>
+      <div className="container mt-5">
+        <h3 className="text-center mb-4">Upload File and Image</h3>
 
-      <div className="mb-3">
-        <label className="form-label">Title:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={handleNameChange}
-          placeholder="Enter the title"
-          className="form-control"
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Description:</label>
-        <ReactQuill
-          value={description}
-          onChange={handleDescriptionChange}
-          theme="snow"
-          className="border"
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Category:</label>
-        <select
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          className="form-select"
-        >
-          <option value="">Select a category</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Community">Community</option>
-          <option value="School">School</option>
-          <option value="Employment">Employment</option>
-          <option value="Public Safety">Public Safety</option>
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">File (CSV, HTML, XLSX, RDF):</label>
-        <input
-          type="file"
-          accept=".csv,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rdf"
-          onChange={handleFileChange}
-          ref={fileInputRef}
-          className="form-control"
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Image (PNG, JPEG):</label>
-        <input
-          type="file"
-          accept=".png,.jpeg,.jpg"
-          onChange={handleImageChange}
-          ref={imageInputRef}
-          className="form-control"
-        />
-      </div>
-
-      <Container className="d-flex justify-content-between">
-        <button onClick={handleFileUpload} className="btn btn-primary">
-          Upload
-        </button>
-        <div>
-          <button className="btn btn-danger me-3" onClick={handleLogout}>
-            Logout
-          </button>
-          <button onClick={handleReset} className="btn btn-secondary">
-            Start Over
-          </button>
+        <div className="mb-3">
+          <label className="form-label">Title:</label>
+          <input
+              type="text"
+              value={name}
+              onChange={handleNameChange}
+              placeholder="Enter the title"
+              className="form-control"
+          />
         </div>
-      </Container>
 
-      {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
-    </div>
+        <div className="mb-3">
+          <label className="form-label">Description:</label>
+          <ReactQuill
+              value={description}
+              onChange={handleDescriptionChange}
+              theme="snow"
+              className="border"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Category:</label>
+          <select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              className="form-select"
+          >
+            <option value="">Select a category</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Community">Community</option>
+            <option value="School">School</option>
+            <option value="Employment">Employment</option>
+            <option value="Public Safety">Public Safety</option>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Files (CSV, JSON, XML, RDF):</label>
+          <input
+              type="file"
+              accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              multiple
+              className="form-control"
+          />
+          {Object.entries(selectedFiles).map(([fileType, files]) => (
+              <div key={fileType} className="mt-2">
+                <strong>{fileType.toUpperCase()} files:</strong>
+                <ul className="list-unstyled ms-3">
+                  {Array.isArray(files) && files.map((file, index) => (
+                      <li key={index}>{file.name}</li>
+                  ))}
+                </ul>
+              </div>
+          ))}
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Image (PNG, JPEG):</label>
+          <input
+              type="file"
+              accept=".png,.jpeg,.jpg"
+              onChange={handleImageChange}
+              ref={imageInputRef}
+              className="form-control"
+          />
+        </div>
+
+        <div className="d-flex justify-content-between">
+          <button onClick={handleFileUpload} className="btn btn-primary">
+            Upload
+          </button>
+          <div>
+            <button className="btn btn-danger me-3" onClick={handleLogout}>
+              Logout
+            </button>
+            <button onClick={handleReset} className="btn btn-secondary">
+              Start Over
+            </button>
+          </div>
+        </div>
+
+        {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
+
+        {/*<div className="mt-5">
+          <h4>Uploaded Files</h4>
+          {["Transportation", "Health", "Education", "Energy"].map((category, index) => (
+              <DownloadCSVFiles key={index} category={category}/>
+          ))}
+        </div>*/}
+      </div>
   );
 };
 
 export default AdminPortal;
+
