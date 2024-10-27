@@ -31,6 +31,10 @@ yarn-error.log*
 .env*.local
 flask-backend/.env
 flask-backend/firebase-adminsdk.json
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
 .vercel
