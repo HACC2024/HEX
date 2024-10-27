@@ -196,7 +196,7 @@ const AdminPortal: React.FC = () => {
 
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const storageRef = ref(storage, `Test/${fileType}/${file.name}`);
+          const storageRef = ref(storage, `Admin/${fileType}/${file.name}`);
           const fileUploadTask = uploadBytesResumable(storageRef, file);
 
           await new Promise<void>((resolve, reject) => {
@@ -221,7 +221,7 @@ const AdminPortal: React.FC = () => {
       }
 
       // Upload the image to Firebase Storage
-      const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
+      const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
       const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
 
       await new Promise<string>((resolve, reject) => {
@@ -239,7 +239,7 @@ const AdminPortal: React.FC = () => {
         );
       }).then(async (imageUrl) => {
         // Save to Realtime Database with indexed file structure
-        const uploadsRef = dbRef(database, "Test");
+        const uploadsRef = dbRef(database, "Admin");
         await push(uploadsRef, {
           name,
           description,
@@ -289,7 +289,7 @@ const AdminPortal: React.FC = () => {
    * @return {void}
    */
   const fetchUploads = () => {
-    const uploadsRef = dbRef(database, "Test");
+    const uploadsRef = dbRef(database, "Admin");
 
     onValue(uploadsRef, (snapshot) => {
       const data = snapshot.val();
