@@ -175,3 +175,54 @@
   position: relative;
   padding-top: 2rem;
 }
+
+.fixedNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navButton {
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Add padding to account for fixed navbar */
+.mainContainer {
+  padding-top: 80px; /* Adjust this value based on your navbar height */
+}
+
+/* Adjust scroll offset for smooth scrolling */
+.section {
+  scroll-margin-top: 100px; /* Adjust this value to control where sections stop when scrolling */
+}
+
+/* Optional: Add transition for active state */
+.navButton {
+  position: relative;
+}
+
+.navButton::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.navButton:global(.btn-primary)::after {
+  transform: translateX(-50%) scaleX(1);
+}

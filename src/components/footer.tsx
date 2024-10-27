@@ -6,7 +6,8 @@ import {
     Instagram,
     Globe,
     Linkedin,
-    Person
+    Person,
+    ShieldLock // Added security icon
 } from 'react-bootstrap-icons';
 
 const Footer: React.FC = () => {
@@ -16,14 +17,23 @@ const Footer: React.FC = () => {
                 <Nav className="d-flex justify-content-between w-100">
                     {/* Social Media Icons (left-aligned) */}
                     <Nav className="d-flex">
-                        <Nav.Link href="https://www.linkedin.com/company/haumanaexchange/" target="_blank"><Linkedin/></Nav.Link>
-                        <Nav.Link href="https://www.haumanaexchange.org/" target="_blank"><Globe/></Nav.Link>
-                        <Nav.Link href="https://www.instagram.com/haumanaexchange" target="_blank"><Instagram/></Nav.Link>
+                        <Nav.Link href="https://www.linkedin.com/company/haumanaexchange/" target="_blank" className="custom-link" title="HEX LinkedIn">
+                            <Linkedin/>
+                        </Nav.Link>
+                        <Nav.Link href="https://www.haumanaexchange.org/" target="_blank" className="custom-link" title="HEX Marketplace">
+                            <Globe/>
+                        </Nav.Link>
+                        <Nav.Link href="https://www.instagram.com/haumanaexchange" target="_blank" className="custom-link" title="HEX Instagram">
+                            <Instagram/>
+                        </Nav.Link>
                     </Nav>
 
                     {/* Right-aligned Section */}
-                    <Nav>
-                        <Link href="Admin" className="custom-link">
+                    <Nav className="d-flex gap-3"> {/* Added gap between icons */}
+                        <Link href="security-report" className="custom-link" title="Report Security Issue">
+                            <ShieldLock/>
+                        </Link>
+                        <Link href="Admin" className="custom-link" title="Go to Admin Portal">
                             <Person/>
                         </Link>
                     </Nav>
@@ -32,6 +42,5 @@ const Footer: React.FC = () => {
         </footer>
     );
 };
-
 
 export default Footer;
