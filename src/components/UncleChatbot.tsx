@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { fetchUncleHexResponse } from "../app/api";
 import { database, storage } from "../../.firebase/firebase"; // Import storage
@@ -7,6 +8,7 @@ import Select from "react-select";
 import UserUpload from "./UserUpload";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/UncleChatbot.css";
+import { MessageSquare, Upload, HelpCircle, Send, XCircle } from 'lucide-react';
 
 const UncleChatbot: React.FC = () => {
   const [question, setQuestion] = useState<string>(""); // User's query
@@ -44,6 +46,24 @@ const UncleChatbot: React.FC = () => {
       }
     });
   }, []);
+
+  const selectStyles = {
+    control: (base: any) => ({
+      ...base,
+      background: "#f8fafc",
+      borderColor: "rgba(37, 99, 235, 0.2)",
+      "&:hover": {
+        borderColor: "#2563eb"
+      }
+    }),
+    option: (base: any, state: { isSelected: any; }) => ({
+      ...base,
+      background: state.isSelected ? "#2563eb" : "white",
+      "&:hover": {
+        background: state.isSelected ? "#2563eb" : "#f8fafc"
+      }
+    })
+  };
 
   // Extract the file name from its URL
   const extractFileNameFromURL = (url: string): string => {
@@ -119,101 +139,132 @@ const UncleChatbot: React.FC = () => {
   };
 
   return (
-    <div className="chatbox container mt-4 p-4 bg-dark rounded shadow">
+    <div className="chatbox container mt-4 p-4 rounded shadow">
       <div className="d-flex flex-column align-items-center mb-4">
-        <h3>Uncle HEX Chatbot</h3>
+        <h3 className="d-flex align-items-center gap-2">
+          <MessageSquare size={24} />
+          Chat with Uncle HEX
+        </h3>
+        
+        <div className="d-flex gap-2 mt-3">
+          <button
+            type="button"
+            className="btn btn-outline-primary btn-sm d-flex align-items-center gap-2"
+            onClick={() => setShowUpload(!showUpload)}
+          >
+            {showUpload ? <XCircle size={18} /> : <Upload size={18} />}
+            {showUpload ? "Hide Uploads" : "Upload a File"}
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
+            onClick={() => setShowInstructions(!showInstructions)}
+          >
+            <HelpCircle size={18} />
+            {showInstructions ? "Hide Help" : "Need Help?"}
+          </button>
+        </div>
+
         {showUpload && (
-          <div className="mt-4 p-3 mb-3 border bg-secondary rounded">
+          <div className="upload-section mt-4 w-100">
             <UserUpload />
           </div>
         )}
-        <button
-          type="button"
-          className="btn btn-info mx-2 btn-sm"
-          onClick={() => setShowUpload(!showUpload)}
-        >
-          {showUpload ? "Hide Uploads" : "Upload a File"}
-        </button>
       </div>
-      <div className="chat-history mt-4">
+
+      {showInstructions && (
+        <div className="instructions-panel">
+          <h4 className="mb-3">Quick Guide</h4>
+          <ol className="instruction-list">
+            <li>For the best results, filter your data with the HEX CSV Data Visualizer and Cleaner—better data, sharper insights!</li>
+            <li>Upload or select a file to analyze, or just chat directly with Uncle HEX</li>
+            <li>Ask questions about your data or any topic you would like to discuss</li>
+            <li>Get detailed responses and insights from Uncle HEX</li>
+          </ol>
+        </div>
+      )}
+
+      <div className="chat-history">
         {chatHistory.length === 0 ? (
-          <div className="empty-chatbox-message text-center py-5">
-            <h4>
-              Howzit? Jus tell Uncle wat you need help wit! No shame, ask away!
-            </h4>
+          <div className="empty-state">
+            <MessageSquare size={40} className="text-muted mb-3" />
+            <h4>Howzit! Jus tell Uncle wat you need help wit!</h4>
+            <p className="text-muted">Can ask me about your data or jus talk story. No shame, ask away! But if get one error, no blame me—might be cause yo data stay too big!</p>
           </div>
         ) : (
           chatHistory.map((chat, index) => (
-            <div
-              key={index}
-              className="chat-entry border-bottom py-3 position-relative"
-            >
-              <p>
-                <strong>You:</strong> {chat.question}
-              </p>
-              <span dangerouslySetInnerHTML={{ __html: chat.response || "" }} />
-              <button
-                className="btn btn-danger position-absolute top-0 end-0"
-                onClick={() => handleDelete(index)}
-              >
-                -
-              </button>
+            <div key={index} className="chat-entry">
+              <div className="d-flex justify-content-between align-items-start">
+                <p className="user-message">
+                  <strong>You:</strong> {chat.question}
+                </p>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => handleDelete(index)}
+                  aria-label="Delete message"
+                >
+                  <XCircle size={16} />
+                </button>
+              </div>
+              <div className="assistant-message mt-2">
+                <span dangerouslySetInnerHTML={{ __html: chat.response || "" }} />
+              </div>
             </div>
           ))
         )}
       </div>
 
-      {showInstructions && (
-        <div className="mt-4 p-3 mb-3 border bg-secondary rounded">
-          <h3>Instructions</h3>
-          <p>1. Upload and Select a file or ask about Uncle HEX right away.</p>
-          <p>2. Uncle HEX will analyze the file or talk story with you.</p>
-          <p>3. Enter your question and click Send to Uncle HEX.</p>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="chatbox-form">
+      <form onSubmit={handleSubmit} className="chatbox-form mt-4">
         <div className="input-group mb-3">
-          <div className="flex-grow-1">
-            <Select
-              options={fileNames}
-              value={selectedFile}
-              onChange={handleFileSelection}
-              placeholder="Search and select a file"
-              className="file-search-dropdown text-dark"
-              isClearable
-            />
-          </div>
-          <button
-            type="button"
-            className="btn btn-info mx-2 btn-sm"
-            onClick={() => setShowInstructions(!showInstructions)}
-          >
-            {showInstructions ? "Hide Instructions" : "See Instructions"}
-          </button>
-        </div>
-
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            value={question}
-            placeholder="Ask Uncle HEX..."
-            onChange={(e) => setQuestion(e.target.value)}
-            required
-            className="form-control bg-secondary"
+          <Select
+            options={fileNames}
+            value={selectedFile}
+            onChange={handleFileSelection}
+            placeholder="Search and select a file to analyze"
+            className="file-select"
+            isClearable
+            styles={selectStyles}
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn btn-primary w-100"
-        >
-          {loading ? "Sending..." : "Send to Uncle HEX"}
-        </button>
-      </form>
+        <div className="message-input-group">
+          <input
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask Uncle HEX anything..."
+            required
+            className="form-control"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn btn-primary d-flex align-items-center gap-2 mt-3"
+          >
+            {loading ? (
+              <>
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+                <span>Thinking...</span>
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                <span>Send to Uncle HEX</span>
+              </>
+            )}
+          </button>
+        </div>
 
-      {error && <p className="alert alert-danger mt-4">Error: {error}</p>}
+        {error && (
+          <div className="alert alert-danger mt-3 d-flex align-items-center gap-2">
+            <XCircle size={18} />
+            <span>{error}</span>
+          </div>
+        )}
+      </form>
     </div>
   );
 };
