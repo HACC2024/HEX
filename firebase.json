@@ -12,10 +12,6 @@
         "destination": "/Admin.html" 
       },
       {
-        "source": "/test",
-        "destination": "/test.html"
-      },
-      {
         "source": "/Dashboard",
         "destination": "/Dashboard.html"
       },

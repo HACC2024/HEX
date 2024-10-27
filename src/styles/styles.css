@@ -101,3 +101,50 @@ footer {
         padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
     }
 }
+
+/* Add to your styles.css */
+
+footer .nav-link,
+footer .custom-link {
+    color: #6c757d;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+}
+
+footer .nav-link:hover,
+footer .custom-link:hover {
+    color: #2563eb;
+    transform: translateY(-2px);
+}
+
+/* Optional: Add tooltip style */
+footer .custom-link {
+    position: relative;
+}
+
+footer .custom-link[title]:hover:after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background-color: #333;
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-bottom: 5px;
+}
+
+footer .custom-link[title]:hover:before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    margin-bottom: -5px;
+}

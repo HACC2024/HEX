@@ -5,7 +5,6 @@ import { Image } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
-import { useLocation } from 'react-router-dom';
 import "../styles/DataCard.css";
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
