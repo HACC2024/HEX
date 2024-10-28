@@ -156,7 +156,7 @@ To learn more about Next.js, take a look at the following resources:
     <li>Create a Target Group for <strong>Port 5000</strong>.</li>
     <li>Assign the SSL/TLS Certificate for <strong>uhspace.org</strong>.</li>
     <li>Edit the Nginx configuration with <code>sudo vim /etc/nginx/conf.d/uhspace.conf</code>.</li>
-    <li>Update the <code>location /api</code> block with <code>proxy_pass http://<new-load-balancer-DNS-name></code>.</li>
+    <li>Update the <code>location /api</code> block with <code>proxy_pass http://new-load-balancer-DNS-name</code>.</li>
     <li>Test the configuration with <code>sudo nginx -t</code>.</li>
     <li>If there are no errors, restart Nginx with <code>sudo systemctl restart nginx</code>.</li>
     <li>Check the status of Nginx with <code>sudo systemctl status nginx</code>. It should display an active status.</li>
