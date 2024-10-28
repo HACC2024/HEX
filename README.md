@@ -137,26 +137,29 @@ To learn more about Next.js, take a look at the following resources:
 <p>Backend Prod: https://uhspace.org</p>
 <p>Backend Dev: http://127.0.0.1:5000</p>
 
-<p>Note: If Chatbot is giving CORS issues, visit<br></p>
-  <ul>
-    <li> http://api.uhspace.org</li>
-    <li> http://hex-chatbots-2141489768.us-east-2.elb.amazonaws.com/</li>
-  <ul>
-<p>The pages should render "Welcome to the Flask Chatbot API!"</p>
-<p>1) Otherwise, check if EC2 Instance is active by logging in AWS Console</p>
-  <ul>
-    <li>Connect to the instance through the console or ssh</li>
-    <li>Do a check using `curl http://18.224.7.0:5000`, where `18.224.7.0` is the public IP of the instance.</li>
-  </ul>
-<p>2) If the pages said above do not render properly, create a new load balancer on the AWS EC2 Instance:</p>
-  <ul>
-    <li>Listen on HTTP Port 80 and HTTPS Port 443</li>
-    <li>Add a Target Group to Port 5000</li>
-    <li>Assign SSL/TLS Certificate as "uhspace.org"</li>
-    <li>Configure Nginx with `sudo vim /etc/nginx/conf.d/uhspace.conf`</li>
-    <li>Inside uhspace.conf, change `location /api { proxy_pass <new-load-balancer-DNS-name>`</li>
-    <li>Test with `sudo nginx -t`</li>
-    <li>If no errors, run `sudo systemctl restart nginx`, this will restart the NGINX proxy to your new load balancer DNS</li>
-    <li>Finally, do a status check with `sudo systemct1 status nginx` and you should get an active status</li>
-  </ul>
+<p><strong>Note:</strong> If the Chatbot is giving CORS issues, visit:</p>
+<ul>
+    <li><a href="http://api.uhspace.org" target="_blank">http://api.uhspace.org</a></li>
+    <li><a href="http://hex-chatbots-2141489768.us-east-2.elb.amazonaws.com/" target="_blank">http://hex-chatbots-2141489768.us-east-2.elb.amazonaws.com/</a></li>
+</ul>
+<p>The pages should display: <em>"Welcome to the Flask Chatbot API!"</em></p>
+
+<p><strong>1) If not, check if the EC2 Instance is active:</strong></p>
+<ul>
+    <li>Log in to the AWS Console and connect to the instance through the console or via SSH.</li>
+    <li>Run <code>curl http://18.224.7.0:5000</code>, replacing <code>18.224.7.0</code> with the instance’s public IP. It should return the Flask Chatbot API welcome message.</li>
+</ul>
+
+<p><strong>2) If the pages above do not render correctly, set up a new Load Balancer on the EC2 instance:</strong></p>
+<ul>
+    <li>Set up listeners on <strong>HTTP Port 80</strong> and <strong>HTTPS Port 443</strong>.</li>
+    <li>Create a Target Group for <strong>Port 5000</strong>.</li>
+    <li>Assign the SSL/TLS Certificate for <strong>uhspace.org</strong>.</li>
+    <li>Edit the Nginx configuration with <code>sudo vim /etc/nginx/conf.d/uhspace.conf</code>.</li>
+    <li>Update the <code>location /api</code> block with <code>proxy_pass http://<new-load-balancer-DNS-name></code>.</li>
+    <li>Test the configuration with <code>sudo nginx -t</code>.</li>
+    <li>If there are no errors, restart Nginx with <code>sudo systemctl restart nginx</code>.</li>
+    <li>Check the status of Nginx with <code>sudo systemctl status nginx</code>. It should display an active status.</li>
+</ul>
+
 
