@@ -136,3 +136,27 @@ To learn more about Next.js, take a look at the following resources:
 
 <p>Backend Prod: https://uhspace.org</p>
 <p>Backend Dev: http://127.0.0.1:5000</p>
+
+<p>Note: If Chatbot is giving CORS issues, visit<br></p>
+  <ul>
+    <li> http://api.uhspace.org</li>
+    <li> http://hex-chatbots-2141489768.us-east-2.elb.amazonaws.com/</li>
+  <ul>
+<p>The pages should render "Welcome to the Flask Chatbot API!"</p>
+<p>1) Otherwise, check if EC2 Instance is active by logging in AWS Console</p>
+  <ul>
+    <li>Connect to the instance through the console or ssh</li>
+    <li>Do a check using `curl http://18.224.7.0:5000`, where `18.224.7.0` is the public IP of the instance.</li>
+  </ul>
+<p>2) If the pages said above do not render properly, create a new load balancer on the AWS EC2 Instance:</p>
+  <ul>
+    <li>Listen on HTTP Port 80 and HTTPS Port 443</li>
+    <li>Add a Target Group to Port 5000</li>
+    <li>Assign SSL/TLS Certificate as "uhspace.org"</li>
+    <li>Configure Nginx with `sudo vim /etc/nginx/conf.d/uhspace.conf`</li>
+    <li>Inside uhspace.conf, change `location /api { proxy_pass <new-load-balancer-DNS-name>`</li>
+    <li>Test with `sudo nginx -t`</li>
+    <li>If no errors, run `sudo systemctl restart nginx`, this will restart the NGINX proxy to your new load balancer DNS</li>
+    <li>Finally, do a status check with `sudo systemct1 status nginx` and you should get an active status</li>
+  </ul>
+
