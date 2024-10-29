@@ -30,6 +30,9 @@ const Navbar: React.FC = () => {
           <li className="nav-item">
             <Link href="#Chatbot">Chatbots</Link>
           </li>
+          <li className="nav-item">
+          <Link href="Dashboard">Dashboard</Link>
+        </li>
         </ul>
         <div
           onClick={toggleLightMode}

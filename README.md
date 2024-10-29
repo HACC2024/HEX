@@ -132,7 +132,34 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-<h2>Flask-Backend</h2>
+<h2>Flask-Backend API</h2>
 
-<p>Backend Prod: https://hex-hacc-2024-2092041301.us-east-2.elb.amazonaws.com</p>
+<p>Backend Prod: https://uhspace.org</p>
 <p>Backend Dev: http://127.0.0.1:5000</p>
+
+<p><strong>Note:</strong> If the Chatbot is giving CORS issues, visit:</p>
+<ul>
+    <li><a href="http://api.uhspace.org" target="_blank">http://api.uhspace.org</a></li>
+    <li><a href="http://hex-chatbots-2141489768.us-east-2.elb.amazonaws.com/" target="_blank">http://hex-chatbots-2141489768.us-east-2.elb.amazonaws.com/</a></li>
+</ul>
+<p>The pages should display: <em>"Welcome to the Flask Chatbot API!"</em></p>
+
+<p><strong>1) If not, check if the EC2 Instance is active:</strong></p>
+<ul>
+    <li>Log in to the AWS Console and connect to the instance through the console or via SSH.</li>
+    <li>Run <code>curl http://18.224.7.0:5000</code>, replacing <code>18.224.7.0</code> with the instance’s public IP. It should return the Flask Chatbot API welcome message.</li>
+</ul>
+
+<p><strong>2) If the pages above do not render correctly, set up a new Load Balancer on the EC2 instance:</strong></p>
+<ul>
+    <li>Set up listeners on <strong>HTTP Port 80</strong> and <strong>HTTPS Port 443</strong>.</li>
+    <li>Create a Target Group for <strong>Port 5000</strong>.</li>
+    <li>Assign the SSL/TLS Certificate for <strong>uhspace.org</strong>.</li>
+    <li>Edit the Nginx configuration with <code>sudo vim /etc/nginx/conf.d/uhspace.conf</code>.</li>
+    <li>Update the <code>location /api</code> block with <code>proxy_pass http://new-load-balancer-DNS-name</code>.</li>
+    <li>Test the configuration with <code>sudo nginx -t</code>.</li>
+    <li>If there are no errors, restart Nginx with <code>sudo systemctl restart nginx</code>.</li>
+    <li>Check the status of Nginx with <code>sudo systemctl status nginx</code>. It should display an active status.</li>
+</ul>
+
+

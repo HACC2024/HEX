@@ -12,8 +12,12 @@
         "destination": "/Admin.html" 
       },
       {
-        "source": "/test",
-        "destination": "/test.html"
+        "source": "/Dashboard",
+        "destination": "/Dashboard.html"
+      },
+      {
+        "source": "/security-report",
+        "destination": "/security-report.html"
       },
       {
         "source": "/Categories",
