@@ -17,14 +17,17 @@ import "../styles.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const AdminPortal: React.FC = () => {
-  const [name, setName] = useState<string>(""); // New state for name
+  const [name, setName] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
+  const [maintainer, setMaintainer] = useState<string>("");
+  const [department, setDepartment] = useState<string>("");
   const [user, setUser] = useState<any>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [description, setDescription] = useState<string>(""); // New state for description
-  const [selectedCategory, setSelectedCategory] = useState<string>(""); // New state for dropdown
-  const [selectedImage, setSelectedImage] = useState<File | null>(null); // For image upload
+  const [description, setDescription] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
   const [selectedFiles, setSelectedFiles] = useState<{
@@ -37,6 +40,9 @@ const AdminPortal: React.FC = () => {
   interface UploadData {
     id: string;
     name: string;
+    author?: string;
+    maintainer?: string;
+    department?: string;
     description: string;
     category: string;
     file: {
@@ -158,6 +164,18 @@ const AdminPortal: React.FC = () => {
     setName(e.target.value);
   };
 
+  const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAuthor(e.target.value);
+  }
+
+  const handleMaintainerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMaintainer(e.target.value);
+  }
+
+  const handleDepartmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDepartment(e.target.value);
+  }
+
   // Handle description input change (Quill Editor)
   const handleDescriptionChange = (content: string) => {
     setDescription(content);
@@ -171,7 +189,7 @@ const AdminPortal: React.FC = () => {
   // Handle file and image upload
   const handleFileUpload = async () => {
     if (!name || !description || !selectedCategory) {
-      setUploadStatus("Please fill in all fields and select a category");
+      setUploadStatus("Please fill in all required fields (*)");
       return;
     }
 
@@ -254,6 +272,9 @@ const AdminPortal: React.FC = () => {
         const uploadsRef = dbRef(database, "Admin");
         await push(uploadsRef, {
           name,
+          author,
+          maintainer,
+          department,
           description,
           category: selectedCategory,
           file: fileUrls, // This will now contain arrays of URLs for each file type
@@ -273,6 +294,9 @@ const AdminPortal: React.FC = () => {
   // Handle resetting the form fields
   const handleReset = () => {
     setName("");
+    setAuthor("");
+    setMaintainer("");
+    setDepartment("");
     setDescription("");
     setSelectedCategory("");
     setSelectedFiles({});
@@ -357,33 +381,71 @@ const AdminPortal: React.FC = () => {
     <div className="container mt-5">
       <h3 className="text-center mb-4">Upload File and Image</h3>
 
-      <div className="mb-3">
-        <label className="form-label">Title:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={handleNameChange}
-          placeholder="Enter the title"
-          className="form-control"
-        />
+      <div className="row mb-3 g-3">
+        <div className="col">
+          <label className="form-label">Title:</label>
+          <span style={{color: 'red'}}>*</span>
+          <input
+            type="text"
+            value={name}
+            onChange={handleNameChange}
+            placeholder="Enter the title"
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="col">
+        <label className="form-label">Author:</label>
+          <input
+            type="text"
+            value={author}
+            onChange={handleAuthorChange}
+            placeholder="Enter author name"
+            className="form-control"
+          />
+        </div>
+        <div className="col">
+          <label className="form-label">Maintainer:</label>
+          <input
+            type="text"
+            value={maintainer}
+            onChange={handleMaintainerChange}
+            placeholder="Enter maintainer name"
+            className="form-control"
+          />
+        </div>
+        <div className="col">
+          <label className="form-label">Department/Agency:</label>
+          <input
+            type="text"
+            value={department}
+            onChange={handleDepartmentChange}
+            placeholder="Enter department or agency"
+            className="form-control"
+          />
+        </div>
       </div>
 
       <div className="mb-3">
         <label className="form-label">Description:</label>
+        <span style={{color: 'red'}}>*</span>
         <ReactQuill
           value={description}
           onChange={handleDescriptionChange}
           theme="snow"
           className="border"
+          required
         />
       </div>
 
       <div className="mb-3">
         <label className="form-label">Category:</label>
+        <span style={{color: 'red'}}>*</span>
         <select
           value={selectedCategory}
           onChange={handleCategoryChange}
           className="form-select"
+          required
         >
           <option value="">Select a category</option>
           <option value="Transportation">Transportation</option>
@@ -397,6 +459,7 @@ const AdminPortal: React.FC = () => {
       <div className="mb-3">
         <p className="mt-2 text-muted">Note: You can upload multiple files at once.</p>
         <label className="form-label">Upload Files (CSV, JSON, XML, RDF):</label>
+        <span style={{color: 'red'}}>*</span>
         <input
           type="file"
           accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
@@ -404,6 +467,7 @@ const AdminPortal: React.FC = () => {
           ref={fileInputRef}
           multiple
           className="d-none"
+          required
         />
         <button
           type="button"
@@ -425,12 +489,14 @@ const AdminPortal: React.FC = () => {
 
       <div className="mb-3">
         <label className="form-label">Image (PNG, JPEG):</label>
+        <span style={{color: 'red'}}>*</span>
         <input
           type="file"
           accept=".png,.jpeg,.jpg"
           onChange={handleImageChange}
           ref={imageInputRef}
           className="form-control"
+          required
         />
       </div>
 
