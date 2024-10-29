@@ -6,11 +6,11 @@ import dynamic from "next/dynamic";
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { toggleSignIn, toggleSignOut, stateChange } from "../../.firebase/auth";
-import { storage, database } from "../../.firebase/firebase"; // Firebase imports
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, push, onValue } from "firebase/database"; // Realtime Database methods
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
+import { storage, database } from "../../.firebase/firebase";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { ref as dbRef, push, onValue, update, remove } from "firebase/database";
+import "react-quill/dist/quill.snow.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles.css";
 
 // Dynamically import ReactQuill and disable SSR
@@ -29,6 +29,17 @@ const AdminPortal: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
+
+  // States for edit
+  const [editingUpload, setEditingUpload] = useState<UploadData | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editAuthor, setEditAuthor] = useState("");
+  const [editMaintainer, setEditMaintainer] = useState("");
+  const [editDepartment, setEditDepartment] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editImage, setEditImage] = useState<File | null>(null);
 
   const [selectedFiles, setSelectedFiles] = useState<{
     csv?: File[];
@@ -215,7 +226,7 @@ const AdminPortal: React.FC = () => {
 
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const storageRef = ref(storage, `Admin/${fileType}/${file.name}`);
+          const storageRef = ref(storage, `Test/${fileType}/${file.name}`);
           const fileUploadTask = uploadBytesResumable(storageRef, file);
 
           await new Promise<void>((resolve, reject) => {
@@ -250,7 +261,7 @@ const AdminPortal: React.FC = () => {
       }
 
       // Upload the image to Firebase Storage
-      const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
+      const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
       const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
 
       await new Promise<string>((resolve, reject) => {
@@ -269,7 +280,7 @@ const AdminPortal: React.FC = () => {
         );
       }).then(async (imageUrl) => {
         // Save to Realtime Database with indexed file structure
-        const uploadsRef = dbRef(database, "Admin");
+        const uploadsRef = dbRef(database, "Test");
         await push(uploadsRef, {
           name,
           author,
@@ -324,7 +335,7 @@ const AdminPortal: React.FC = () => {
    * @return {void}
    */
   const fetchUploads = () => {
-    const uploadsRef = dbRef(database, "Admin");
+    const uploadsRef = dbRef(database, "Test");
 
     onValue(uploadsRef, (snapshot) => {
       const data = snapshot.val();
@@ -337,6 +348,116 @@ const AdminPortal: React.FC = () => {
         setUploadsData(uploadsList);
       }
     });
+  };
+
+  // EDIT FUNCTIONS
+  const handleEditClick = (upload: UploadData) => {
+    setEditingUpload(upload);
+    setEditName(upload.name);
+    setEditAuthor(upload.author || "");
+    setEditMaintainer(upload.maintainer || "");
+    setEditDepartment(upload.department || "");
+    setEditDescription(upload.description);
+    setEditCategory(upload.category);
+    setShowEditModal(true);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingUpload) return;
+
+    try {
+      let imageUrl = editingUpload.image;
+
+      // If a new image was selected, upload it
+      if (editImage) {
+        // Delete old image
+        const oldImageRef = ref(storage, editingUpload.image);
+        try {
+          await deleteObject(oldImageRef);
+        } catch (error) {
+          console.error("Error deleting old image:", error);
+        }
+
+        // Upload new image
+        const imageRef = ref(storage, `Test/Images/${editImage.name}`);
+        const imageUploadTask = uploadBytesResumable(imageRef, editImage);
+        imageUrl = await new Promise((resolve, reject) => {
+          imageUploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadStatus(`Image update is ${progress}% done`);
+            },
+            reject,
+            async () => {
+              const url = await getDownloadURL(imageUploadTask.snapshot.ref);
+              resolve(url);
+            }
+          );
+        });
+      }
+
+      // Update the database
+      const updateRef = dbRef(database, `Test/${editingUpload.id}`);
+      await update(updateRef, {
+        name: editName,
+        author: editAuthor,
+        maintainer: editMaintainer,
+        department: editDepartment,
+        description: editDescription,
+        category: editCategory,
+        image: imageUrl,
+        updatedAt: new Date().toISOString(),
+      });
+
+      setShowEditModal(false);
+      setEditingUpload(null);
+      setEditImage(null);
+      Swal.fire("Success", "Record updated successfully", "success");
+    } catch (error) {
+      console.error("Error updating record:", error);
+      Swal.fire("Error", "Failed to update record", "error");
+    }
+  };
+
+  // Function to handle delete
+  const handleDelete = async (upload: UploadData) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!"
+    });
+
+    if (result.isConfirmed) {
+      try {
+        // Delete the image from storage
+        const imageRef = ref(storage, upload.image);
+        await deleteObject(imageRef);
+
+        // Delete all associated files from storage
+        for (const [fileType, urls] of Object.entries(upload.file || {})) {
+          if (Array.isArray(urls)) {
+            for (const url of urls) {
+              const fileRef = ref(storage, url);
+              await deleteObject(fileRef);
+            }
+          }
+        }
+
+        // Delete the database entry
+        const dbItemRef = dbRef(database, `Test/${upload.id}`);
+        await remove(dbItemRef);
+
+        Swal.fire("Deleted!", "Record has been deleted.", "success");
+      } catch (error) {
+        console.error("Error deleting record:", error);
+        Swal.fire("Error", "Failed to delete record", "error");
+      }
+    }
   };
 
   if (!isMounted) return null;
@@ -384,7 +505,7 @@ const AdminPortal: React.FC = () => {
       <div className="row mb-3 g-3">
         <div className="col">
           <label className="form-label">Title:</label>
-          <span style={{color: 'red'}}>*</span>
+          <span style={{ color: 'red' }}>*</span>
           <input
             type="text"
             value={name}
@@ -395,7 +516,7 @@ const AdminPortal: React.FC = () => {
           />
         </div>
         <div className="col">
-        <label className="form-label">Author:</label>
+          <label className="form-label">Author:</label>
           <input
             type="text"
             value={author}
@@ -428,7 +549,7 @@ const AdminPortal: React.FC = () => {
 
       <div className="mb-3">
         <label className="form-label">Description:</label>
-        <span style={{color: 'red'}}>*</span>
+        <span style={{ color: 'red' }}>*</span>
         <ReactQuill
           value={description}
           onChange={handleDescriptionChange}
@@ -440,7 +561,7 @@ const AdminPortal: React.FC = () => {
 
       <div className="mb-3">
         <label className="form-label">Category:</label>
-        <span style={{color: 'red'}}>*</span>
+        <span style={{ color: 'red' }}>*</span>
         <select
           value={selectedCategory}
           onChange={handleCategoryChange}
@@ -459,7 +580,7 @@ const AdminPortal: React.FC = () => {
       <div className="mb-3">
         <p className="mt-2 text-muted">Note: You can upload multiple files at once.</p>
         <label className="form-label">Upload Files (CSV, JSON, XML, RDF):</label>
-        <span style={{color: 'red'}}>*</span>
+        <span style={{ color: 'red' }}>*</span>
         <input
           type="file"
           accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
@@ -472,7 +593,7 @@ const AdminPortal: React.FC = () => {
         <button
           type="button"
           className="btn btn-primary btn-sm ms-2"
-          onClick={() => fileInputRef.current?.click()} // triggers the file input dialog
+          onClick={() => fileInputRef.current?.click()}
         >
           Add Files
         </button>
@@ -489,7 +610,7 @@ const AdminPortal: React.FC = () => {
 
       <div className="mb-3">
         <label className="form-label">Image (PNG, JPEG):</label>
-        <span style={{color: 'red'}}>*</span>
+        <span style={{ color: 'red' }}>*</span>
         <input
           type="file"
           accept=".png,.jpeg,.jpg"
@@ -516,12 +637,206 @@ const AdminPortal: React.FC = () => {
 
       {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
 
-      {/*<div className="mt-5">
-          <h4>Uploaded Files</h4>
-          {["Transportation", "Health", "Education", "Energy"].map((category, index) => (
-              <DownloadCSVFiles key={index} category={category}/>
-          ))}
-        </div>*/}
+      <div className="mt-5">
+        <h3 className="text-center mb-4">Uploaded Data</h3>
+        <div className="table-responsive" style={{ maxHeight: '500px' }}>
+          <table className="table table-striped table-bordered">
+            <thead className="sticky-top bg-white">
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Maintainer</th>
+              <th>Department</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Files</th>
+              <th>Image</th>
+              <th>Upload Date</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {uploadsData.map((upload) => (
+              <tr key={upload.id}>
+                <td>{upload.name}</td>
+                <td>{upload.author || 'N/A'}</td>
+                <td>{upload.maintainer || 'N/A'}</td>
+                <td>{upload.department || 'N/A'}</td>
+                <td>{upload.category}</td>
+                <td>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: upload.description }}
+                    style={{ maxWidth: '300px', maxHeight: '100px', overflow: 'auto' }}
+                  />
+                </td>
+                <td>
+                  <div style={{ maxWidth: '200px', maxHeight: '100px', overflow: 'auto' }}>
+                    {Object.entries(upload.file || {}).map(([fileType, urls]) => (
+                      <div key={fileType}>
+                        <strong>{fileType}:</strong>
+                        <ul className="list-unstyled ms-2">
+                          {Array.isArray(urls) && urls.map((url, index) => (
+                            <li key={index}>
+                              <a href={url} target="_blank" rel="noopener noreferrer">
+                                File {index + 1}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </td>
+                <td>
+                  <img
+                    src={upload.image}
+                    alt={upload.name}
+                    style={{
+                      maxWidth: '100px',
+                      maxHeight: '100px',
+                      objectFit: 'contain'
+                    }}
+                  />
+                </td>
+                <td>
+                  {new Date(upload.uploadedAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </td>
+                <td>
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => handleEditClick(upload)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDelete(upload)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Edit Record</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowEditModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Title:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Author:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editAuthor}
+                    onChange={(e) => setEditAuthor(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Maintainer:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editMaintainer}
+                    onChange={(e) => setEditMaintainer(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Department:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editDepartment}
+                    onChange={(e) => setEditDepartment(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Description:</label>
+                  <ReactQuill
+                    value={editDescription}
+                    onChange={setEditDescription}
+                    theme="snow"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Category:</label>
+                  <select
+                    className="form-select"
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value)}
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Community">Community</option>
+                    <option value="School">School</option>
+                    <option value="Employment">Employment</option>
+                    <option value="Public Safety">Public Safety</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">New Image (optional):</label>
+                  <input
+                    type="file"
+                    accept=".png,.jpeg,.jpg"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setEditImage(e.target.files[0]);
+                      }
+                    }}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleUpdate}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
