@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@splinetool/react-spline": "^4.0.0",
     "bootstrap": "^5.3.3",
     "firebase": "^10.14.1",
     "jodit-react": "^4.1.2",
@@ -23,7 +24,8 @@
     "react-router-dom": "^6.27.0",
     "react-select": "^5.8.1",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.14.3"
+    "sweetalert2": "^11.14.3",
+    "swiper": "^11.1.14"
   },
   "devDependencies": {
     "@types/node": "^20",

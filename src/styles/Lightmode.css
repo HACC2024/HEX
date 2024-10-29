@@ -1,0 +1,162 @@
+/* Light mode styles */
+.light-mode body {
+  background-color: white;
+  color: #121212;
+}
+
+.light-mode .navbar {
+  background-color: #74b9ff; /* Light navbar background */
+  color: #121212;
+}
+
+.light-mode .custom-navbar a {
+  color: #ffffff !important; /* Link color for light mode */
+}
+
+.light-mode .HomeImageCt {
+  background: radial-gradient(
+    circle,
+    rgb(45, 80, 255) 10%,
+    rgba(37, 124, 255, 0.683) 30%,
+    rgba(207, 229, 255, 0.632) 60%,
+    rgba(225, 231, 255, 0.708) 70%,
+    rgb(251, 251, 255) 100%
+  );
+}
+
+.light-mode .custom-h1 {
+  color: #5398ff;
+}
+
+.light-mode .btn-primary {
+  background-color: #449fff;
+  border-color: #449fff;
+  color: #ffffff;
+}
+
+.light-mode .blue-text {
+  color: #0080ff;
+}
+
+.light-mode .IntroDiv {
+  background: linear-gradient(
+    40deg,
+    rgb(254, 254, 254) 10%,
+    rgba(147, 190, 255, 0.683) 30%,
+    rgba(126, 186, 255, 0.632) 60%,
+    rgba(83, 120, 255, 0.708) 70%,
+    rgba(111, 166, 255, 0.794) 100%
+  );
+}
+
+.light-mode .IntroBox {
+  /* Gradient border effect */
+  background: white;
+  border: 3px solid transparent; /* Transparent border for spacing */
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  color: rgb(40, 137, 255); /* Text color for contrast */
+}
+
+.light-mode .card-shadow:hover {
+  box-shadow: 0 8px 15px -3px rgb(255, 255, 255);
+}
+
+.light-mode .circular-categories-container {
+  background-color: #ffffff;
+  color: #78a5ff;
+}
+
+.light-mode .category-box {
+  background: linear-gradient(
+    135deg,
+    #006bddf1,
+    #cce2ffeb
+  ); /* New color gradient */
+  color: #ffffff;
+}
+
+.light-mode .category-box.centered:hover {
+  background: linear-gradient(
+    135deg,
+    #4e5be7e7,
+    #d0dcffe7
+  ); /* New color gradient */
+}
+
+.light-mode .HowItWorksDiv {
+  background-color: rgb(
+    255,
+    255,
+    255
+  ); /* Apply background to the entire section */
+}
+
+.light-mode .custom-h4 {
+  color: rgb(125, 125, 125);
+}
+
+.light-mode .StepBox {
+  background-color: rgb(115, 178, 255); /* background */
+  color: rgb(121, 186, 255); /* text */
+  border: 3px solid #7ec1ff;
+  box-shadow: 0 4px 10px rgba(18, 136, 255, 0.814),
+    /* Main shadow for depth */ inset 0 0 8px rgba(126, 193, 255, 0.3),
+    /* Soft inner glow */ inset 0 0 15px rgba(126, 193, 255, 0.4); /* Enhanced inner glow */
+}
+
+.light-mode .StepNumber {
+  background: linear-gradient(
+    40deg,
+    rgb(252, 252, 252),
+    rgba(177, 208, 255, 0.925)
+  );
+}
+
+.light-mode .StepText {
+  color: white;
+}
+
+.light-mode .FullPageBackground {
+  background-color: rgb(255, 255, 255);
+}
+
+.light-mode .LargeBox {
+  background: radial-gradient(circle, #029affaf 3%, #ffffff 50%);
+  color: #62b3ff;
+}
+
+.light-mode .smallBoxText {
+  color: #62b3ff; /* Text color */
+  background: linear-gradient(
+    to bottom left,
+    #029affaf 3%,
+    #ffffff 60%,
+    #ffffff 100%
+  ); /* Light background color */
+}
+
+.light-mode .MediumBox-left {
+  border: 3px solid #62b3ff;
+  background-color: white;
+  color: #62b3ff;
+}
+
+.light-mode .MediumBox-right {
+  width: 49%; /* Equal width for both bottom boxes */
+  border: 3px solid #62b3ff;
+  background-color: white;
+  color: #62b3ff;
+}
+
+.light-mode .MediumBox-left .bar-1 {
+  background: linear-gradient(180deg, #3485ffb7, #7fb6ffbf);
+}
+.light-mode .MediumBox-left .bar-2 {
+  background: linear-gradient(180deg, #3485ffb7, #7fb6ffbf);
+}
+.light-mode .MediumBox-left .bar-3 {
+  background: linear-gradient(180deg, #3485ffb7, #7fb6ffbf);
+}
