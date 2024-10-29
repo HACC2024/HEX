@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import "../styles.css";
 
@@ -57,7 +58,7 @@ const ChatBotsDesign: React.FC = () => {
             <h3 className="fw-bold text-center mt-5 mb-4">
               Generate Graphs
               <br />
-              With Data Visualizer
+              With Our Data Visualizer
             </h3>
             <div className="bar-chart">
               <div className="bar bar-1"></div>

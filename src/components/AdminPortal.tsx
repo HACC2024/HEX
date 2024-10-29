@@ -434,7 +434,6 @@ const AdminPortal: React.FC = () => {
           onChange={handleDescriptionChange}
           theme="snow"
           className="border"
-          required
         />
       </div>
 

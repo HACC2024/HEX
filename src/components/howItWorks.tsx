@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+/* eslint-disable @next/next/no-img-element */
+import React from "react";
 import "../styles.css";
 import { Col, Row } from "react-bootstrap";
 
@@ -17,10 +18,10 @@ const HowItWorks: React.FC = () => {
           <Col xs={12} md={4} className="d-flex justify-content-start ps-md-5">
             <div>
               <h1 className="custom-heading">
-                Here's to new insights and experiences
+                Here is to new insights and experiences
               </h1>
               <h4 className="custom-h4">
-                Experience a quick overview of what's in store for you
+                Experience a quick overview of what is in store for you
               </h4>
             </div>
           </Col>

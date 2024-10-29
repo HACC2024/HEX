@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -38,7 +40,7 @@ const HomeImage = () => {
       <div className="row w-100">
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
           <h1 className="text-center fw-bold mt-5">
-            UNLOCK HAWAII'S OPEN DATA
+            UNLOCK HAWAII's OPEN DATA
           </h1>
 
           {/* Flipping word animation */}
@@ -133,7 +135,7 @@ const Categories: React.FC = () => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [isPaused]);
+  }, [isPaused, rotationStep]);
 
   const handleMouseEnter = () => setIsPaused(true); // Pause rotation on hover
   const handleMouseLeave = () => setIsPaused(false); // Resume rotation on hover leave

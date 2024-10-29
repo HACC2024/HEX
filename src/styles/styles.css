@@ -84,7 +84,7 @@ footer {
 
 footer .nav-link,
 footer .custom-link {
-    color: #6c757d;
+    color: white;
     transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
     display: flex;
     align-items: center;
