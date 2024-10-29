@@ -5,7 +5,7 @@
 }
 
 .light-mode .navbar {
-  background-color: #74b9ff; /* Light navbar background */
+  background-color: rgb(155, 205, 255);
   color: #121212;
 }
 
@@ -13,13 +13,15 @@
   color: #ffffff !important; /* Link color for light mode */
 }
 
+.light-mode .darkmode-icon {
+  color: #ffffff; /* Icon color for dark mode toggle */
+}
+
 .light-mode .HomeImageCt {
   background: radial-gradient(
     circle,
-    rgb(45, 80, 255) 10%,
-    rgba(37, 124, 255, 0.683) 30%,
-    rgba(207, 229, 255, 0.632) 60%,
-    rgba(225, 231, 255, 0.708) 70%,
+    rgb(106, 166, 255) 10%,
+    rgb(81, 171, 255) 30%,
     rgb(251, 251, 255) 100%
   );
 }
@@ -42,10 +44,10 @@
   background: linear-gradient(
     40deg,
     rgb(254, 254, 254) 10%,
-    rgba(147, 190, 255, 0.683) 30%,
-    rgba(126, 186, 255, 0.632) 60%,
-    rgba(83, 120, 255, 0.708) 70%,
-    rgba(111, 166, 255, 0.794) 100%
+    rgb(147, 190, 255) 30%,
+    rgb(126, 186, 255) 60%,
+    rgb(83, 120, 255) 70%,
+    rgba(111, 166, 255, 0.973) 100%
   );
 }
 
@@ -73,7 +75,7 @@
   background: linear-gradient(
     135deg,
     #006bddf1,
-    #cce2ffeb
+    #cce2ff
   ); /* New color gradient */
   color: #ffffff;
 }
@@ -125,7 +127,7 @@
 
 .light-mode .LargeBox {
   background: radial-gradient(circle, #029affaf 3%, #ffffff 50%);
-  color: #62b3ff;
+  color: #0e8aff;
 }
 
 .light-mode .smallBoxText {
@@ -159,4 +161,14 @@
 }
 .light-mode .MediumBox-left .bar-3 {
   background: linear-gradient(180deg, #3485ffb7, #7fb6ffbf);
+}
+
+.light-mode footer {
+  color: #ffffff;
+  background: linear-gradient(
+    40deg,
+    rgb(148, 207, 255) 40%,
+    rgb(131, 181, 255) 100%
+  );
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
 }

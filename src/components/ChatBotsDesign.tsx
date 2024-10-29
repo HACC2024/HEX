@@ -55,9 +55,9 @@ const ChatBotsDesign: React.FC = () => {
         <div className="Row BottomRow">
           <div className="Box MediumBox-left d-flex flex-column align-items-center justify-content-center">
             <h3 className="fw-bold text-center mt-5 mb-4">
-              Generates Graphs
+              Generate Graphs
               <br />
-              For You
+              With Data Visualizer
             </h3>
             <div className="bar-chart">
               <div className="bar bar-1"></div>

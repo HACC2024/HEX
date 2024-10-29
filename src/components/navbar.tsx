@@ -7,7 +7,7 @@ const Navbar: React.FC = () => {
   const [isLightMode, setIsLightMode] = useState(false);
 
   const toggleLightMode = () => {
-    document.body.classList.toggle("dark-theme");
+    document.body.classList.toggle("light-mode");
     setIsLightMode(!isLightMode);
   };
 
