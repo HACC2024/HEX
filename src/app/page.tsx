@@ -40,7 +40,7 @@ const HomeImage = () => {
       <div className="row w-100">
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
           <h1 className="text-center fw-bold mt-5">
-            UNLOCK HAWAII's OPEN DATA
+            UNLOCK HAWAII'S OPEN DATA
           </h1>
 
           {/* Flipping word animation */}
@@ -51,7 +51,7 @@ const HomeImage = () => {
             >
               {words[currentWordIndex]}
             </span>{" "}
-            FOR YOUR DISCOVERY
+             FOR YOUR DISCOVERY
           </h2>
         </div>
         <div className="col-md-6 d-flex justify-content-center align-items-center">
