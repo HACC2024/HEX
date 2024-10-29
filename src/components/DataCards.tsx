@@ -5,6 +5,7 @@ import { Image } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
+import SearchBar from "./SearchFilter";
 import "../styles/DataCard.css";
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
@@ -12,6 +13,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     { name: string; file: string; category: string; image: string; }[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const dbRefPath = dbRef(database, "Admin");
@@ -59,14 +61,19 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     alert(`Downloading ${fileName}`);
   };
 
+  const searchedFiles = files.filter(file =>
+    file.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div>
       <h1>Download CSV Files for {category}</h1>
+      <SearchBar search={search} setSearch={setSearch} />
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="file-list">
-          {files.map((file) => (
+          {searchedFiles.map((file) => (
             <div key={file.file} className="file-card">
               <div className="justify-content-center">
                 <Image
