@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Image, Modal, Button, Nav, Tab } from "react-bootstrap";
+import {
+  Image,
+  Modal,
+  Button,
+  Nav,
+  Tab,
+  Row,
+  Col,
+  Table,
+} from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
@@ -14,22 +23,26 @@ interface FileData {
   category: string;
   image: string;
   description: string;
+  uploadedAt: string;
 }
 
-const CsvReader = dynamic(() => import("../components/csvTool/CsvReader"), {
-  ssr: false,
-  loading: () => (
-    <div
-      className="d-flex justify-content-center align-items-center"
-      style={{ height: "300px" }}
-    >
-      <div className="text-center">
-        <div className="spinner-border text-primary mb-3 mx-auto"></div>
-        <p>Loading CSV Visualizer...</p>
+const CsvReaderAuto = dynamic(
+  () => import("../components/csvAuto/CsvReaderAuto"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "300px" }}
+      >
+        <div className="text-center">
+          <div className="spinner-border text-primary mb-3 mx-auto"></div>
+          <p>Loading CSV Visualizer...</p>
+        </div>
       </div>
-    </div>
-  ),
-});
+    ),
+  }
+);
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<FileData[]>([]);
@@ -43,6 +56,20 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
     null
   );
+
+  const data = [
+    { name: "Author", value: "data.hawaii.gov" },
+    { name: "Maintainer", value: "Genelle" },
+    { name: "Last Updated", value: "October 19, 2020" },
+    { name: "Created", value: "December 12, 2019" },
+    { name: "Formats", value: "CSV, JSON, RDF, XML" },
+  ];
+
+  const [showAll, setShowAll] = useState(false);
+
+  const toggleShowMore = () => setShowAll(!showAll);
+
+  const displayedData = showAll ? data : data.slice(0, 5);
 
   useEffect(() => {
     const dbRefPath = dbRef(database, "Admin");
@@ -60,6 +87,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               image: fileList[key].image,
               category: fileList[key].category,
               description: fileList[key].description,
+              uploadedAt: fileList[key].uploadedAt,
             }))
             .filter((file: FileData) => file.category === category);
 
@@ -201,16 +229,44 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                   <Nav.Link eventKey="info">Info</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="details">Graphs</Nav.Link>
+                  <Nav.Link eventKey="details">Data</Nav.Link>
                 </Nav.Item>
               </Nav>
 
               <Tab.Content>
                 <Tab.Pane eventKey="info">
-                  <p>{selectedFileData.description}</p>
+                  <Row>
+                    <Col>
+                      <p className="pt-3">
+                        <strong>Dataset Description</strong>
+                      </p>
+                      <p>{selectedFileData.description}</p>
+                    </Col>
+                    <Col>
+                      <p className="pt-3">
+                        <strong>Additional Information</strong>
+                      </p>
+                      <Table striped bordered hover>
+                        <thead>
+                          <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {displayedData.map((row, index) => (
+                            <tr key={index}>
+                              <td>{row.name}</td>
+                              <td>{row.value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </Col>
+                  </Row>
                 </Tab.Pane>
                 <Tab.Pane eventKey="details">
-                  <CsvReader />
+                  <CsvReaderAuto />
                 </Tab.Pane>
               </Tab.Content>
             </Tab.Container>
