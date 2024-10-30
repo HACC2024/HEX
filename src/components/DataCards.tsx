@@ -62,10 +62,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     null
   );
 
-  const [showAll, setShowAll] = useState(false);
-
-  const toggleShowMore = () => setShowAll(!showAll);
-
   useEffect(() => {
     const dbRefPath = dbRef(database, "Admin");
 
@@ -118,7 +114,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-CA');
+      return date.toLocaleDateString("en-CA");
     } catch (error) {
       console.error("Invalid date format:", dateString, error);
       return "";
@@ -252,8 +248,11 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                       <p className="pt-3">
                         <strong>Dataset Description</strong>
                       </p>
-                      <div dangerouslySetInnerHTML={{ __html: selectedFileData.description }} />
-                        
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: selectedFileData.description,
+                        }}
+                      />
                     </Col>
                     <Col>
                       <p className="pt-3">
@@ -362,7 +361,11 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
           <Button variant="secondary" onClick={closeDownloadModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleDownload} disabled={!selectedFile}>
+          <Button
+            variant="primary"
+            onClick={handleDownload}
+            disabled={!selectedFile}
+          >
             Download
           </Button>
         </Modal.Footer>

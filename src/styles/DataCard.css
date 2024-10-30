@@ -97,7 +97,7 @@ h3.file-name {
 p.file-category {
   font-size: 12px;
 }
-.file-tags.pt-3 {
+.file-tags.pt-2 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;

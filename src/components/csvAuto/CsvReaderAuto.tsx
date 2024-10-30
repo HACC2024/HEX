@@ -168,7 +168,6 @@ const CsvAuto = () => {
               </div>
 
               <div className="mb-3">
-                {/* CSV File Dropdown */}
                 <select
                   className="form-control"
                   value={selectedCsvUrl}
@@ -176,13 +175,17 @@ const CsvAuto = () => {
                 >
                   <option value="">Select a CSV file</option>
                   {files.map((file) =>
-                    Object.keys(file.file).map((key) =>
-                      file.file[key].map((url, index) => (
-                        <option key={index} value={url}>
-                          {`${file.name} - ${key}`}
-                        </option>
-                      ))
-                    )
+                    file.file
+                      ? Object.keys(file.file)
+                          .filter((key) => key.toLowerCase().endsWith("csv"))
+                          .map((key) =>
+                            file.file[key].map((url, index) => (
+                              <option key={index} value={url}>
+                                {`${file.name} - ${key}`}
+                              </option>
+                            ))
+                          )
+                      : null
                   )}
                 </select>
                 {csvFileName && (
