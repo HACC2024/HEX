@@ -24,6 +24,11 @@ interface FileData {
   image: string;
   description: string;
   uploadedAt: string;
+  lastUpdated: string;
+  author: string;
+  maintainer: string;
+  department: string;
+  views: number;
 }
 
 const CsvReaderAuto = dynamic(
@@ -57,19 +62,9 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     null
   );
 
-  const data = [
-    { name: "Author", value: "data.hawaii.gov" },
-    { name: "Maintainer", value: "Genelle" },
-    { name: "Last Updated", value: "October 19, 2020" },
-    { name: "Created", value: "December 12, 2019" },
-    { name: "Formats", value: "CSV, JSON, RDF, XML" },
-  ];
-
   const [showAll, setShowAll] = useState(false);
 
   const toggleShowMore = () => setShowAll(!showAll);
-
-  const displayedData = showAll ? data : data.slice(0, 5);
 
   useEffect(() => {
     const dbRefPath = dbRef(database, "Admin");
@@ -88,6 +83,11 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               category: fileList[key].category,
               description: fileList[key].description,
               uploadedAt: fileList[key].uploadedAt,
+              lastUpdated: fileList[key].lastUpdated,
+              author: fileList[key].author,
+              maintainer: fileList[key].maintainer,
+              department: fileList[key].department,
+              views: fileList[key].views || 0,
             }))
             .filter((file: FileData) => file.category === category);
 
@@ -113,6 +113,16 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     const fileNameWithParams = parts.pop();
     const fileName = fileNameWithParams?.split("?")[0];
     return fileName || "";
+  };
+
+  const formatDate = (dateString: string): string => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-CA');
+    } catch (error) {
+      console.error("Invalid date format:", dateString, error);
+      return "";
+    }
   };
 
   const openDownloadModal = (fileOptions: { [key: string]: string[] }) => {
@@ -182,8 +192,8 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               </div>
               <div className="file-info">
                 <h3 className="file-name">{file.name}</h3>
-                <p className="file-category">{file.category}</p>
-                <div className="file-tags pt-2">
+                <p className="file-category pt-1">{file.category}</p>
+                <div className="file-tags pt-3">
                   {Object.keys(file.file).map((key) =>
                     file.file[key].length > 0 &&
                     file.file[key].some((url) => url !== "") ? (
@@ -197,9 +207,11 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                     ) : null
                   )}
                 </div>
+                <div>
+                  <p>Views: {selectedFileData?.views}</p>
+                </div>
               </div>
               <div className="button-container">
-                <div className="button-border"></div>
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -240,7 +252,8 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                       <p className="pt-3">
                         <strong>Dataset Description</strong>
                       </p>
-                      <p>{selectedFileData.description}</p>
+                      <div dangerouslySetInnerHTML={{ __html: selectedFileData.description }} />
+                        
                     </Col>
                     <Col>
                       <p className="pt-3">
@@ -254,12 +267,26 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {displayedData.map((row, index) => (
-                            <tr key={index}>
-                              <td>{row.name}</td>
-                              <td>{row.value}</td>
-                            </tr>
-                          ))}
+                          <tr>
+                            <td>Author</td>
+                            <td>{selectedFileData.author}</td>
+                          </tr>
+                          <tr>
+                            <td>Maintainer</td>
+                            <td>{selectedFileData.maintainer}</td>
+                          </tr>
+                          <tr>
+                            <td>Department</td>
+                            <td>{selectedFileData.department}</td>
+                          </tr>
+                          <tr>
+                            <td>Last Updated</td>
+                            <td>{formatDate(selectedFileData.lastUpdated)}</td>
+                          </tr>
+                          <tr>
+                            <td>Uploaded At</td>
+                            <td>{formatDate(selectedFileData.uploadedAt)}</td>
+                          </tr>
                         </tbody>
                       </Table>
                     </Col>
@@ -292,34 +319,50 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
         </Modal.Header>
         <Modal.Body>
           {Object.keys(currentFileOptions).length > 0 ? (
-            Object.keys(currentFileOptions).map((key) =>
-              currentFileOptions[key].map((url, index) => (
-                <Button
-                  key={index}
-                  variant={selectedFile === url ? "primary" : "outline-primary"}
-                  onClick={() => setSelectedFile(url)}
-                  className={`file-option-button ${
-                    selectedFile === url ? "selected" : ""
-                  }`}
-                  style={{ width: "100%" }}
-                >
-                  {`${key} - ${extractFileNameFromURL(url)}`}
-                </Button>
-              ))
-            )
+            <>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>File Type</th>
+                    <th>File Names</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(currentFileOptions).map((key) =>
+                    currentFileOptions[key].map((url, index) => (
+                      <tr key={`${key}-${index}`}>
+                        <td>{key}</td>
+                        <td>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setSelectedFile(url);
+                            }}
+                          >
+                            {extractFileNameFromURL(url)}
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </Table>
+              {selectedFile && (
+                <p className="selected-file">
+                  Selected File: {extractFileNameFromURL(selectedFile)}
+                </p>
+              )}
+            </>
           ) : (
-            <p>No files available for download.</p>
+            <p>No available files for download.</p>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={closeDownloadModal}>
             Close
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleDownload}
-            disabled={!selectedFile}
-          >
+          <Button variant="primary" onClick={handleDownload} disabled={!selectedFile}>
             Download
           </Button>
         </Modal.Footer>
