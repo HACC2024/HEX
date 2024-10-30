@@ -67,7 +67,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   return (
     <div>
-      <h1>Download CSV Files for {category}</h1>
       <SearchBar search={search} setSearch={setSearch} />
       {loading ? (
         <p>Loading...</p>

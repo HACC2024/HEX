@@ -1,12 +1,15 @@
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../styles.css";
-import { ArrowLeftCircleFill } from 'react-bootstrap-icons';
+import "../../../styles/CategoriesPage.Style.css";
 import  DownloadCSVFiles from "../../../components/DataCards";
+import CategoriesFilter from "../../../components/CategoriesFilter";
+import CategoryNav from "../../../components/CategoryNav";
+
 
 
 export async function generateStaticParams() {
-    // Define the categories you want to statically generate
+
     const categories = ['community', 'transportation', 'school', 'employment', 'publicSafety'];
     
     return categories.map(category => ({
@@ -23,12 +26,10 @@ const DataContent = ({ category }: { category: 'community' | 'transportation' | 
         publicSafety: "Public Safety",
     }
     return (
-        <div>
-            <a href="../">
-                <ArrowLeftCircleFill />
-                Back to Home
-            </a>
-            <h1>{categoryToCap[category]}</h1>
+        <div className="dataContentDiv">
+          <CategoryNav/>
+            <CategoriesFilter />
+            <h2 className="text-center pt-5"><strong>Data for {categoryToCap[category]}</strong></h2>
             <DownloadCSVFiles category= {categoryToCap[category]}/>
         </div>
     )
