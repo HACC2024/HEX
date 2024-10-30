@@ -1,5 +1,6 @@
 // src/app/layout.tsx
 import React from "react";
+import Footer from "../components/footer";
 
 export const metadata = {
   title: "Hex Opendata App",

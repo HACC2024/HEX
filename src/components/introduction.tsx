@@ -72,7 +72,7 @@ const Introduction: React.FC = () => {
             className="IntroBox p-4 text-center border card-shadow"
             data-box="1"
           >
-            <h3 style={{ color: "#b4d5ff" }}>Box 1</h3>
+            <h3 style={{ color: "#b4d5ff", fontSize: "25px" }}>Free AI Tools</h3>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
               in rhoncus quam, sit amet tincidunt urna.
@@ -89,7 +89,7 @@ const Introduction: React.FC = () => {
             className="IntroBox p-4 text-center border card-shadow"
             data-box="2"
           >
-            <h3 style={{ color: "#b4d5ff" }}>Box 2</h3>
+            <h3 style={{ color: "#b4d5ff", fontSize: "25px" }}>Visual Generators</h3>
             <p>
               Cras sit amet ex vel tortor luctus suscipit. Morbi pellentesque
               consequat lectus, quis cursus nisi feugiat quis.
@@ -106,7 +106,7 @@ const Introduction: React.FC = () => {
             className="IntroBox p-4 text-center border card-shadow"
             data-box="3"
           >
-            <h3 style={{ color: "#b4d5ff" }}>Box 3</h3>
+            <h3 style={{ color: "#b4d5ff", fontSize: "25px" }}>Streamlined Access</h3>
             <p>
               Etiam molestie risus sed quam fermentum vehicula. Vestibulum
               lacinia fringilla bibendum. Fusce feugiat tincidunt sodales.
