@@ -5,13 +5,13 @@
 import dynamic from "next/dynamic";
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
-import { toggleSignIn, toggleSignOut, stateChange } from "../../.firebase/auth";
-import { storage, database } from "../../.firebase/firebase";
+import { toggleSignIn, toggleSignOut, stateChange } from "../../../../.firebase/auth";
+import { storage, database } from "../../../../.firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { ref as dbRef, push, onValue, update, remove } from "firebase/database";
 import "react-quill/dist/quill.snow.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles.css";
+// import "../styles.css";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -40,6 +40,13 @@ const AdminPortal: React.FC = () => {
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
   const [editImage, setEditImage] = useState<File | null>(null);
+
+  const [editFiles, setEditFiles] = useState<{
+    [key: string]: {
+      existing: { url: string; toDelete: boolean }[];
+      new: File[];
+    };
+  }>({});
 
   const [selectedFiles, setSelectedFiles] = useState<{
     csv?: File[];
@@ -359,7 +366,75 @@ const AdminPortal: React.FC = () => {
     setEditDepartment(upload.department || "");
     setEditDescription(upload.description);
     setEditCategory(upload.category);
+
+    const initialEditFiles: typeof editFiles = {};
+    Object.entries(upload.file || {}).forEach(([fileType, urls]) => {
+      if (Array.isArray(urls)) {
+        initialEditFiles[fileType] = {
+          existing: urls.map(url => ({ url, toDelete: false })),
+          new: []
+        };
+      }
+    });
+    setEditFiles(initialEditFiles);
     setShowEditModal(true);
+  };
+
+  const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      const newEditFiles = { ...editFiles };
+
+      filesArray.forEach((file) => {
+        let fileType = '';
+        switch (file.type) {
+          case "text/csv":
+            fileType = 'CSV';
+            break;
+          case "application/json":
+            fileType = 'JSON';
+            break;
+          case "application/xml":
+          case "text/xml":
+            fileType = 'XML';
+            break;
+          case "application/rdf+xml":
+            fileType = 'RDF';
+            break;
+          default:
+            return;
+        }
+
+        if (!newEditFiles[fileType]) {
+          newEditFiles[fileType] = { existing: [], new: [] };
+        }
+        newEditFiles[fileType].new.push(file);
+      });
+
+      setEditFiles(newEditFiles);
+    }
+  };
+
+  const toggleFileDelete = (fileType: string, index: number) => {
+    setEditFiles(prev => ({
+      ...prev,
+      [fileType]: {
+        ...prev[fileType],
+        existing: prev[fileType].existing.map((file, i) =>
+          i === index ? { ...file, toDelete: !file.toDelete } : file
+        )
+      }
+    }));
+  };
+
+  const removeNewFile = (fileType: string, index: number) => {
+    setEditFiles(prev => ({
+      ...prev,
+      [fileType]: {
+        ...prev[fileType],
+        new: prev[fileType].new.filter((_, i) => i !== index)
+      }
+    }));
   };
 
   const handleUpdate = async () => {
@@ -367,6 +442,7 @@ const AdminPortal: React.FC = () => {
 
     try {
       let imageUrl = editingUpload.image;
+      const updatedFiles: { [key: string]: string[] } = {};
 
       // If a new image was selected, upload it
       if (editImage) {
@@ -397,6 +473,44 @@ const AdminPortal: React.FC = () => {
         });
       }
 
+      for (const [fileType, files] of Object.entries(editFiles)) {
+        updatedFiles[fileType] = [];
+
+        for (const existingFile of files.existing) {
+          if (existingFile.toDelete) {
+            const fileRef = ref(storage, existingFile.url);
+            try {
+              await deleteObject(fileRef);
+            } catch (error) {
+              console.error(`Error deleting file: ${existingFile.url}`, error);
+            }
+          } else {
+            updatedFiles[fileType].push(existingFile.url);
+          }
+        }
+
+        for (const newFile of files.new) {
+          const fileRef = ref(storage, `Test/${fileType}/${newFile.name}`);
+          const uploadTask = uploadBytesResumable(fileRef, newFile);
+
+          const url = await new Promise<string>((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setUploadStatus(`${fileType} file upload is ${progress}% done`);
+              },
+              reject,
+              async () => {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(url);
+              }
+            );
+          });
+
+          updatedFiles[fileType].push(url);
+        }
+      }
       // Update the database
       const updateRef = dbRef(database, `Test/${editingUpload.id}`);
       await update(updateRef, {
@@ -407,12 +521,14 @@ const AdminPortal: React.FC = () => {
         description: editDescription,
         category: editCategory,
         image: imageUrl,
+        file: updatedFiles,
         updatedAt: new Date().toISOString(),
       });
 
       setShowEditModal(false);
       setEditingUpload(null);
       setEditImage(null);
+      setEditFiles({});
       Swal.fire("Success", "Record updated successfully", "success");
     } catch (error) {
       console.error("Error updating record:", error);
@@ -801,6 +917,73 @@ const AdminPortal: React.FC = () => {
                     <option value="Employment">Employment</option>
                     <option value="Public Safety">Public Safety</option>
                   </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Files</label>
+
+                  {/* Existing Files */}
+                  {Object.entries(editFiles).map(([fileType, files]) => (
+                    <div key={fileType} className="mb-3">
+                      <h6>{fileType}:</h6>
+
+                      {/* Existing Files List */}
+                      {files.existing.length > 0 && (
+                        <div className="mb-2">
+                          <h7>Existing:</h7>
+                          <ul className="list-group">
+                            {files.existing.map((file, index) => (
+                              <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                                <a href={file.url} target="_blank" rel="noopener noreferrer"
+                                   className={file.toDelete ? 'text-decoration-line-through' : ''}>
+                                  File {index + 1}
+                                </a>
+                                <button
+                                  type="button"
+                                  className={`btn btn-${file.toDelete ? 'warning' : 'danger'} btn-sm`}
+                                  onClick={() => toggleFileDelete(fileType, index)}
+                                >
+                                  {file.toDelete ? 'Undo Delete' : 'Delete'}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* New Files List */}
+                      {files.new.length > 0 && (
+                        <div className="mb-2">
+                          <h7>New:</h7>
+                          <ul className="list-group">
+                            {files.new.map((file, index) => (
+                              <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{file.name}</span>
+                                <button
+                                  type="button"
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => removeNewFile(fileType, index)}
+                                >
+                                  Remove
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Add New Files */}
+                  <div className="mt-3">
+                    <label className="form-label">Add New Files:</label>
+                    <input
+                      type="file"
+                      accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
+                      onChange={handleEditFileChange}
+                      multiple
+                      className="form-control"
+                    />
+                  </div>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">New Image (optional):</label>

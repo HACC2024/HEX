@@ -7,7 +7,7 @@ import styles from "../../styles/csvReader.module.css";
 import UncleChatbot from "../../components/UncleChatbot";
 import Chatbot from "../../components/Chatbot";
 import SecurityReport from "../security-report/page";
-import AdminPortal from "../../components/AdminPortal";
+import AdminPortal from "../Admin/_components/AdminPortal";
 import {
   BarChart,
   MessageCircle,
