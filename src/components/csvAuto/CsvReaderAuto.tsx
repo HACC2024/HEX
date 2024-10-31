@@ -15,16 +15,13 @@ import {
   exportFilteredData,
 } from "./chartUtils";
 import { CsvRow, ChartOptions, FilterState } from "./types";
-import { ref as dbRef, onValue } from "firebase/database";
-import { database } from "../../../.firebase/firebase";
+import "./graph.css";
 
-interface FileData {
-  name: string;
-  file: { [key: string]: string[] };
+interface CsvAutoProps {
+  file: { [key: string]: string[] } | null;
 }
 
-const CsvAuto = () => {
-  const [files, setFiles] = useState<FileData[]>([]);
+const CsvAuto: React.FC<CsvAutoProps> = ({ file }) => {
   const [selectedCsvUrl, setSelectedCsvUrl] = useState<string>("");
   const [data, setData] = useState<CsvRow[]>([]);
   const [filteredData, setFilteredData] = useState<CsvRow[]>([]);
@@ -48,52 +45,60 @@ const CsvAuto = () => {
     yAxisField: "",
   });
 
-  // Fetch CSV files from Firebase, filtering for CSV files only
-  useEffect(() => {
-    const dbRefPath = dbRef(database, "Admin");
-    const unsubscribe = onValue(dbRefPath, (snapshot) => {
-      if (snapshot.exists()) {
-        const fileList = snapshot.val();
-        const formattedFiles: FileData[] = Object.keys(fileList).map((key) => ({
-          name: fileList[key].name,
-          file: fileList[key].file,
-        }));
-        setFiles(formattedFiles);
-      } else {
-        console.error("No CSV files available.");
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+  const extractFileName = (url: string): string => {
+    const decodedUrl = decodeURIComponent(url);
+    const parts = decodedUrl.split("/");
+    const fileNameWithParams = parts.pop();
+    const fileName = fileNameWithParams?.split("?")[0];
+    return fileName || "";
+  };
 
-  const handleCsvSelect = async (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  useEffect(() => {
+    if (file) {
+      const firstCsvUrl = Object.keys(file)
+        .filter((key) => key.toLowerCase().endsWith("csv"))
+        .map((key) => file[key][0])
+        .find((url) => !!url);
+
+      if (firstCsvUrl) {
+        setSelectedCsvUrl(firstCsvUrl);
+        setCsvFileName(extractFileName(firstCsvUrl));
+        fetchCsvData(firstCsvUrl);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
+
+  const fetchCsvData = async (csvUrl: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(csvUrl);
+      const text = await response.text();
+      Papa.parse(text, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          handleParseComplete(result);
+          setLoading(false);
+        },
+        error: (err: Error) => {
+          console.error("Error parsing CSV:", err);
+          setLoading(false);
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching CSV:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleCsvSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedFile = event.target.value;
     setSelectedCsvUrl(selectedFile);
     setCsvFileName(event.target.selectedOptions[0].text);
 
     if (selectedFile) {
-      setLoading(true);
-      try {
-        const response = await fetch(selectedFile);
-        const text = await response.text();
-        Papa.parse(text, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (result) => {
-            handleParseComplete(result);
-            setLoading(false);
-          },
-          error: (err) => {
-            console.error("Error parsing CSV:", err);
-            setLoading(false);
-          },
-        });
-      } catch (error) {
-        console.error("Error fetching CSV:", error);
-        setLoading(false);
-      }
+      fetchCsvData(selectedFile);
     }
   };
 
@@ -169,24 +174,21 @@ const CsvAuto = () => {
 
               <div className="mb-3">
                 <select
-                  className="form-control"
+                  className="form-control custom-dropdown"
                   value={selectedCsvUrl}
                   onChange={handleCsvSelect}
                 >
                   <option value="">Select a CSV file</option>
-                  {files.map((file) =>
-                    file.file
-                      ? Object.keys(file.file)
-                          .filter((key) => key.toLowerCase().endsWith("csv"))
-                          .map((key) =>
-                            file.file[key].map((url, index) => (
-                              <option key={index} value={url}>
-                                {`${file.name} - ${key}`}
-                              </option>
-                            ))
-                          )
-                      : null
-                  )}
+                  {file &&
+                    Object.keys(file)
+                      .filter((key) => key.toLowerCase().endsWith("csv"))
+                      .map((key) =>
+                        file[key].map((url, index) => (
+                          <option key={index} value={url}>
+                            {`${key} - ${extractFileName(url)}`}
+                          </option>
+                        ))
+                      )}
                 </select>
                 {csvFileName && (
                   <div className="d-flex justify-content-between align-items-center mt-2 ms-1">

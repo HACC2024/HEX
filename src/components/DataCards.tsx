@@ -144,6 +144,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   const closeDownloadModal = () => {
     setShowDownloadModal(false);
+    setSelectedFile("");
   };
 
   const closeInfoModal = () => {
@@ -292,7 +293,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                   </Row>
                 </Tab.Pane>
                 <Tab.Pane eventKey="details">
-                  <CsvReaderAuto />
+                  <CsvReaderAuto file={selectedFileData?.file} />
                 </Tab.Pane>
               </Tab.Content>
             </Tab.Container>
