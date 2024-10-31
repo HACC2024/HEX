@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import styles from "../../styles/securityReport.module.css";
+import "../../styles/styles.css"
 
 export default function SecurityReport() {
   const [formData, setFormData] = useState({

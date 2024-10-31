@@ -1,6 +1,5 @@
 // src/app/layout.tsx
 import React from "react";
-
 export const metadata = {
   title: "Hex Opendata App",
   description: "An open data app built with Next.js",
