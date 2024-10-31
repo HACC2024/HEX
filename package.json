@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/chart.js": "^2.9.41",
+    "@splinetool/react-spline": "^4.0.0",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.5",
     "firebase": "^10.14.1",
@@ -28,7 +28,8 @@
     "react-select": "^5.8.1",
     "recharts": "^2.13.0",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.14.3"
+    "sweetalert2": "^11.14.3",
+    "swiper": "^11.1.14"
   },
   "devDependencies": {
     "@types/node": "^20",

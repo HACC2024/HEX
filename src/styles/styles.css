@@ -1,6 +1,7 @@
 /* Global Styles */
 body {
-    color: #000000;
+    color: rgb(255, 255, 255);
+    background-color: #000000;
     font-family: monospace;
     margin: 0;
     padding: 0;
@@ -20,7 +21,7 @@ main {
 #how-it-works {
     padding: 240px; /* Increased padding for sections */
     border-radius: 8px; /* Rounded corners */
-    background-color: #1f1f1f; /* Dark background for sections */
+    background-color: #000000; /* Dark background for sections */
     margin: 20px 0; /* Adjusted margin for sections to prevent side scrolling */
     text-align: center; /* Center text within sections */
 }
@@ -34,34 +35,8 @@ h2 {
     text-decoration: none;
 }
 
-/* Navbar Styles */
-nav {
-    background-color: white; /* Darker background for navbar */
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
-    position: fixed;
-    left: 0; /* Align to the left */
-    right: 0; /* Align to the right */
-    z-index: 1000; /* Ensure navbar is above other content */
-}
+/* Optional: Dark Mode Toggle Styling */
 
-nav ul {
-    list-style: none;
-    display: flex; /* Use flexbox for horizontal layout */
-    justify-content: center; /* Center navbar items */
-}
-
-nav ul li {
-    margin: 0 30px -10px; /* Top, horizontal, and bottom margin */
-
-}
-
-nav a {
-    color: #00bcd4; /* Bright cyan color for links */
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s;
-}
 
 /* Smaller text size for navbar links on smaller screens */
 @media (max-width: 768px) {
@@ -69,19 +44,22 @@ nav a {
         font-size: 14px; /* Smaller font size for navbar links */
     }
 }
-
 nav a:hover {
-    color: #80deea; /* Lighter cyan on hover */
+    color: #5c85f6;
+}
+
+/* Hover effect for dark mode icon */
+.darkmode-icon:hover {
+    color: #5c85f6; /* Same hover color as links */
 }
 
 /* Footer Styles */
 footer {
-    color: #00bcd4;
+    color: #ffffff;
     text-align: center;
     padding: 20px;
     width: 100%;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
-    margin-top: 10px; /* Add margin to separate from content above */
 }
 
 /* Responsive Styles */
@@ -106,7 +84,7 @@ footer {
 
 footer .nav-link,
 footer .custom-link {
-    color: #6c757d;
+    color: white;
     transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
     display: flex;
     align-items: center;
