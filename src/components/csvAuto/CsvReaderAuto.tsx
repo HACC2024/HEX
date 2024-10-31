@@ -48,7 +48,7 @@ const CsvAuto = () => {
     yAxisField: "",
   });
 
-  // Fetch CSV files from Firebase, filtering for CSV files only
+  
   useEffect(() => {
     const dbRefPath = dbRef(database, "Admin");
     const unsubscribe = onValue(dbRefPath, (snapshot) => {
@@ -70,8 +70,9 @@ const CsvAuto = () => {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const selectedFile = event.target.value;
+    const selectedFileName = event.target.selectedOptions[0].text;
     setSelectedCsvUrl(selectedFile);
-    setCsvFileName(event.target.selectedOptions[0].text);
+    setCsvFileName(selectedFileName);
 
     if (selectedFile) {
       setLoading(true);
@@ -85,7 +86,7 @@ const CsvAuto = () => {
             handleParseComplete(result);
             setLoading(false);
           },
-          error: (err) => {
+          error: (err: Error) => {
             console.error("Error parsing CSV:", err);
             setLoading(false);
           },
