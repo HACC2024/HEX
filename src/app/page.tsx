@@ -1,6 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/display-name */
+
 "use client";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -37,19 +39,21 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   }, [words.length]);
 
   return (
-    <div className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5">
+    <div  id="Introduction" className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5">
       <div className="row w-100">
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
-        <h1 className="text-center fw-bold mt-5 mb-4">
-            <span className="flip-word blue-text fw-bold">
+          <h1 className="text-center fw-bold mt-5 mb-4">
+            <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
               UHSPACE DATA HUB
-            </span>{" "}
-          </h1> 
+            </span>
+          </h1>
+
           <h5 className="text-center mt-2">
-          Unlocking Hawaii's Solutions for Personalized Analytics and Collaborative Engagement
+            Unlocking Hawaii's Solutions for Personalized Analytics and
+            Collaborative Engagement
           </h5>
           <h3 className="text-center fw-bold mt-4">
-            <span className="flip-word blue-text fw-bold">
+            <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
               {words[currentWordIndex]}
             </span>{" "}
             FOR YOUR DISCOVERY
@@ -57,13 +61,14 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
         </div>
         <div className="col-md-6 d-flex justify-content-center align-items-center">
           <img
-            src={isLightMode ? "/HEX-HACC-2024-LIGHT-6.png" : "/dark-graph.jpg"}
+            src={isLightMode ? "/HEX-HACC-2024-LIGHT-5.png" : "/dark-graph.jpg"}
             alt="3D Graph"
             className="img-fluid right-image rounded fade-in"
+            style={isLightMode ? { width: "85%", height: "auto" } : {}}
           />
         </div>
       </div>
-      <div id="Introduction" className="bottom-light left-light"></div>
+      <div className="bottom-light left-light"></div>
       <div className="bottom-light right-light"></div>
     </div>
   );
@@ -96,7 +101,7 @@ const categoryData = [
   },
   {
     id: "publicSafety",
-    name: "Public Safety",
+    name: "Safety",
     icon: <Shield className="fs-1" />,
     link: "/Categories/publicSafety",
   },
@@ -113,6 +118,27 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
     categoryData.length;
 
   useEffect(() => {
+    const navButtons = document.querySelector(".nav-buttons");
+
+    const observer = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+        rootMargin: "0px 0px -100px 0px",
+      }
+    );
+
+    if (navButtons) {
+      observer.observe(navButtons);
+    }
+
     let interval: NodeJS.Timeout;
     if (!isPaused) {
       interval = setInterval(() => {
@@ -127,6 +153,9 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
+      if (navButtons) {
+        observer.unobserve(navButtons);
+      }
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
@@ -146,18 +175,30 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
   };
 
   return (
-    <div id="Category" className="circular-categories-container text-center py-5 container-fluid">
-      <h1 className="custom-h1 mb-4">CHOOSE A CATEGORY</h1>
+    <div
+      id="Category"
+      className="circular-categories-container text-center py-5 container-fluid"
+    >
+      <h1 className="custom-h1 mb-4 mt-4">CHOOSE A CATEGORY</h1>
       <h4 className="custom-h4 mb-5">Explore Hundreds of Open Source Data!</h4>
 
-      <div className="circular-display" style={{ transform: `rotateY(${rotation}deg)` }}>
+      <div
+        className="circular-display"
+        style={{ transform: `rotateY(${rotation}deg)` }}
+      >
         {categoryData.map((category, index) => (
           <Link
-            key={category.id} // Use the unique ID
+            key={category.id}
             href={category.link}
-            className={`category-box ${index === centeredIndex ? "centered" : ""}`}
-            onMouseEnter={index === centeredIndex ? handleMouseEnter : undefined}
-            onMouseLeave={index === centeredIndex ? handleMouseLeave : undefined}
+            className={`category-box ${
+              index === centeredIndex ? "centered" : ""
+            }`}
+            onMouseEnter={
+              index === centeredIndex ? handleMouseEnter : undefined
+            }
+            onMouseLeave={
+              index === centeredIndex ? handleMouseLeave : undefined
+            }
           >
             <div className="category-icon">{category.icon}</div>
             <strong>{category.name}</strong>
@@ -168,11 +209,27 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
       <div className="spotlight-left"></div>
       <div className="spotlight-right"></div>
 
-      <div className="button-container mt-4" style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-        <button onClick={handleBackward} className="btn btn-primary mx-2">
+      <div
+        className="nav-buttons mt-4"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "1rem",
+          opacity: 0,
+          transform: "translateY(20px)",
+          transition: "all 0.5s ease",
+        }}
+      >
+        <button
+          onClick={handleBackward}
+          className="btn btn-primary mx-2 gradient-button"
+        >
           <CaretLeftFill />
         </button>
-        <button onClick={handleForward} className="btn btn-primary mx-2">
+        <button
+          onClick={handleForward}
+          className="btn btn-primary mx-2 gradient-button"
+        >
           <CaretRightFill />
         </button>
       </div>

@@ -32,6 +32,54 @@ h2 {
 }
 
 /* Navbar Styles */
+.nav-buttons.show {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Optional: Add some hover effects */
+.nav-buttons.show button:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+  background: linear-gradient(
+    135deg,
+    #5e07ff,
+    #bc98ffdd
+  );
+  
+}
+
+.gradient-text {
+  background: linear-gradient(40deg, rgba(109, 189, 255, 0.64) 10%, rgba(58, 118, 207, 0.625) 30%, rgba(18, 57, 215, 0.599) 60%, rgba(100, 57, 240, 0.531) 70%, rgba(131, 49, 255, 0.477) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-button:hover {
+  background: linear-gradient(
+    135deg,
+    #5e07ff,
+    #bc98ffdd
+  ); /* New color gradient */
+  color: #ffffff;
+  transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.gradient-button {
+  background: linear-gradient(
+    40deg,
+    rgba(109, 189, 255, 0.64) 10%,
+    rgba(58, 118, 207, 0.625) 30%,
+    rgba(18, 57, 215, 0.599) 60%,
+    rgba(100, 57, 240, 0.531) 70%,
+    rgba(131, 49, 255, 0.477) 100%
+  );
+  border: none;
+  color: #fff; /* Adjust text color if needed */
+  transition: background 0.3s ease; /* Smooth transition */
+}
+
 nav {
   background-color: #00000078; /* Dark grey background color */
   color: #5c85f6;
@@ -389,6 +437,7 @@ footer {
 
 /* Category Box Styling */
 .category-box {
+  text-decoration: none;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -400,8 +449,14 @@ footer {
   width: 170px; /* Fixed width for uniform size */
   height: 180px; /* Fixed height for uniform size */
   padding: 20px;
-  background: linear-gradient(135deg, #0020b0e3, #59b2ffe3);
-  color: #ffffff;
+  background: linear-gradient(
+    40deg,
+    rgba(109, 189, 255, 0.64) 10%,
+    rgba(58, 118, 207, 0.625) 30%,
+    rgba(18, 57, 215, 0.599) 60%,
+    rgba(100, 57, 240, 0.531) 70%,
+    rgba(131, 49, 255, 0.477) 100%
+  );  color: #ffffff;
   font-size: 1.2rem;
   border-radius: 10px;
   transform: translate(-50%, -50%);
@@ -413,13 +468,36 @@ footer {
     135deg,
     #5e07ff,
     #bc98ffdd
-  ); /* New color gradient */
+  );
   color: #ffffff;
-  transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.category-box strong {
+  position: relative;
+  display: inline-block;
+  color: inherit; /* Inherit color from the parent element */
+}
+
+.category-box strong::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px; /* Adjusts underline position */
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.3s ease, left 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.category-box.centered:hover strong::after {
+  width: 100%;
+  left: -10;
 }
 
 .category-icon {
-  font-size: 4rem;
+  font-size: 3rem;
   margin-bottom: 15px;
 }
 
