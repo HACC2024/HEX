@@ -32,6 +32,7 @@
     "swiper": "^11.1.14"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/node": "^20",
     "@types/papaparse": "^5.3.15",
     "@types/react": "^18",

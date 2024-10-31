@@ -1,47 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import React, { useEffect, useState } from "react";
-import "../styles.css";
+import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 
 const Introduction: React.FC = () => {
-  const [scrollDirection, setScrollDirection] = useState("down");
-
   useEffect(() => {
-    const boxes = document.querySelectorAll(".IntroBox");
-    let lastScrollY = window.scrollY;
-
-    let isScrolling: number;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // Debounce the scroll event to prevent rapid toggling
-      window.clearTimeout(isScrolling);
-      isScrolling = window.setTimeout(() => {
-        if (currentScrollY > lastScrollY) {
-          setScrollDirection("down");
-        } else {
-          setScrollDirection("up");
-        }
-        lastScrollY = currentScrollY;
-      }, 100); // Wait 100ms after scrolling to handle the event
-    };
-
-    // Observer for scroll into view - Add 'show' class only once
+    const boxes = document.querySelectorAll(".AnimatedBox");
+    
     const observer = new IntersectionObserver(
       (entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("show");
-            // Unobserve the box after the animation has been triggered once
+            (entry.target as HTMLElement).style.opacity = "1";
+            (entry.target as HTMLElement).style.transform = "translateY(0)";
             observer.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.5, // Trigger when 50% of the element is visible
-        rootMargin: "0px 0px -100px 0px", // Buffer area to trigger the animation earlier
+        threshold: 0.2,  // Lower threshold for earlier triggering
+        rootMargin: "0px 0px -50px 0px",  // Adjusted margin for smoother trigger
       }
     );
 
@@ -49,67 +25,96 @@ const Introduction: React.FC = () => {
       observer.observe(box);
     });
 
-    // Add scroll event listener
-    window.addEventListener("scroll", handleScroll);
-
-    // Cleanup observer and scroll event
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       boxes.forEach((box) => observer.unobserve(box));
     };
   }, []);
 
   return (
-    <div id="Introduction" className="IntroDiv px-5 pt-5">
-      <Row className="d-flex justify-content-center align-items-center gap-2">
+    <div className="IntroDiv px-4 pt-5">
+      <Row className="d-flex justify-content-center align-items-stretch gap-md-4 gap-2">
         <Col
           xs={12}
-          md={3}
-          className="d-flex flex-column align-items-center mb-4"
+          lg={3}
+          md={5}
+          className="d-flex flex-column align-items-center"
         >
-          {/* Box 1 */}
           <div
-            className="IntroBox p-4 text-center border card-shadow"
+            className="IntroBox p-4 text-center border card-shadow mt-4 AnimatedBox"
             data-box="1"
+            style={{ 
+              maxWidth: "400px", 
+              width: "100%",
+              opacity: 0,
+              transform: "translateY(30px)",
+              transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
           >
-            <h3 style={{ color: "#b4d5ff" }}>Box 1</h3>
+            <h3 style={{ color: "#b4d5ff", fontSize: "25px" }}>
+              Free AI Tools
+            </h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-              in rhoncus quam, sit amet tincidunt urna.
+              Unlock the power of data with personalized Pidgin Chatbots! Uncle
+              HEX dives into insights and analysis, while HEX Admin Assistant
+              manages your data hub and tackles technical queries—all powered by
+              the cutting-edge Groq Llama3-8b-8192.
             </p>
           </div>
         </Col>
+
         <Col
           xs={12}
-          md={3}
-          className="d-flex flex-column align-items-center mb-4"
+          lg={3}
+          md={5}
+          className="d-flex flex-column align-items-center"
         >
-          {/* Box 2 */}
           <div
-            className="IntroBox p-4 text-center border card-shadow"
+            className="IntroBox p-4 text-center border card-shadow mt-4 AnimatedBox"
             data-box="2"
+            style={{ 
+              maxWidth: "400px", 
+              width: "100%",
+              opacity: 0,
+              transform: "translateY(30px)",
+              transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s",
+            }}
           >
-            <h3 style={{ color: "#b4d5ff" }}>Box 2</h3>
+            <h3 style={{ color: "#b4d5ff", fontSize: "25px" }}>
+              Visual Generators
+            </h3>
             <p>
-              Cras sit amet ex vel tortor luctus suscipit. Morbi pellentesque
-              consequat lectus, quis cursus nisi feugiat quis.
+              Visualize graphs and refine data instantly for peak performance.
+              Effortlessly export polished datasets and charts, enabling
+              seamless AI collaboration. With customizable charts, you can share
+              insights with clarity for any audience.
             </p>
           </div>
         </Col>
+
         <Col
           xs={12}
-          md={3}
-          className="d-flex flex-column align-items-center mb-4"
+          lg={3}
+          md={5}
+          className="d-flex flex-column align-items-center"
         >
-          {/* Box 3 */}
           <div
-            className="IntroBox p-4 text-center border card-shadow"
+            className="IntroBox p-4 text-center border card-shadow mt-4 AnimatedBox"
             data-box="3"
+            style={{ 
+              maxWidth: "400px", 
+              width: "100%",
+              opacity: 0,
+              transform: "translateY(30px)",
+              transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s",
+            }}
           >
-            <h3 style={{ color: "#b4d5ff" }}>Box 3</h3>
+            <h3 style={{ color: "#b4d5ff", fontSize: "25px" }}>
+              Centralized Data
+            </h3>
             <p>
-              Etiam molestie risus sed quam fermentum vehicula. Vestibulum
-              lacinia fringilla bibendum. Fusce feugiat tincidunt sodales.
+              Experience a new era of data shopping with our intuitive UI/UX,
+              crafted for effortless navigation. Our powerful filter and search
+              feature lets you explore all your datasets on a single page—like a marketplace, making data access fast and simple.
             </p>
           </div>
         </Col>
