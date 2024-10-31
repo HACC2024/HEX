@@ -233,7 +233,7 @@ const AdminPortal: React.FC = () => {
 
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const storageRef = ref(storage, `Test/${fileType}/${file.name}`);
+          const storageRef = ref(storage, `Admin/${fileType}/${file.name}`);
           const fileUploadTask = uploadBytesResumable(storageRef, file);
 
           await new Promise<void>((resolve, reject) => {
@@ -268,7 +268,7 @@ const AdminPortal: React.FC = () => {
       }
 
       // Upload the image to Firebase Storage
-      const imageRef = ref(storage, `Test/Images/${selectedImage.name}`);
+      const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
       const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
 
       await new Promise<string>((resolve, reject) => {
@@ -287,7 +287,7 @@ const AdminPortal: React.FC = () => {
         );
       }).then(async (imageUrl) => {
         // Save to Realtime Database with indexed file structure
-        const uploadsRef = dbRef(database, "Test");
+        const uploadsRef = dbRef(database, "Admin");
         await push(uploadsRef, {
           name,
           author,
@@ -342,7 +342,7 @@ const AdminPortal: React.FC = () => {
    * @return {void}
    */
   const fetchUploads = () => {
-    const uploadsRef = dbRef(database, "Test");
+    const uploadsRef = dbRef(database, "Admin");
 
     onValue(uploadsRef, (snapshot) => {
       const data = snapshot.val();
@@ -455,7 +455,7 @@ const AdminPortal: React.FC = () => {
         }
 
         // Upload new image
-        const imageRef = ref(storage, `Test/Images/${editImage.name}`);
+        const imageRef = ref(storage, `Admin/Images/${editImage.name}`);
         const imageUploadTask = uploadBytesResumable(imageRef, editImage);
         imageUrl = await new Promise((resolve, reject) => {
           imageUploadTask.on(
@@ -490,7 +490,7 @@ const AdminPortal: React.FC = () => {
         }
 
         for (const newFile of files.new) {
-          const fileRef = ref(storage, `Test/${fileType}/${newFile.name}`);
+          const fileRef = ref(storage, `Admin/${fileType}/${newFile.name}`);
           const uploadTask = uploadBytesResumable(fileRef, newFile);
 
           const url = await new Promise<string>((resolve, reject) => {
@@ -512,7 +512,7 @@ const AdminPortal: React.FC = () => {
         }
       }
       // Update the database
-      const updateRef = dbRef(database, `Test/${editingUpload.id}`);
+      const updateRef = dbRef(database, `Admin/${editingUpload.id}`);
       await update(updateRef, {
         name: editName,
         author: editAuthor,
@@ -565,7 +565,7 @@ const AdminPortal: React.FC = () => {
         }
 
         // Delete the database entry
-        const dbItemRef = dbRef(database, `Test/${upload.id}`);
+        const dbItemRef = dbRef(database, `Admin/${upload.id}`);
         await remove(dbItemRef);
 
         Swal.fire("Deleted!", "Record has been deleted.", "success");
