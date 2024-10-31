@@ -929,7 +929,7 @@ const AdminPortal: React.FC = () => {
                       {/* Existing Files List */}
                       {files.existing.length > 0 && (
                         <div className="mb-2">
-                          <h7>Existing:</h7>
+                          <h6>Existing:</h6>
                           <ul className="list-group">
                             {files.existing.map((file, index) => (
                               <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
@@ -953,7 +953,7 @@ const AdminPortal: React.FC = () => {
                       {/* New Files List */}
                       {files.new.length > 0 && (
                         <div className="mb-2">
-                          <h7>New:</h7>
+                          <h6>New:</h6>
                           <ul className="list-group">
                             {files.new.map((file, index) => (
                               <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
