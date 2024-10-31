@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../../styles.css";
+// import "../../../styles.css";
 import "../../../styles/CategoriesPage.Style.css";
 import DownloadCSVFiles from "../../../components/DataCards";
 import CategoriesFilter from "../../../components/CategoriesFilter";
