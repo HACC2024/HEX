@@ -14,6 +14,7 @@ import {
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
+import SearchBar from "./SearchFilter";
 import dynamic from "next/dynamic";
 import "../styles/DataCard.css";
 
@@ -52,6 +53,7 @@ const CsvReaderAuto = dynamic(
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
@@ -168,13 +170,18 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     closeDownloadModal();
   };
 
+  const searchedFiles = files.filter(file =>
+    file.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div>
+      <SearchBar search={search} setSearch={setSearch} />
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="file-list">
-          {files.map((file: FileData) => (
+          {searchedFiles.map((file: FileData) => (
             <div
               key={file.name}
               className="file-card"
