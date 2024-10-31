@@ -24,7 +24,7 @@ interface FileData {
   image: string;
   description: string;
   uploadedAt: string;
-  lastUpdated: string;
+  updatedAt: string;
   author: string;
   maintainer: string;
   department: string;
@@ -79,7 +79,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               category: fileList[key].category,
               description: fileList[key].description,
               uploadedAt: fileList[key].uploadedAt,
-              lastUpdated: fileList[key].lastUpdated,
+              updatedAt: fileList[key].updatedAt,
               author: fileList[key].author,
               maintainer: fileList[key].maintainer,
               department: fileList[key].department,
@@ -281,7 +281,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                           </tr>
                           <tr>
                             <td>Last Updated</td>
-                            <td>{formatDate(selectedFileData.lastUpdated)}</td>
+                            <td>{formatDate(selectedFileData.updatedAt)}</td>
                           </tr>
                           <tr>
                             <td>Uploaded At</td>

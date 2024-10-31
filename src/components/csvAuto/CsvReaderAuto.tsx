@@ -94,8 +94,9 @@ const CsvAuto: React.FC<CsvAutoProps> = ({ file }) => {
 
   const handleCsvSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedFile = event.target.value;
+    const selectedFileName = event.target.selectedOptions[0].text;
     setSelectedCsvUrl(selectedFile);
-    setCsvFileName(event.target.selectedOptions[0].text);
+    setCsvFileName(selectedFileName);
 
     if (selectedFile) {
       fetchCsvData(selectedFile);
