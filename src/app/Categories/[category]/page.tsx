@@ -58,7 +58,7 @@ export default function CategoriesPage({
 
   return (
     <DataContent
-      category={
+      category={  
         category as
           | "community"
           | "transportation"
