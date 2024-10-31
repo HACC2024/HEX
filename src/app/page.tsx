@@ -41,7 +41,7 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   return (
     <div  id="Introduction" className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5">
       <div className="row w-100">
-        <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
+        <div className="col-md-6 d-flex flex-column justify-content-center align-items-center mb-5">
           <h1 className="text-center fw-bold mt-5 mb-4">
             <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
               UHSPACE DATA HUB
@@ -61,10 +61,10 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
         </div>
         <div className="col-md-6 d-flex justify-content-center align-items-center">
           <img
-            src={isLightMode ? "/HEX-HACC-2024-LIGHT-5.png" : "/dark-graph.jpg"}
+            src="/HEX-HACC-2024-LIGHT-5.png"
             alt="3D Graph"
             className="img-fluid right-image rounded fade-in"
-            style={isLightMode ? { width: "85%", height: "auto" } : {}}
+            style={{ width: "75%", height: "auto" }}
           />
         </div>
       </div>
