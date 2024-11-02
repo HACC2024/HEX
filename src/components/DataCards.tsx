@@ -10,10 +10,17 @@ import {
   Row,
   Col,
   Table,
+  Dropdown,
+  DropdownButton,
 } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
-import { Download } from "react-bootstrap-icons";
+import {
+  Download,
+  BookmarkFill,
+  Bookmark as BookmarkOutline,
+  Trash,
+} from "react-bootstrap-icons";
 import SearchBar from "./SearchFilter";
 import dynamic from "next/dynamic";
 import "../styles/DataCard.css";
@@ -52,8 +59,9 @@ const CsvReaderAuto = dynamic(
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<FileData[]>([]);
+  const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
@@ -72,7 +80,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
       (snapshot) => {
         if (snapshot.exists()) {
           const fileList = snapshot.val();
-
           const filteredFiles: FileData[] = Object.keys(fileList)
             .map((key) => ({
               name: fileList[key].name,
@@ -105,6 +112,13 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     return () => unsubscribe();
   }, [category]);
 
+  useEffect(() => {
+    const storedBookmarks = localStorage.getItem("bookmarkedFiles");
+    if (storedBookmarks) {
+      setBookmarkedFiles(JSON.parse(storedBookmarks));
+    }
+  }, []);
+
   const extractFileNameFromURL = (url: string): string => {
     const decodedUrl = decodeURIComponent(url);
     const parts = decodedUrl.split("/");
@@ -121,6 +135,38 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
       console.error("Invalid date format:", dateString, error);
       return "";
     }
+  };
+
+  const isBookmarked = (fileName: string) => {
+    return bookmarkedFiles.some(
+      (bookmarkedFile) => bookmarkedFile.name === fileName
+    );
+  };
+
+  const toggleBookmark = (file: FileData) => {
+    if (isBookmarked(file.name)) {
+      removeBookmark(file.name);
+    } else {
+      addBookmark(file);
+    }
+  };
+
+  const addBookmark = (file: FileData) => {
+    setBookmarkedFiles((prev) => {
+      const updatedBookmarks = [...prev, file];
+      localStorage.setItem("bookmarkedFiles", JSON.stringify(updatedBookmarks));
+      return updatedBookmarks;
+    });
+  };
+
+  const removeBookmark = (fileName: string) => {
+    setBookmarkedFiles((prev) => {
+      const updatedBookmarks = prev.filter(
+        (bookmarkedFile) => bookmarkedFile.name !== fileName
+      );
+      localStorage.setItem("bookmarkedFiles", JSON.stringify(updatedBookmarks));
+      return updatedBookmarks;
+    });
   };
 
   const openDownloadModal = (fileOptions: { [key: string]: string[] }) => {
@@ -170,13 +216,58 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     closeDownloadModal();
   };
 
-  const searchedFiles = files.filter(file =>
+  const searchedFiles = files.filter((file) =>
     file.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div>
-      <SearchBar search={search} setSearch={setSearch} />
+      <div className="search-bar-container">
+        <SearchBar search={search} setSearch={setSearch} />
+      </div>
+      <div className="bookmark-dropdown-container pb-3 px-5">
+        <DropdownButton id="dropdown-basic-button" title="Bookmarked Files">
+          {bookmarkedFiles.length > 0 ? (
+            bookmarkedFiles.map((file: FileData) => (
+              <Dropdown.Item
+                key={file.name}
+                className="d-flex align-items-center"
+              >
+                <Image
+                  onClick={() => openInfoModal(file)}
+                  src={file.image}
+                  alt={file.name}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "cover",
+                    marginRight: "10px",
+                  }}
+                  rounded
+                />
+                <div className="flex-grow-1">
+                  <div
+                    onClick={() => openInfoModal(file)}
+                    style={{ cursor: "pointer", fontWeight: "bold" }}
+                  >
+                    {file.name}
+                    <div style={{ fontSize: "12px", color: "gray" }}>
+                      {file.category}
+                    </div>
+                  </div>
+                </div>
+                <Trash
+                  className="text-danger"
+                  onClick={() => removeBookmark(file.name)}
+                  style={{ cursor: "pointer", marginLeft: "10px" }}
+                />
+              </Dropdown.Item>
+            ))
+          ) : (
+            <Dropdown.Item disabled>No bookmarks yet.</Dropdown.Item>
+          )}
+        </DropdownButton>
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -197,7 +288,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               <div className="file-info">
                 <h3 className="file-name">{file.name}</h3>
                 <p className="file-category pt-1">{file.category}</p>
-                <div className="file-tags pt-3">
+                <div className="file-tags pt-1">
                   {Object.keys(file.file).map((key) =>
                     file.file[key].length > 0 &&
                     file.file[key].some((url) => url !== "") ? (
@@ -212,10 +303,10 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                   )}
                 </div>
                 <div>
-                  <p>Views: {selectedFileData?.views}</p>
+                  <p>Views: {file.views}</p>
                 </div>
               </div>
-              <div className="button-container">
+              <div className="button-container d-flex align-items-center">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -226,16 +317,29 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                 >
                   Download <Download />
                 </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleBookmark(file);
+                  }}
+                  className="bookmark-icon-button"
+                >
+                  {isBookmarked(file.name) ? (
+                    <BookmarkFill style={{ color: "black" }} />
+                  ) : (
+                    <BookmarkOutline style={{ color: "black" }} />
+                  )}
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {}
       <Modal show={showInfoModal} onHide={closeInfoModal} centered size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>{selectedFileData?.name}</Modal.Title> {}
+          <Modal.Title>{selectedFileData?.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedFileData ? (
