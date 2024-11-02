@@ -1,50 +1,51 @@
-// auth.ts
+// .firebase/auth.ts
 
-import { auth } from "./firebase";  // Import the initialized auth from firebase.ts
-import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
-import Swal from "sweetalert2";
+import { auth, database } from './firebase';
+import { 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  User 
+} from 'firebase/auth';
+import { ref, get, set } from 'firebase/database';
 
-// Handle user sign-in
-export const toggleSignIn = async (email: string, password: string) => {
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-        Swal.fire("Error", error.message, "error");
-        throw error;
-    }
+// Check if user is an admin
+export const checkAdminRole = async (user: User): Promise<boolean> => {
+  try {
+    const userRef = ref(database, `users/${user.uid}`);
+    const snapshot = await get(userRef);
+    const userData = snapshot.val();
+    return userData?.role === 'admin';
+  } catch (error) {
+    console.error('Error checking admin role:', error);
+    return false;
+  }
 };
 
-// Handle user sign-out
-export const toggleSignOut = async () => {
-    try {
-        await signOut(auth);
-    } catch (error: any) {
-        Swal.fire("Error", error.message, "error");
-        throw error;
-    }
+// Sign in with admin role verification
+export const adminSignIn = async (email: string, password: string): Promise<{user: User, isAdmin: boolean}> => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const isAdmin = await checkAdminRole(userCredential.user);
+  
+  if (!isAdmin) {
+    await signOut(auth);
+    throw new Error('Unauthorized: User is not an admin');
+  }
+
+  return { user: userCredential.user, isAdmin };
 };
 
-// Handle user sign-up
-export const handleSignUp = async (email: string, password: string) => {
-    try {
-        await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-        Swal.fire("Error", error.message, "error");
-        throw error;
-    }
+// Create or update admin user
+export const setAdminRole = async (uid: string, email: string) => {
+  const userRef = ref(database, `users/${uid}`);
+  await set(userRef, {
+    email,
+    role: 'admin',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
 };
 
-// Handle password reset
-export const sendPasswordReset = async (email: string) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-    } catch (error: any) {
-        Swal.fire("Error", error.message, "error");
-        throw error;
-    }
-};
-
-// Monitor authentication state
-export const stateChange = (callback: (user: any) => void) => {
-    return onAuthStateChanged(auth, callback);
-};
+export const toggleSignIn = adminSignIn;
+export const toggleSignOut = signOut;
+export const stateChange = onAuthStateChanged;
