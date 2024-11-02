@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import AdminPortal from "./_components/AdminPortal";
-// import "../../styles/styles.css";
+import "../../styles/styles.css";
 
 const AdminPage = () => {
   return (

@@ -8,6 +8,7 @@ import Select from "react-select";
 import UserUpload from "./UserUpload";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/UncleChatbot.css";
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth'; // Add these imports
 import { MessageSquare, Upload, HelpCircle, Send, XCircle } from 'lucide-react';
 
 const UncleChatbot: React.FC = () => {
@@ -27,25 +28,45 @@ const UncleChatbot: React.FC = () => {
   >([]); // Chat history
   const [showInstructions, setShowInstructions] = useState<boolean>(false); // Toggle instructions
   const [showUpload, setShowUpload] = useState<boolean>(false); // Toggle instructions
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Fetch available files from Firebase Realtime Database and parse them for the select dropdown
   useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, []);
+
+  // Modify the files fetch useEffect to depend on currentUser
+  useEffect(() => {
+    // Only fetch files if user is authenticated
+    if (!currentUser) {
+      setFileNames([]);
+      return;
+    }
+
     const fileRef = ref(database, "AI");
 
-    onValue(fileRef, async (snapshot) => {
+    const unsubscribe = onValue(fileRef, async (snapshot) => {
       const files = snapshot.val();
       if (files) {
         const parsedFiles = Object.keys(files).map((key) => {
           const fileName = extractFileNameFromURL(files[key].file);
           return {
             label: `${files[key].name} - ${fileName}`,
-            value: fileName, // Store the actual file name instead of the URL
+            value: fileName,
           };
         });
         setFileNames(parsedFiles);
       }
     });
-  }, []);
+
+    return () => unsubscribe();
+  }, [currentUser]);
 
   const selectStyles = {
     control: (base: any) => ({
