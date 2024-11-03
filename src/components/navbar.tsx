@@ -14,29 +14,41 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
   const [mounted, setMounted] = useState(false);
   const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
 
+  // Apply saved theme on initial load
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      document.body.classList.add("light-mode");
+      setIsLightMode(true);
+    } else {
+      document.body.classList.remove("light-mode");
+      setIsLightMode(false);
+    }
+  }, [setIsLightMode]);
+
+  // Ensure the component is mounted before rendering
   useEffect(() => {
     setMounted(true);
-    // Load bootstrap JS only on client side
+    // Load Bootstrap JS for client side
     if (typeof window !== "undefined") {
       import("bootstrap/dist/js/bootstrap.bundle.min.js");
 
-      // Setup resize handler
+      // Setup resize handler for offcanvas
       const handleResize = () => {
         if (window.innerWidth >= 992) {
           setIsOffcanvasOpen(false);
         }
       };
-
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
 
   const toggleLightMode = () => {
-    if (typeof window !== "undefined") {
-      document.body.classList.toggle("light-mode");
-      setIsLightMode(!isLightMode);
-    }
+    const newMode = !isLightMode;
+    document.body.classList.toggle("light-mode", newMode);
+    setIsLightMode(newMode);
+    localStorage.setItem("theme", newMode ? "light" : "dark");
   };
 
   const handleOffcanvasToggle = () => {
@@ -69,7 +81,9 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
             style={{ fontSize: "1rem" }}
           >
             <img
-              src={isLightMode ? "/HEX-HACC-2024-LIGHT.png" : "/HEX-HACC-2024.png"} // Assuming your image is in the public folder
+              src={
+                isLightMode ? "/HEX-HACC-2024-LIGHT.png" : "/HEX-HACC-2024.png"
+              } // Assuming your image is in the public folder
               alt="Dashboard Icon"
               width="auto"
               height={30}
@@ -109,37 +123,27 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
         <div className="collapse navbar-collapse d-none d-lg-block mb-2">
           <ul className="navbar-nav d-flex flex-row justify-content-center align-items-center w-100 gap-4 mx-auto">
             <li className="nav-item">
-              <Link href="#Introduction" 
-              style={{ fontSize: "1rem" }}
-              >
+              <Link href="#Introduction" style={{ fontSize: "1rem" }}>
                 Introduction
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="#Category" 
-              style={{ fontSize: "1rem" }}
-              >
+              <Link href="#Category" style={{ fontSize: "1rem" }}>
                 Category
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="#HowItWorks" 
-              style={{ fontSize: "1rem" }}
-              >
+              <Link href="#HowItWorks" style={{ fontSize: "1rem" }}>
                 How It Works
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="#Chatbot" 
-              style={{ fontSize: "1rem" }}
-              >
+              <Link href="#Chatbot" style={{ fontSize: "1rem" }}>
                 Virtual Assistants
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="Dashboard" 
-              style={{ fontSize: "1rem" }}
-              >
+              <Link href="Dashboard" style={{ fontSize: "1rem" }}>
                 Dashboard
               </Link>
             </li>
@@ -154,10 +158,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
                 ) : (
                   <SunFill size={24} />
                 )}
-                <span 
-                className="fs-6"                >
-                  Aloha!
-                </span>
+                <span className="fs-6">Aloha!</span>
               </div>
             </li>
           </ul>
@@ -174,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
           style={{
             boxShadow: "1px 1px 1px rgba(0, 0, 0, 0)",
             width: "300px",
-            backgroundColor: isLightMode ? "#9BCDFF" : "black"
+            backgroundColor: isLightMode ? "#9BCDFF" : "black",
           }}
         >
           <div className="offcanvas-header">
@@ -189,7 +190,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
                 boxShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
                 width: "5px",
                 height: "5px",
-                backgroundColor: isLightMode ? "white" : "#5c85f6"
+                backgroundColor: isLightMode ? "white" : "#5c85f6",
               }}
             ></button>
           </div>
