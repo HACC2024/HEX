@@ -1,31 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Image,
-  Modal,
-  Button,
-  Nav,
-  Tab,
-  Row,
-  Col,
-  Table,
-  Dropdown,
-  DropdownButton,
-} from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { ref as dbRef, onValue } from "firebase/database";
 import { database } from "../../.firebase/firebase";
-import {
-  Download,
-  BookmarkFill,
-  Bookmark as BookmarkOutline,
-  Trash,
-} from "react-bootstrap-icons";
+import { Download } from "react-bootstrap-icons";
 import SearchBar from "./SearchFilter";
-import dynamic from "next/dynamic";
 import "../styles/DataCard.css";
+import InfoModal from "./datacardModals/infoModal";
+import DownloadModal from "./datacardModals/downloadModal";
+import Bookmarks from "./Bookmark/Bookmarks";
 
-interface FileData {
+export interface FileData {
   name: string;
   file: { [key: string]: string[] };
   category: string;
@@ -38,24 +24,6 @@ interface FileData {
   department: string;
   views: number;
 }
-
-const CsvReaderAuto = dynamic(
-  () => import("../components/csvAuto/CsvReaderAuto"),
-  {
-    ssr: false,
-    loading: () => (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "300px" }}
-      >
-        <div className="text-center">
-          <div className="spinner-border text-primary mb-3 mx-auto"></div>
-          <p>Loading CSV Visualizer...</p>
-        </div>
-      </div>
-    ),
-  }
-);
 
 const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<FileData[]>([]);
@@ -127,16 +95,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     return fileName || "";
   };
 
-  const formatDate = (dateString: string): string => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-CA");
-    } catch (error) {
-      console.error("Invalid date format:", dateString, error);
-      return "";
-    }
-  };
-
   const isBookmarked = (fileName: string) => {
     return bookmarkedFiles.some(
       (bookmarkedFile) => bookmarkedFile.name === fileName
@@ -149,16 +107,19 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     } else {
       addBookmark(file);
     }
+
+    window.dispatchEvent(new Event("bookmarksUpdated"));
   };
 
   const addBookmark = (file: FileData) => {
+    if (isBookmarked(file.name)) return;
+
     setBookmarkedFiles((prev) => {
       const updatedBookmarks = [...prev, file];
       localStorage.setItem("bookmarkedFiles", JSON.stringify(updatedBookmarks));
       return updatedBookmarks;
     });
   };
-
   const removeBookmark = (fileName: string) => {
     setBookmarkedFiles((prev) => {
       const updatedBookmarks = prev.filter(
@@ -168,6 +129,23 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
       return updatedBookmarks;
     });
   };
+
+  useEffect(() => {
+    const handleBookmarksUpdate = () => {
+      const storedBookmarks = localStorage.getItem("bookmarkedFiles");
+      if (storedBookmarks) {
+        setBookmarkedFiles(JSON.parse(storedBookmarks));
+      }
+    };
+
+    window.addEventListener("bookmarksUpdated", handleBookmarksUpdate);
+
+    handleBookmarksUpdate();
+
+    return () => {
+      window.removeEventListener("bookmarksUpdated", handleBookmarksUpdate);
+    };
+  }, []);
 
   const openDownloadModal = (fileOptions: { [key: string]: string[] }) => {
     const filteredOptions = Object.keys(fileOptions)
@@ -195,10 +173,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     setSelectedFile("");
   };
 
-  const closeInfoModal = () => {
-    setShowInfoModal(false);
-  };
-
   const handleDownload = () => {
     if (!selectedFile) {
       alert("No file selected for download.");
@@ -224,49 +198,6 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     <div>
       <div className="search-bar-container">
         <SearchBar search={search} setSearch={setSearch} />
-      </div>
-      <div className="bookmark-dropdown-container pb-3 px-5">
-        <DropdownButton id="dropdown-basic-button" title="Bookmarked Files">
-          {bookmarkedFiles.length > 0 ? (
-            bookmarkedFiles.map((file: FileData) => (
-              <Dropdown.Item
-                key={file.name}
-                className="d-flex align-items-center"
-              >
-                <Image
-                  onClick={() => openInfoModal(file)}
-                  src={file.image}
-                  alt={file.name}
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    objectFit: "cover",
-                    marginRight: "10px",
-                  }}
-                  rounded
-                />
-                <div className="flex-grow-1">
-                  <div
-                    onClick={() => openInfoModal(file)}
-                    style={{ cursor: "pointer", fontWeight: "bold" }}
-                  >
-                    {file.name}
-                    <div style={{ fontSize: "12px", color: "gray" }}>
-                      {file.category}
-                    </div>
-                  </div>
-                </div>
-                <Trash
-                  className="text-danger"
-                  onClick={() => removeBookmark(file.name)}
-                  style={{ cursor: "pointer", marginLeft: "10px" }}
-                />
-              </Dropdown.Item>
-            ))
-          ) : (
-            <Dropdown.Item disabled>No bookmarks yet.</Dropdown.Item>
-          )}
-        </DropdownButton>
       </div>
       {loading ? (
         <p>Loading...</p>
@@ -317,171 +248,30 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                 >
                   Download <Download />
                 </button>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleBookmark(file);
-                  }}
-                  className="bookmark-icon-button"
-                >
-                  {isBookmarked(file.name) ? (
-                    <BookmarkFill style={{ color: "black" }} />
-                  ) : (
-                    <BookmarkOutline style={{ color: "black" }} />
-                  )}
-                </button>
+                <Bookmarks
+                  file={file}
+                  isBookmarked={isBookmarked}
+                  toggleBookmark={toggleBookmark}
+                />
               </div>
             </div>
           ))}
         </div>
       )}
-
-      <Modal show={showInfoModal} onHide={closeInfoModal} centered size="xl">
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedFileData?.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedFileData ? (
-            <Tab.Container defaultActiveKey="info">
-              <Nav variant="tabs">
-                <Nav.Item>
-                  <Nav.Link eventKey="info">Info</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="details">Data</Nav.Link>
-                </Nav.Item>
-              </Nav>
-
-              <Tab.Content>
-                <Tab.Pane eventKey="info">
-                  <Row>
-                    <Col>
-                      <p className="pt-3">
-                        <strong>Dataset Description</strong>
-                      </p>
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: selectedFileData.description,
-                        }}
-                      />
-                    </Col>
-                    <Col>
-                      <p className="pt-3">
-                        <strong>Additional Information</strong>
-                      </p>
-                      <Table striped bordered hover>
-                        <thead>
-                          <tr>
-                            <th>Field</th>
-                            <th>Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Author</td>
-                            <td>{selectedFileData.author}</td>
-                          </tr>
-                          <tr>
-                            <td>Maintainer</td>
-                            <td>{selectedFileData.maintainer}</td>
-                          </tr>
-                          <tr>
-                            <td>Department</td>
-                            <td>{selectedFileData.department}</td>
-                          </tr>
-                          <tr>
-                            <td>Last Updated</td>
-                            <td>{formatDate(selectedFileData.updatedAt)}</td>
-                          </tr>
-                          <tr>
-                            <td>Uploaded At</td>
-                            <td>{formatDate(selectedFileData.uploadedAt)}</td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Col>
-                  </Row>
-                </Tab.Pane>
-                <Tab.Pane eventKey="details">
-                  <CsvReaderAuto file={selectedFileData?.file} />
-                </Tab.Pane>
-              </Tab.Content>
-            </Tab.Container>
-          ) : (
-            <p>No file information available.</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeInfoModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
+      <InfoModal
+        show={showInfoModal}
+        onHide={() => setShowInfoModal(false)}
+        fileData={selectedFileData}
+      />
+      <DownloadModal
         show={showDownloadModal}
-        onHide={closeDownloadModal}
-        centered
-        dialogClassName="fixed-size-modal"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Select a File to Download</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {Object.keys(currentFileOptions).length > 0 ? (
-            <>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>File Type</th>
-                    <th>File Names</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(currentFileOptions).map((key) =>
-                    currentFileOptions[key].map((url, index) => (
-                      <tr key={`${key}-${index}`}>
-                        <td>{key}</td>
-                        <td>
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setSelectedFile(url);
-                            }}
-                          >
-                            {extractFileNameFromURL(url)}
-                          </a>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </Table>
-              {selectedFile && (
-                <p className="selected-file">
-                  Selected File: {extractFileNameFromURL(selectedFile)}
-                </p>
-              )}
-            </>
-          ) : (
-            <p>No available files for download.</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeDownloadModal}>
-            Close
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleDownload}
-            disabled={!selectedFile}
-          >
-            Download
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        onHide={() => setShowDownloadModal(false)}
+        fileOptions={currentFileOptions}
+        selectedFile={selectedFile}
+        setSelectedFile={setSelectedFile}
+        handleDownload={handleDownload}
+        extractFileNameFromURL={extractFileNameFromURL}
+      />
     </div>
   );
 };

@@ -67,7 +67,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
   padding-bottom: 8px;
 }
 .button-border {
