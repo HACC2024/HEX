@@ -15,6 +15,8 @@ import {
   ShieldAlert,
   Settings,
 } from "lucide-react";
+import Link from "next/link";
+import { House, MoonStarsFill, SunFill } from "react-bootstrap-icons";
 
 const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
   ssr: false,
@@ -37,44 +39,109 @@ export default function Page() {
   const [showSecurityReport, setShowSecurityReport] = useState(false);
   const [showAdminPortal, setShowAdminPortal] = useState(false);
   const [activeSection, setActiveSection] = useState(1);
+  const [isLightMode, setIsLightMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      document.body.classList.add("light-mode");
+      setIsLightMode(true);
+    }
+  }, []);
+
+  const toggleLightMode = () => {
+    const newMode = !isLightMode;
+    document.body.classList.toggle("light-mode", newMode);
+    setIsLightMode(newMode);
+    // Save theme preference to localStorage
+    localStorage.setItem("theme", newMode ? "light" : "dark");
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   // Track active section based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      const sections = [1, 2, 3, 4, 5].map(num => 
+      const sections = [1, 2, 3, 4, 5].map((num) =>
         document.getElementById(`section-${num}`)?.getBoundingClientRect()
       );
-      
-      const currentSection = sections.findIndex(
-        rect => rect && rect.top <= 200 && rect.bottom >= 200
-      ) + 1;
 
-      if (currentSection > 0) {
+      const currentSection =
+        sections.findIndex(
+          (rect) =>
+            rect &&
+            rect.top <= window.innerHeight * 0.5 &&
+            rect.bottom >= window.innerHeight * 0.5
+        ) + 1;
+
+      if (currentSection > 0 && currentSection !== activeSection) {
         setActiveSection(currentSection);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const handleResize = () => handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [activeSection]);
 
   // Navigation Bar Component
   const NavBar = () => (
-    <div className={styles.fixedNav}>
-      <div className="container-fluid py-2 bg-white border-bottom" style={{ backdropFilter: 'blur(10px)' }}>
-        <div className="d-flex justify-content-center gap-3">
+    <nav
+      className="navbar custom-navbar p-3 fixed-top"
+      style={{
+        width: "100vw",
+        padding: "10px 0",
+        backgroundColor: isLightMode
+          ? "rgba(124, 174, 255, 0.743)"
+          : "rgba(0, 0, 0, 0.743)",
+      }}
+    >
+      <div
+        className="d-flex justify-content-between align-items-center"
+        style={{ width: "100vw" }}
+      >
+        {/* Home Icon */}
+        <Link href="../" passHref>
+          <button
+            className="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
+            style={{ width: "45px", height: "45px" }}
+            title="Back to Home"
+          >
+            <House size={18} />
+          </button>
+        </Link>
+
+        {/* Centered Navigation Icons (Only for larger screens) */}
+        <div className="d-none d-md-flex align-items-center gap-3">
           {[
             { id: 1, icon: BarChart, title: "Data Visualizer" },
             { id: 2, icon: MessageCircle, title: "AI Assistant" },
             { id: 3, icon: WrenchIcon, title: "Admin Assistant" },
             { id: 4, icon: ShieldAlert, title: "Security Report" },
-            { id: 5, icon: Settings, title: "Admin Dashboard" }
+            { id: 5, icon: Settings, title: "Admin Dashboard" },
           ].map(({ id, icon: Icon, title }) => (
             <button
               key={id}
-              onClick={() => document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth' })}
-              className={`btn ${activeSection === id ? 'btn-primary' : 'btn-outline-primary'} 
-                         rounded-circle d-flex align-items-center justify-content-center ${styles.navButton}`}
+              onClick={() =>
+                document
+                  .getElementById(`section-${id}`)
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className={`btn ${
+                activeSection === id
+                  ? styles.navButtonActive
+                  : "btn-outline-primary"
+              } rounded-circle d-flex align-items-center justify-content-center ${
+                styles.navButton
+              }`}
               style={{ width: "45px", height: "45px" }}
               title={title}
             >
@@ -82,23 +149,159 @@ export default function Page() {
             </button>
           ))}
         </div>
+
+        {/* Light/Dark Mode Toggle and Hamburger Menu */}
+        <div className="d-flex align-items-center gap-2 d-md-none">
+          <button
+            onClick={toggleLightMode}
+            className={`btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
+            title="Light/Dark Mode"
+            style={{ width: "45px", height: "45px" }}
+          >
+            {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
+          </button>
+
+          <button
+            className="btn btn-outline-primary"
+            onClick={toggleMenu}
+            style={{ width: "45px", height: "45px" }}
+          >
+            ☰
+          </button>
+        </div>
+
+        {/* Light/Dark Mode Toggle (Visible on larger screens) */}
+        <button
+          onClick={toggleLightMode}
+          className={`btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline ${styles.themeIcon}`}
+          title="Light/Dark Mode"
+          style={{
+            width: "45px",
+            height: "45px",
+            padding: "0",
+            lineHeight: "1",
+          }}
+        >
+          {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
+        </button>
       </div>
-    </div>
+
+      {/* Sidebar Menu for Small Screens */}
+      {isMenuOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: "0",
+            right: "0",
+            height: "100%",
+            width: "250px",
+            backgroundColor: isLightMode
+              ? "rgba(255, 255, 255, 0.924)"
+              : "rgba(0, 0, 0, 0.924)",
+            zIndex: "1000",
+            padding: "1rem",
+          }}
+        >
+          <button
+            className="btn btn-outline-primary"
+            onClick={toggleMenu}
+            style={{ position: "absolute", top: "1rem", right: "1rem" }}
+          >
+            ×
+          </button>
+
+          <div style={{ marginTop: "5rem" }}>
+            <Link href="#section-1" passHref>
+              <div
+                className="nav-link"
+                style={{
+                  color: "rgba(54, 144, 255, 0.924)",
+                  marginBottom: "1rem",
+                }}
+              >
+                Data Visualizer
+              </div>
+            </Link>
+            <Link href="#section-2" passHref>
+              <div
+                className="nav-link"
+                style={{
+                  color: "rgba(54, 144, 255, 0.924)",
+                  marginBottom: "1rem",
+                }}
+              >
+                AI Assistant
+              </div>
+            </Link>
+            <Link href="#section-3" passHref>
+              <div
+                className="nav-link"
+                style={{
+                  color: "rgba(54, 144, 255, 0.924)",
+                  marginBottom: "1rem",
+                }}
+              >
+                Admin Assistant
+              </div>
+            </Link>
+            <Link href="#section-4" passHref>
+              <div
+                className="nav-link"
+                style={{
+                  color: "rgba(54, 144, 255, 0.924)",
+                  marginBottom: "1rem",
+                }}
+              >
+                Security Report
+              </div>
+            </Link>
+            <Link href="#section-5" passHref>
+              <div
+                className="nav-link"
+                style={{
+                  color: "rgba(54, 144, 255, 0.924)",
+                  marginBottom: "1rem",
+                }}
+              >
+                Admin Dashboard
+              </div>
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 
   return (
-    <main className={styles.mainContainer}>
+    <main
+      className={`mainContainer ${isLightMode ? "light-mode" : ""}`}
+      style={{
+        backgroundColor: isLightMode ? "#ffffff" : "#000000",
+        color: isLightMode ? "#000000" : "#ffffff",
+        minHeight: "100vh",
+        transition: "background-color 0.5s ease",
+      }}
+    >
       <NavBar />
+      <div className={`${styles.leftLight} ${styles.leftLight1}`}></div>
+      <div className={`${styles.rightLight} ${styles.rightLight1}`}></div>
       <div className="container-fluid">
         <div className="row justify-content-center">
           <div className="col-12 col-xxl-11">
-            <div className="text-center mb-4">
-              <h1 className={styles.title}>HEX Open Data Dashboard</h1>
+            <div className={`text-center mb-4 ${styles.titleWrapper}`}>
+              <h1
+                className={`display-4 display-md-3 display-lg-2 ${styles.title} text-breaktext-break`}
+              >
+                HEX Open Data Dashboard
+              </h1>
             </div>
 
             {/* Tool 1: Data Visualizer */}
-            <div id="section-1" className={`tool-section mb-5 ${styles.section}`}>
-              <div className={styles.toolBadge} style={{ marginTop: "4rem" }}>
+            <div
+              id="section-1"
+              className={`tool-section mb-5 ${styles.section}`}
+            >
+              <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>1</div>
                 <div className={styles.toolIcon}>
                   <BarChart size={24} />
@@ -117,12 +320,24 @@ export default function Page() {
                 Upload your CSV file to create interactive visualizations and
                 analyze your data.
               </p>
-
-              <CsvReader />
+              <div
+                className={`card mt-5 mb-5 ${styles.customCard}`}
+                style={{ paddingTop: "1rem" }}
+              >
+                <div className="card-body text-center py-4">
+                  <CsvReader />
+                </div>
+              </div>
             </div>
 
+            <div className={`${styles.rightLight} ${styles.rightLight2}`}></div>
+            <div className={`${styles.leftLight} ${styles.leftLight2}`}></div>
+
             {/* Tool 2: Uncle HEX Chatbot */}
-            <div id="section-2" className={`tool-section mt-5 ${styles.section}`}>
+            <div
+              id="section-2"
+              className={`tool-section mt-5 ${styles.section}`}
+            >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>2</div>
                 <div className={styles.toolIcon}>
@@ -143,7 +358,7 @@ export default function Page() {
                 your data analysis journey!
               </p>
 
-              <div className="card mt-5 mb-5">
+              <div className={`card mt-5 mb-5 ${styles.customCard}`}>
                 <div className="card-body text-center py-4">
                   <h2 className={styles.uncleTitle}>
                     <span className={styles.wavingHand}>👋</span> Meet Uncle HEX
@@ -159,7 +374,8 @@ export default function Page() {
                   <button
                     className={`btn ${
                       showChatbot ? "btn-outline-danger" : "btn-outline-primary"
-                    } btn-lg mt-3`}
+                    } ${styles.chatButton}
+                    btn-lg mt-3`}
                     onClick={() => setShowChatbot(!showChatbot)}
                   >
                     {showChatbot ? "× Close Chat" : "💬 Chat with Uncle HEX"}
@@ -180,7 +396,10 @@ export default function Page() {
             <hr className="my-5 opacity-0" style={{ margin: "4rem 0" }} />
 
             {/* Tool 3: Admin Assistant */}
-            <div id="section-3" className={`tool-section mt-5 ${styles.section}`}>
+            <div
+              id="section-3"
+              className={`tool-section mt-5 ${styles.section}`}
+            >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>3</div>
                 <div className={styles.toolIcon}>
@@ -201,7 +420,7 @@ export default function Page() {
                 here to help!
               </p>
 
-              <div className="card mt-4">
+              <div className={`card mt-5 mb-5 ${styles.customCard}`}>
                 <div className="card-body text-center py-4">
                   <h2 className={styles.uncleTitle}>
                     <span className={styles.wavingHand}>🔧</span> HEX Admin
@@ -220,7 +439,7 @@ export default function Page() {
                       showAdminChatbot
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
-                    } btn-lg mt-3`}
+                    } ${styles.chatButton} btn-lg mt-3`}
                     onClick={() => setShowAdminChatbot(!showAdminChatbot)}
                   >
                     {showAdminChatbot ? "× Close Chat" : "💬 Chat with Admin"}
@@ -241,7 +460,10 @@ export default function Page() {
             <hr className="my-5 opacity-0" style={{ margin: "4rem 0" }} />
 
             {/* Tool 4: Security Report */}
-            <div id="section-4" className={`tool-section mt-5 ${styles.section}`}>
+            <div
+              id="section-4"
+              className={`tool-section mt-5 ${styles.section}`}
+            >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>4</div>
                 <div className={styles.toolIcon}>
@@ -249,6 +471,9 @@ export default function Page() {
                 </div>
                 <div className={styles.toolLabel}>Security Report</div>
               </div>
+              <div
+                className={`${styles.rightLight} ${styles.rightLight3}`}
+              ></div>
 
               <p
                 className={styles.subtitle}
@@ -262,7 +487,7 @@ export default function Page() {
                 platform.
               </p>
 
-              <div className="card mt-4">
+              <div className={`card mt-5 mb-5 ${styles.customCard}`}>
                 <div className="card-body text-center py-4">
                   <h2 className={styles.uncleTitle}>
                     <span className={styles.wavingHand}>🛡️</span> Security
@@ -284,7 +509,7 @@ export default function Page() {
                       showSecurityReport
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
-                    } btn-lg mt-3`}
+                    } ${styles.chatButton} btn-lg mt-3`}
                     onClick={() => setShowSecurityReport(!showSecurityReport)}
                   >
                     {showSecurityReport
@@ -307,7 +532,10 @@ export default function Page() {
             <hr className="my-5 opacity-0" style={{ margin: "4rem 0" }} />
 
             {/* Tool 5: Admin Portal */}
-            <div id="section-5" className={`tool-section mt-5 ${styles.section}`}>
+            <div
+              id="section-5"
+              className={`tool-section mt-5 ${styles.section}`}
+            >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>5</div>
                 <div className={styles.toolIcon}>
@@ -327,7 +555,7 @@ export default function Page() {
                 Access administrative tools and manage HEX platform settings.
               </p>
 
-              <div className="card mt-4">
+              <div className={`card mt-5 mb-5 ${styles.customCard}`}>
                 <div className="card-body text-center py-4">
                   <h2 className={styles.uncleTitle}>
                     <span className={styles.wavingHand}>⚙️</span> Admin Control
@@ -347,7 +575,7 @@ export default function Page() {
                       showAdminPortal
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
-                    } btn-lg mt-3`}
+                    } ${styles.chatButton} btn-lg mt-3`}
                     onClick={() => setShowAdminPortal(!showAdminPortal)}
                   >
                     {showAdminPortal
