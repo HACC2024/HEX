@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Tab, Nav, Row, Col, Table, Button } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import "./modal.css";
@@ -41,6 +41,14 @@ const CsvReaderAuto = dynamic(() => import("../csvAuto/CsvReaderAuto"), {
 });
 
 const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
+  const [selectedFile, setSelectedFile] = useState<string>("");
+
+  useEffect(() => {
+    if (!show) {
+      setSelectedFile(""); // Reset selected file when modal is closed
+    }
+  }, [show]);
+
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
@@ -49,6 +57,23 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
       console.error("Invalid date format:", dateString, error);
       return "";
     }
+  };
+
+  const handleFileDownload = () => {
+    if (!selectedFile) return;
+
+    const a = document.createElement("a");
+    a.href = selectedFile;
+    a.download = selectedFile.split("/").pop() || "file";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const extractFileNameFromURL = (url: string): string => {
+    const decodedUrl = decodeURIComponent(url);
+    const parts = decodedUrl.split("/");
+    return parts.pop()?.split("?")[0] || "";
   };
 
   return (
@@ -65,6 +90,9 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="details">Data</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="download">Download</Nav.Link>
               </Nav.Item>
             </Nav>
 
@@ -121,6 +149,58 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
               <Tab.Pane eventKey="details">
                 <CsvReaderAuto file={fileData.file} />
               </Tab.Pane>
+              <Tab.Pane eventKey="download">
+                <Row className="pt-3">
+                  <Col>
+                    {Object.keys(fileData.file).length > 0 ? (
+                      <>
+                        <Table striped bordered hover>
+                          <thead>
+                            <tr>
+                              <th>File Type</th>
+                              <th>File Names</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.keys(fileData.file).map(
+                              (key) =>
+                                key &&
+                                fileData.file[key].length > 0 &&
+                                fileData.file[key].map(
+                                  (url, index) =>
+                                    url && (
+                                      <tr key={`${key}-${index}`}>
+                                        <td>{key}</td>
+                                        <td>
+                                          <a
+                                            href="#"
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              setSelectedFile(url);
+                                            }}
+                                          >
+                                            {extractFileNameFromURL(url)}
+                                          </a>
+                                        </td>
+                                      </tr>
+                                    )
+                                )
+                            )}
+                          </tbody>
+                        </Table>
+                        {selectedFile && (
+                          <p className="selected-file">
+                            Selected File:{" "}
+                            {extractFileNameFromURL(selectedFile)}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p>No available files for download.</p>
+                    )}
+                  </Col>
+                </Row>
+              </Tab.Pane>
             </Tab.Content>
           </Tab.Container>
         ) : (
@@ -130,6 +210,13 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
           Close
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleFileDownload}
+          disabled={!selectedFile}
+        >
+          Download
         </Button>
       </Modal.Footer>
     </Modal>

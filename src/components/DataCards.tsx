@@ -7,9 +7,10 @@ import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
 import SearchBar from "./SearchFilter";
 import "../styles/DataCard.css";
-import InfoModal from "./datacardModals/infoModal";
-import DownloadModal from "./datacardModals/downloadModal";
+import InfoModal from "./datacardComponents/infoModal";
+import DownloadModal from "./datacardComponents/downloadModal";
 import Bookmarks from "./Bookmark/Bookmarks";
+import SortOptions from "./datacardComponents/sortFilter";
 
 export interface FileData {
   name: string;
@@ -39,6 +40,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
     null
   );
+  const [sortOption, setSortOption] = useState("mostRecent");
 
   useEffect(() => {
     const dbRefPath = dbRef(database, "Admin");
@@ -79,6 +81,34 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
     return () => unsubscribe();
   }, [category]);
+
+  const sortFiles = (files: FileData[]) => {
+    switch (sortOption) {
+      case "mostRecent":
+        return [...files].sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      case "mostPopular":
+        return [...files].sort((a, b) => b.views - a.views);
+      case "nameAsc":
+        return [...files].sort((a, b) => a.name.localeCompare(b.name));
+      case "nameDesc":
+        return [...files].sort((a, b) => b.name.localeCompare(a.name));
+      default:
+        return files;
+    }
+  };
+
+  const sortedFiles = sortFiles(
+    files.filter((file) =>
+      file.name.toLowerCase().includes(search.toLowerCase())
+    )
+  );
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(e.target.value);
+  };
 
   const incrementViews = async (fileData: FileData) => {
     try {
@@ -218,20 +248,19 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
     closeDownloadModal();
   };
 
-  const searchedFiles = files.filter((file) =>
-    file.name.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
     <div>
       <div className="search-bar-container">
         <SearchBar search={search} setSearch={setSearch} />
       </div>
+      <div className="sort-options-container">
+        <SortOptions sortOption={sortOption} onSortChange={handleSortChange} />
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="file-list">
-          {searchedFiles.map((file: FileData) => (
+          {sortedFiles.map((file: FileData) => (
             <div
               key={file.name}
               className="file-card"
@@ -246,7 +275,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               </div>
               <div className="file-info">
                 <h3 className="file-name">{file.name}</h3>
-                <p className="file-category pt-1">{file.category}</p>
+                <p className="file-category">{file.category}</p>
                 <div className="file-tags pt-1">
                   {Object.keys(file.file).map((key) =>
                     file.file[key].length > 0 &&

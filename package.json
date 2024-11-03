@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-tooltip": "^1.1.3",
     "@splinetool/react-spline": "^4.0.0",
     "@types/lodash": "^4.17.13",
     "bootstrap": "^5.3.3",

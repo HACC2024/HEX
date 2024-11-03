@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Image, Dropdown, DropdownButton } from "react-bootstrap";
 import { Trash } from "react-bootstrap-icons";
-import InfoModal from "../datacardModals/infoModal";
+import InfoModal from "../datacardComponents/infoModal";
 import "./bookmark.css";
 
 export interface FileData {
