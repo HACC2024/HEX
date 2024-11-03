@@ -280,7 +280,7 @@ const UserUpload: React.FC = () => {
               />
             </div>
 
-            <ReCAPTCHA
+            <ReCAPTCHA className= "py-3"
               ref={recaptchaRef}
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
             />

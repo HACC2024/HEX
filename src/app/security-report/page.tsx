@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AlertCircle, HelpCircle, Send, CheckCircle } from 'lucide-react';
 import { database } from "../../../.firebase/firebase";
 import { ref, push } from "firebase/database";
@@ -9,6 +9,7 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import styles from "../../styles/securityReport.module.css";
 import "../../styles/styles.css"
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function SecurityReport() {
   const [formData, setFormData] = useState({
@@ -51,11 +52,22 @@ export default function SecurityReport() {
     message: string;
   }>({ type: null, message: '' });
 
+  
+  //Captcha
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus({ type: null, message: '' });
 
     try {
+      //CAPTCHA
+      const token = await recaptchaRef.current?.getValue();
+      if (!token) {
+        setStatus({ type: 'error', message: 'Please complete the reCAPTCHA verification.' });
+        return;
+      }
+
       // Format data for Firebase
       const reportData = {
         timestamp: new Date().toISOString(),
@@ -176,6 +188,11 @@ export default function SecurityReport() {
                 {renderField('whereFound', 'Where Did You Find This?')}
                 {renderField('impact', 'Potential Impact', 'textarea')}
                 {renderField('suggestedFix', 'Suggested Fix (Optional)', 'textarea')}
+                
+                <ReCAPTCHA className= "py-3"
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                 />
 
                 <button 
                   type="submit" 

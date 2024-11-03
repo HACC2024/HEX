@@ -760,7 +760,7 @@ const AdminPortal: React.FC = () => {
           
           {/* CAPTCHA DIV */}
 
-          <ReCAPTCHA
+          <ReCAPTCHA className= "py-3"
               ref={recaptchaRef}
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
             />
