@@ -2,7 +2,6 @@
 
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import ReCAPTCHA from 'react-google-recaptcha';
 import { storage, database, auth } from "../../.firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, get, push, set } from "firebase/database";
@@ -14,10 +13,10 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import Script from 'next/script';
+import ReCAPTCHA from 'react-google-recaptcha';
+
 
 const UserUpload: React.FC = () => {
-  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
   // Auth states
   const [user, setUser] = useState<any>(null);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -32,6 +31,9 @@ const UserUpload: React.FC = () => {
   const [uploadStatus, setUploadStatus] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  //Captcha
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
