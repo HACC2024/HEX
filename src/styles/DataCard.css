@@ -141,3 +141,24 @@ p.file-category {
 p.pt-3 {
   font-size: 20px;
 }
+.views-display {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 5px 0;
+  margin-bottom: 5px;
+}
+
+.views-display p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

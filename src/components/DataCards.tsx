@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Image } from "react-bootstrap";
-import { ref as dbRef, onValue } from "firebase/database";
+import { ref as dbRef, onValue, update, get } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
 import SearchBar from "./SearchFilter";
@@ -79,6 +79,31 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
     return () => unsubscribe();
   }, [category]);
+
+  const incrementViews = async (fileData: FileData) => {
+    try {
+      const adminRef = dbRef(database, "Admin");
+      const snapshot = await get(adminRef);
+
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const fileKey = Object.keys(data).find(
+          (key) => data[key].name === fileData.name
+        );
+
+        if (fileKey) {
+          const fileRef = dbRef(database, `Admin/${fileKey}`);
+          const currentViews = fileData.views || 0;
+
+          await update(fileRef, {
+            views: currentViews + 1,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error updating views:", error);
+    }
+  };
 
   useEffect(() => {
     const storedBookmarks = localStorage.getItem("bookmarkedFiles");
@@ -164,8 +189,11 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   };
 
   const openInfoModal = (fileData: FileData) => {
-    setSelectedFileData(fileData);
-    setShowInfoModal(true);
+    if (fileData) {
+      setSelectedFileData(fileData);
+      setShowInfoModal(true);
+      incrementViews(fileData);
+    }
   };
 
   const closeDownloadModal = () => {
@@ -233,8 +261,15 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                     ) : null
                   )}
                 </div>
-                <div>
-                  <p>Views: {file.views}</p>
+                <div className="views-display">
+                  <p>
+                    Views:{" "}
+                    {file.views >= 1000000
+                      ? (file.views / 1000000).toFixed(1) + "M"
+                      : file.views >= 1000
+                      ? (file.views / 1000).toFixed(1) + "k"
+                      : file.views}
+                  </p>
                 </div>
               </div>
               <div className="button-container d-flex align-items-center">
