@@ -13,6 +13,8 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ReCAPTCHA from 'react-google-recaptcha';
+
 
 const UserUpload: React.FC = () => {
   // Auth states
@@ -30,6 +32,9 @@ const UserUpload: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  //Captcha
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -40,6 +45,11 @@ const UserUpload: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const token = await recaptchaRef.current?.getValue();
+      if (!token) {
+        setAuthError("Please complete the reCAPTCHA verification.");
+        return;
+      }
       // Basic validation
       if (!displayName.trim()) {
         setAuthError("Display name is required");
@@ -67,6 +77,7 @@ const UserUpload: React.FC = () => {
       setEmail("");
       setPassword("");
       setDisplayName("");
+      recaptchaRef.current?.reset();
     } catch (error: any) {
       setAuthError(error.message);
     }
@@ -197,6 +208,7 @@ const UserUpload: React.FC = () => {
 
   if (!user) {
     return (
+      
       <div className="card border-0 shadow-sm">
         <div className="card-body p-4">
           <h3 className="text-center mb-2" style={{ color: "#2563eb" }}>
@@ -268,6 +280,11 @@ const UserUpload: React.FC = () => {
               />
             </div>
 
+            <ReCAPTCHA className= "py-3"
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+            />
+
             <button type="submit" className="btn btn-primary w-100">
               {isRegistering ? "Register" : "Login"}
             </button>
@@ -290,6 +307,7 @@ const UserUpload: React.FC = () => {
   }
 
   return (
+    
     <div className="card border-0 shadow-sm">
       <div className="card-body p-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -403,4 +421,4 @@ const UserUpload: React.FC = () => {
   );
 };
 
-export default UserUpload;
+export default UserUpload;  

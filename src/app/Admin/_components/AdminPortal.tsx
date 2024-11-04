@@ -35,6 +35,7 @@ import SecurityManagement from "./SecurityManagement";
 import UserManagement from "./UserManagement";
 import Chatbot from "../../../components/Chatbot";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import ReCAPTCHA from 'react-google-recaptcha';
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -71,6 +72,7 @@ const AdminPortal: React.FC = () => {
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
   const [editImage, setEditImage] = useState<File | null>(null);
+  
 
   const [editFiles, setEditFiles] = useState<{
     [key: string]: {
@@ -108,6 +110,9 @@ const AdminPortal: React.FC = () => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [uploadsData, setUploadsData] = useState<UploadData[]>([]);
+
+    //Captcha
+    const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   useEffect(() => {
     setIsMounted(true); // Avoid hydration mismatch by rendering only after mount
@@ -195,6 +200,12 @@ const AdminPortal: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Get the reCAPTCHA token
+      const token = await recaptchaRef.current?.getValue();
+      if (!token) {
+        Swal.fire("Please complete the reCAPTCHA verification.");
+        return;
+      }
       // First get the user status from the database
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -225,6 +236,7 @@ const AdminPortal: React.FC = () => {
       }
     } catch (error: any) {
       Swal.fire("Error", "Invalid admin credentials", "error");
+      
     }
   };
 
@@ -745,7 +757,13 @@ const AdminPortal: React.FC = () => {
               className="form-control"
             />
           </div>
+          
+          {/* CAPTCHA DIV */}
 
+          <ReCAPTCHA className= "py-3"
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+            />
           <button type="submit" className="btn btn-primary">
             Login
           </button>
