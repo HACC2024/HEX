@@ -1,0 +1,44 @@
+[debug] [2024-11-04T07:01:09.344Z] ----------------------------------------------------------------------
+[debug] [2024-11-04T07:01:09.351Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ralph\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-11-04T07:01:09.352Z] CLI Version:   13.23.1
+[debug] [2024-11-04T07:01:09.352Z] Platform:      win32
+[debug] [2024-11-04T07:01:09.353Z] Node Version:  v20.10.0
+[debug] [2024-11-04T07:01:09.353Z] Time:          Sun Nov 03 2024 21:01:09 GMT-1000 (Hawaii-Aleutian Standard Time)
+[debug] [2024-11-04T07:01:09.353Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-11-04T07:01:09.363Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-11-04T07:01:09.632Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-11-04T07:01:09.633Z] > authorizing via signed-in user (uhspacehub@gmail.com)
+[debug] [2024-11-04T07:01:09.633Z] [iam] checking project hex-hacc-2024 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-11-04T07:01:09.635Z] Checked if tokens are valid: false, expires at: 1730601664519
+[debug] [2024-11-04T07:01:09.636Z] Checked if tokens are valid: false, expires at: 1730601664519
+[debug] [2024-11-04T07:01:09.636Z] > refreshing access token with scopes: []
+[debug] [2024-11-04T07:01:09.638Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-11-04T07:01:09.638Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-11-04T07:01:09.969Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2024-11-04T07:01:09.969Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2024-11-04T07:01:10.036Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-11-04T07:01:10.036Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-11-04T07:01:10.048Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/hex-hacc-2024:testIamPermissions [none]
+[debug] [2024-11-04T07:01:10.048Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/hex-hacc-2024:testIamPermissions x-goog-quota-user=projects/hex-hacc-2024
+[debug] [2024-11-04T07:01:10.048Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hex-hacc-2024:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-11-04T07:01:10.512Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/hex-hacc-2024:testIamPermissions 200
+[debug] [2024-11-04T07:01:10.513Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hex-hacc-2024:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-11-04T07:01:10.515Z] Checked if tokens are valid: true, expires at: 1730707269036
+[debug] [2024-11-04T07:01:10.515Z] Checked if tokens are valid: true, expires at: 1730707269036
+[debug] [2024-11-04T07:01:10.516Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hex-hacc-2024 [none]
+[debug] [2024-11-04T07:01:11.034Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hex-hacc-2024 200
+[debug] [2024-11-04T07:01:11.034Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hex-hacc-2024 {"projectId":"hex-hacc-2024","projectNumber":"480840397392","displayName":"HEX-HACC-2024","name":"projects/hex-hacc-2024","resources":{"hostingSite":"hex-hacc-2024","realtimeDatabaseInstance":"hex-hacc-2024-default-rtdb","storageBucket":"hex-hacc-2024.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_2ac53872-30aa-44c7-aca4-1148ef245612"}
+[info] 
+[info] === Deploying to 'hex-hacc-2024'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2024-11-04T07:01:11.047Z] Checked if tokens are valid: true, expires at: 1730707269036
+[debug] [2024-11-04T07:01:11.048Z] Checked if tokens are valid: true, expires at: 1730707269036
+[debug] [2024-11-04T07:01:11.048Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/hex-hacc-2024/versions [none]
+[debug] [2024-11-04T07:01:11.048Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/hex-hacc-2024/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2024-11-04T07:01:12.072Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/hex-hacc-2024/versions 200
+[debug] [2024-11-04T07:01:12.072Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/hex-hacc-2024/versions {"name":"projects/480840397392/sites/hex-hacc-2024/versions/019f4e1f9077472a","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[hex-hacc-2024]: beginning deploy... 
+[info] i  hosting[hex-hacc-2024]: found 132 files in out 
+[debug] [2024-11-04T07:01:12.140Z] [hosting] uploading with 200 concurrency
