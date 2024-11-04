@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getDatabase } from "firebase/database";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -24,7 +24,7 @@ const database = getDatabase(app);
 
 if (typeof window !== "undefined") {
   initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(firebaseConfig.captchaSiteKey || ""),
+    provider: new ReCaptchaEnterpriseProvider(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""),
     isTokenAutoRefreshEnabled: true,
   }); 
 }
