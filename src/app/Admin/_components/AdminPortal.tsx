@@ -35,7 +35,7 @@ import SecurityManagement from "./SecurityManagement";
 import UserManagement from "./UserManagement";
 import Chatbot from "../../../components/Chatbot";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import ReCAPTCHA from 'react-google-recaptcha';
+import ReCAPTCHA from "react-google-recaptcha";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -72,7 +72,6 @@ const AdminPortal: React.FC = () => {
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
   const [editImage, setEditImage] = useState<File | null>(null);
-  
 
   const [editFiles, setEditFiles] = useState<{
     [key: string]: {
@@ -111,8 +110,8 @@ const AdminPortal: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [uploadsData, setUploadsData] = useState<UploadData[]>([]);
 
-    //Captcha
-    const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  //Captcha
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   useEffect(() => {
     setIsMounted(true); // Avoid hydration mismatch by rendering only after mount
@@ -236,7 +235,6 @@ const AdminPortal: React.FC = () => {
       }
     } catch (error: any) {
       Swal.fire("Error", "Invalid admin credentials", "error");
-      
     }
   };
 
@@ -757,13 +755,14 @@ const AdminPortal: React.FC = () => {
               className="form-control"
             />
           </div>
-          
+
           {/* CAPTCHA DIV */}
 
-          <ReCAPTCHA className= "py-3"
-              ref={recaptchaRef}
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-            />
+          <ReCAPTCHA
+            className="py-3"
+            ref={recaptchaRef}
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+          />
           <button type="submit" className="btn btn-primary">
             Login
           </button>
@@ -785,7 +784,8 @@ const AdminPortal: React.FC = () => {
               style={{ cursor: "pointer" }}
               onClick={() => setShowChatbot(!showChatbot)}
             >
-              {showChatbot ? "Hide Chat" : "Chat With HEX Admin"}            </span>
+              {showChatbot ? "Hide Chat" : "Chat With HEX Admin"}{" "}
+            </span>
           </div>
           <div className="mb-4">
             <ul className="nav nav-tabs">
@@ -837,11 +837,11 @@ const AdminPortal: React.FC = () => {
             </ul>
           </div>
           <div className="card bg-info mb-4">
-          {showChatbot && (
-            <div className="chatbot-container mt-0 mb-0">
-              <Chatbot />
-            </div>
-          )}
+            {showChatbot && (
+              <div className="chatbot-container mt-0 mb-0">
+                <Chatbot />
+              </div>
+            )}
           </div>
 
           {activeTab === "content" ? (
@@ -1124,206 +1124,218 @@ const AdminPortal: React.FC = () => {
 
               {/* Edit Modal */}
               {showEditModal && (
-                <div
-                  className="modal show d-block"
-                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-                >
-                  <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Edit Record</h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          onClick={() => setShowEditModal(false)}
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        <div className="mb-3">
-                          <label className="form-label">Title:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editName}
-                            onChange={(e) => setEditName(e.target.value)}
-                          />
+                <div className="card">
+                  <div
+                    className="modal show d-block"
+                    style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                  >
+                    <div className="modal-dialog modal-lg">
+                      <div className="modal-content">
+                        <div className="modal-header bg-dark text-info">
+                          <h5 className="modal-title">Edit Record</h5>
+                          <button
+                            type="button"
+                            className="btn-close"
+                            onClick={() => setShowEditModal(false)}
+                          ></button>
                         </div>
-                        <div className="mb-3">
-                          <label className="form-label">Author:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editAuthor}
-                            onChange={(e) => setEditAuthor(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Maintainer:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editMaintainer}
-                            onChange={(e) => setEditMaintainer(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Department:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editDepartment}
-                            onChange={(e) => setEditDepartment(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Description:</label>
-                          <ReactQuill
-                            value={editDescription}
-                            onChange={setEditDescription}
-                            theme="snow"
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Category:</label>
-                          <select
-                            className="form-select"
-                            value={editCategory}
-                            onChange={(e) => setEditCategory(e.target.value)}
-                          >
-                            <option value="">Select a category</option>
-                            <option value="Transportation">
-                              Transportation
-                            </option>
-                            <option value="Community">Community</option>
-                            <option value="School">School</option>
-                            <option value="Employment">Employment</option>
-                            <option value="Public Safety">Public Safety</option>
-                          </select>
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Files</label>
+                        <div className="modal-body">
+                          <div className="mb-3">
+                            <label className="form-label">Title:</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={editName}
+                              onChange={(e) => setEditName(e.target.value)}
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Author:</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={editAuthor}
+                              onChange={(e) => setEditAuthor(e.target.value)}
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Maintainer:</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={editMaintainer}
+                              onChange={(e) =>
+                                setEditMaintainer(e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Department:</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={editDepartment}
+                              onChange={(e) =>
+                                setEditDepartment(e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Description:</label>
+                            <ReactQuill
+                              value={editDescription}
+                              onChange={setEditDescription}
+                              theme="snow"
+                            />
+                          </div>
+                          <div className="mb-5">
+                            <label className="form-label">Category:</label>
+                            <select
+                              className="form-select"
+                              value={editCategory}
+                              onChange={(e) => setEditCategory(e.target.value)}
+                            >
+                              <option value="">Select a category</option>
+                              <option value="Transportation">
+                                Transportation
+                              </option>
+                              <option value="Community">Community</option>
+                              <option value="School">School</option>
+                              <option value="Employment">Employment</option>
+                              <option value="Public Safety">
+                                Public Safety
+                              </option>
+                            </select>
+                          </div>
+                          <div className="mb-3">
 
-                          {/* Existing Files */}
-                          {Object.entries(editFiles).map(
-                            ([fileType, files]) => (
-                              <div key={fileType} className="mb-3">
-                                <h6>{fileType}:</h6>
+                            {/* Existing Files */}
+                            {Object.entries(editFiles).map(
+                              ([fileType, files]) => (
+                                <div key={fileType} className="mb-3">
+                                  <h6 className="text-center"><u>{fileType} Files:</u></h6>
 
-                                {/* Existing Files List */}
-                                {files.existing.length > 0 && (
-                                  <div className="mb-2">
-                                    <h6>Existing:</h6>
-                                    <ul className="list-group">
-                                      {files.existing.map((file, index) => (
-                                        <li
-                                          key={index}
-                                          className="list-group-item d-flex justify-content-between align-items-center"
-                                        >
-                                          <a
-                                            href={file.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={
-                                              file.toDelete
-                                                ? "text-decoration-line-through"
-                                                : ""
-                                            }
+                                  {/* Existing Files List */}
+                                  {files.existing.length > 0 && (
+                                    <div className="mb-2">
+                                      <h6>Existing:</h6>
+                                      <ul className="list-group">
+                                        {files.existing.map((file, index) => (
+                                          <li
+                                            key={index}
+                                            className="list-group-item d-flex justify-content-between align-items-center"
                                           >
-                                            File {index + 1}
-                                          </a>
-                                          <button
-                                            type="button"
-                                            className={`btn btn-${
-                                              file.toDelete
-                                                ? "warning"
-                                                : "danger"
-                                            } btn-sm`}
-                                            onClick={() =>
-                                              toggleFileDelete(fileType, index)
-                                            }
-                                          >
-                                            {file.toDelete
-                                              ? "Undo Delete"
-                                              : "Delete"}
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
+                                            <a
+                                              href={file.url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className={
+                                                file.toDelete
+                                                  ? "text-decoration-line-through"
+                                                  : ""
+                                              }
+                                            >
+                                              File {index + 1}
+                                            </a>
+                                            <button
+                                              type="button"
+                                              className={`btn btn-${
+                                                file.toDelete
+                                                  ? "warning"
+                                                  : "danger"
+                                              } btn-sm`}
+                                              onClick={() =>
+                                                toggleFileDelete(
+                                                  fileType,
+                                                  index
+                                                )
+                                              }
+                                            >
+                                              {file.toDelete
+                                                ? "Undo Delete"
+                                                : "Delete"}
+                                            </button>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
 
-                                {/* New Files List */}
-                                {files.new.length > 0 && (
-                                  <div className="mb-2">
-                                    <h6>New:</h6>
-                                    <ul className="list-group">
-                                      {files.new.map((file, index) => (
-                                        <li
-                                          key={index}
-                                          className="list-group-item d-flex justify-content-between align-items-center"
-                                        >
-                                          <span>{file.name}</span>
-                                          <button
-                                            type="button"
-                                            className="btn btn-danger btn-sm"
-                                            onClick={() =>
-                                              removeNewFile(fileType, index)
-                                            }
+                                  {/* New Files List */}
+                                  {files.new.length > 0 && (
+                                    <div className="mb-2">
+                                      <h6>New:</h6>
+                                      <ul className="list-group">
+                                        {files.new.map((file, index) => (
+                                          <li
+                                            key={index}
+                                            className="list-group-item d-flex justify-content-between align-items-center"
                                           >
-                                            Remove
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          )}
+                                            <span>{file.name}</span>
+                                            <button
+                                              type="button"
+                                              className="btn btn-danger btn-sm"
+                                              onClick={() =>
+                                                removeNewFile(fileType, index)
+                                              }
+                                            >
+                                              Remove
+                                            </button>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              )
+                            )}
 
-                          {/* Add New Files */}
-                          <div className="mt-3">
-                            <label className="form-label">Add New Files:</label>
+                            {/* Add New Files */}
+                            <div className="mt-5">
+                              <label className="form-label">
+                                Add New Files:
+                              </label>
+                              <input
+                                type="file"
+                                accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
+                                onChange={handleEditFileChange}
+                                multiple
+                                className="form-control"
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">
+                              New Image (optional):
+                            </label>
                             <input
                               type="file"
-                              accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
-                              onChange={handleEditFileChange}
-                              multiple
+                              accept=".png,.jpeg,.jpg"
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                  setEditImage(e.target.files[0]);
+                                }
+                              }}
                               className="form-control"
                             />
                           </div>
                         </div>
-                        <div className="mb-3">
-                          <label className="form-label">
-                            New Image (optional):
-                          </label>
-                          <input
-                            type="file"
-                            accept=".png,.jpeg,.jpg"
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files[0]) {
-                                setEditImage(e.target.files[0]);
-                              }
-                            }}
-                            className="form-control"
-                          />
+                        <div className="modal-footer">
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setShowEditModal(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleUpdate}
+                          >
+                            Save Changes
+                          </button>
                         </div>
-                      </div>
-                      <div className="modal-footer">
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          onClick={() => setShowEditModal(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={handleUpdate}
-                        >
-                          Save Changes
-                        </button>
                       </div>
                     </div>
                   </div>

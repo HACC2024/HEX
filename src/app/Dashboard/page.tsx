@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,6 +16,8 @@ import {
   WrenchIcon,
   ShieldAlert,
   Settings,
+  Database,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { House, MoonStarsFill, SunFill } from "react-bootstrap-icons";
@@ -41,6 +45,8 @@ export default function Page() {
   const [activeSection, setActiveSection] = useState(1);
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -62,35 +68,113 @@ export default function Page() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Track active section based on scroll position
+  // Track active section AND handle responsive menu
   useEffect(() => {
+    
+    // Debounce function
+    interface DebouncedFunction {
+      (...args: any[]): void;
+    }
+
+    const debounce = (func: (...args: any[]) => void, wait: number): DebouncedFunction => {
+      let timeout: NodeJS.Timeout;
+      return function executedFunction(...args: any[]): void {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+
     const handleScroll = () => {
-      const sections = [1, 2, 3, 4, 5].map((num) =>
-        document.getElementById(`section-${num}`)?.getBoundingClientRect()
-      );
+      const sections = [1, 2, 3, 4, 5].map((num) => ({
+        element: document.getElementById(`section-${num}`),
+        id: num,
+      }));
 
-      const currentSection =
-        sections.findIndex(
-          (rect) =>
-            rect &&
-            rect.top <= window.innerHeight * 0.5 &&
-            rect.bottom >= window.innerHeight * 0.5
-        ) + 1;
+      let maxVisibility = 0;
+      let mostVisibleSection = activeSection;
 
-      if (currentSection > 0 && currentSection !== activeSection) {
-        setActiveSection(currentSection);
+      sections.forEach(({ element, id }) => {
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+          const visibleHeight =
+            Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+          const sectionVisibility =
+            Math.max(0, visibleHeight) /
+            Math.min(element.offsetHeight, windowHeight);
+
+          if (sectionVisibility > maxVisibility) {
+            maxVisibility = sectionVisibility;
+            mostVisibleSection = id;
+          }
+        }
+      });
+
+      if (mostVisibleSection > 0 && mostVisibleSection !== activeSection) {
+        setActiveSection(mostVisibleSection);
       }
     };
 
-    const handleResize = () => handleScroll();
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
+    // Handle both resize and menu state
+    const handleResize = () => {
+      // Close menus if screen is large
+      if (window.innerWidth >= 768) {
+        // md breakpoint
+        setIsMenuOpen(false); // Close sidebar
+        setIsOpen(false); // Close dropdown
+      }
+      handleScroll(); // Also check section visibility
     };
-  }, [activeSection]);
+
+    // Debounced versions
+    const debouncedScroll = debounce(handleScroll, 100);
+    const debouncedResize = debounce(handleResize, 100);
+
+    // Add event listeners
+    window.addEventListener("scroll", debouncedScroll);
+    window.addEventListener("resize", debouncedResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("scroll", debouncedScroll);
+      window.removeEventListener("resize", debouncedResize);
+    };
+  }, [activeSection]); // Add any other dependencies if needed
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setVisibleSections((prev) => {
+            const newSet = new Set(prev);
+            if (entry.isIntersecting) {
+              newSet.add(entry.target.id);
+            }
+            return newSet;
+          });
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      }
+    );
+  
+    // Observe all sections
+    document.querySelectorAll('.tool-section').forEach((section) => {
+      observer.observe(section);
+    });
+  
+    return () => observer.disconnect();
+  }, []);
 
   // Navigation Bar Component
   const NavBar = () => (
@@ -108,16 +192,67 @@ export default function Page() {
         className="d-flex justify-content-between align-items-center"
         style={{ width: "100vw" }}
       >
-        {/* Home Icon */}
-        <Link href="../" passHref>
+        <div className="d-flex align-items-center position-relative">
+          {/* Toggle Button */}
           <button
-            className="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
+            className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ms-4 ${
+              isLightMode ? "" : ""
+            } ${styles.themeIcon}`}
             style={{ width: "45px", height: "45px" }}
-            title="Back to Home"
+            onClick={() => setIsOpen(!isOpen)}
+            title="Show Navigation"
           >
-            <House size={18} />
+            <ChevronDown
+              size={18}
+              style={{
+                transform: isOpen ? "rotate(180deg)" : "none",
+                transition: "transform 0.3s ease",
+              }}
+            />
           </button>
-        </Link>
+
+          {/* Icons Container */}
+          <div
+            className="position-absolute"
+            style={{
+              left: "0",
+              top: "60px",
+              transform: isOpen ? "translateY(0)" : "translateY(-20px)",
+              opacity: isOpen ? 1 : 0,
+              visibility: isOpen ? "visible" : "hidden",
+              transition: "all 0.3s ease",
+            }}
+          >
+            {/* Rounded Container for Icons */}
+            <div
+              className={`${
+                isLightMode ? "bg-primary-subtle" : "bg-dark"
+              } rounded-5 shadow-sm px-3 py-3 d-flex flex-column align-items-center ms-2 mt-3`}
+            >
+              {/* Home Icon */}
+              <Link href="../" passHref>
+                <button
+                  className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
+                  style={{ width: "45px", height: "45px" }}
+                  title="Back to Home"
+                >
+                  <House size={18} />
+                </button>
+              </Link>
+
+              {/* Database Icon */}
+              <Link href="/Categories/community" passHref>
+                <button
+                  className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
+                  style={{ width: "45px", height: "45px" }}
+                  title="Explore Data Categories"
+                >
+                  <Database size={18} />
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
 
         {/* Centered Navigation Icons (Only for larger screens) */}
         <div className="d-none d-md-flex align-items-center gap-3">
@@ -154,7 +289,7 @@ export default function Page() {
         <div className="d-flex align-items-center gap-2 d-md-none">
           <button
             onClick={toggleLightMode}
-            className={`btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
+            className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
             title="Light/Dark Mode"
             style={{ width: "45px", height: "45px" }}
           >
@@ -162,7 +297,7 @@ export default function Page() {
           </button>
 
           <button
-            className="btn btn-outline-primary"
+            className={`btn btn-outline-primary rounded-circle me-5 ${styles.themeIcon}`}
             onClick={toggleMenu}
             style={{ width: "45px", height: "45px" }}
           >
@@ -173,7 +308,7 @@ export default function Page() {
         {/* Light/Dark Mode Toggle (Visible on larger screens) */}
         <button
           onClick={toggleLightMode}
-          className={`btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline ${styles.themeIcon}`}
+          className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline me-5 ${styles.themeIcon}`}
           title="Light/Dark Mode"
           style={{
             width: "45px",
@@ -216,7 +351,8 @@ export default function Page() {
                 className="nav-link"
                 style={{
                   color: "rgba(54, 144, 255, 0.924)",
-                  marginBottom: "1rem",
+                  marginBottom: "2rem",
+                  fontSize: "1rem",
                 }}
               >
                 Data Visualizer
@@ -227,7 +363,8 @@ export default function Page() {
                 className="nav-link"
                 style={{
                   color: "rgba(54, 144, 255, 0.924)",
-                  marginBottom: "1rem",
+                  marginBottom: "2rem",
+                  fontSize: "1rem",
                 }}
               >
                 AI Assistant
@@ -238,7 +375,8 @@ export default function Page() {
                 className="nav-link"
                 style={{
                   color: "rgba(54, 144, 255, 0.924)",
-                  marginBottom: "1rem",
+                  marginBottom: "2rem",
+                  fontSize: "1rem",
                 }}
               >
                 Admin Assistant
@@ -249,7 +387,8 @@ export default function Page() {
                 className="nav-link"
                 style={{
                   color: "rgba(54, 144, 255, 0.924)",
-                  marginBottom: "1rem",
+                  marginBottom: "2rem",
+                  fontSize: "1rem",
                 }}
               >
                 Security Report
@@ -260,7 +399,8 @@ export default function Page() {
                 className="nav-link"
                 style={{
                   color: "rgba(54, 144, 255, 0.924)",
-                  marginBottom: "1rem",
+                  marginBottom: "2rem",
+                  fontSize: "1rem",
                 }}
               >
                 Admin Dashboard
@@ -300,6 +440,11 @@ export default function Page() {
             <div
               id="section-1"
               className={`tool-section mb-5 ${styles.section}`}
+              style={{
+                opacity: visibleSections.has('section-1') ? 1 : 0,
+                transform: visibleSections.has('section-1') ? 'none' : 'translateY(20px)',
+                transition: 'opacity 0.5s ease, transform 0.5s ease',
+              }}
             >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>1</div>
@@ -337,6 +482,11 @@ export default function Page() {
             <div
               id="section-2"
               className={`tool-section mt-5 ${styles.section}`}
+              style={{
+                opacity: visibleSections.has('section-2') ? 1 : 0,
+                transform: visibleSections.has('section-2') ? 'none' : 'translateY(20px)',
+                transition: 'opacity 0.5s ease, transform 0.5s ease',
+              }}
             >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>2</div>
@@ -399,6 +549,13 @@ export default function Page() {
             <div
               id="section-3"
               className={`tool-section mt-5 ${styles.section}`}
+              style={{
+                opacity: visibleSections.has('section-3') ? 1 : 0,
+                transform: visibleSections.has('section-3') ? 'none' : 'translateY(20px)',
+                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                position: "relative",
+                zIndex: 10,
+              }}
             >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>3</div>
@@ -463,6 +620,11 @@ export default function Page() {
             <div
               id="section-4"
               className={`tool-section mt-5 ${styles.section}`}
+              style={{
+                opacity: visibleSections.has('section-4') ? 1 : 0,
+                transform: visibleSections.has('section-4') ? 'none' : 'translateY(20px)',
+                transition: 'opacity 0.5s ease, transform 0.5s ease',
+              }}
             >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>4</div>
@@ -535,6 +697,11 @@ export default function Page() {
             <div
               id="section-5"
               className={`tool-section mt-5 ${styles.section}`}
+              style={{
+                opacity: visibleSections.has('section-5') ? 1 : 0,
+                transform: visibleSections.has('section-5') ? 'none' : 'translateY(20px)',
+                transition: 'opacity 0.5s ease, transform 0.5s ease',
+              }}
             >
               <div className={styles.toolBadge}>
                 <div className={styles.numberCircle}>5</div>
