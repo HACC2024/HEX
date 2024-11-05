@@ -1,148 +1,145 @@
 # HEX CSV Data Visualizer Architecture
 
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'fontSize': '16px',
-    'fontFamily': 'arial',
-    'lineColor': '#334155',
-    'primaryColor': '#2563eb',
-    'primaryTextColor': '#1e293b',
-    'primaryBorderColor': '#1e40af',
-    'secondaryColor': '#475569',
-    'tertiaryColor': '#94a3b8'
-  }
-}}%%
-
 flowchart TB
-    %% Main Components
-    FileInput["File Input System"] --> DataProcessor
-    
-    subgraph DataProcessor["Data Processing Layer"]
-        direction TB
-        Parser["CSV Parser"] --> FilterSystem["Filter System"]
-        FilterSystem --> Transformer["Data Transformer"]
+    FileInput[CSV File Input] --> Parser
+
+    subgraph DataProcessing[Data Processing Layer]
+        Parser[Papa Parse CSV Parser]
+        FilterEngine[Filter Engine]
+        DataTransformer[Data Transformer]
+        StateManager[State Management]
     end
-    
-    subgraph ChartSystem["Visualization System"]
-        direction TB
-        ChartOptions["Chart Options Panel"] --> Charts
+
+    subgraph ChartComponents[Visualization Components]
+        ChartOptions[Chart Options Panel]
         
-        subgraph Charts["Chart Components"]
-            direction LR
-            Pie["Pie Chart"]
-            Bar["Bar Chart"]
-            Line["Line Chart"]
-            Scatter["Scatter Plot"]
+        subgraph Charts[Chart Types]
+            PieChart[Pie Chart]
+            BarChart[Bar Chart]
+            LineChart[Line Chart]
+            ScatterChart[Scatter Plot]
         end
         
-        Charts --> Legend["Interactive Legend"]
+        subgraph ChartFeatures[Chart Features]
+            Legend[Custom Legend]
+            Tooltip[Interactive Tooltip]
+            Export[Chart Export]
+            AxisConfig[Axis Configuration]
+        end
     end
-    
-    subgraph Display["Data Display System"]
-        Table["Data Table"] --> Export["Export Module"]
+
+    subgraph FilterComponents[Filter System]
+        FilterPanel[Filter Panel]
+        FilterOperators[Filter Operators]
+        ActiveFilters[Active Filters Display]
     end
-    
-    %% External Libraries
-    subgraph Libraries["Core Libraries"]
-        direction LR
-        Recharts["Recharts"]
-        Papa["Papa Parse"]
-        Bootstrap["Bootstrap"]
+
+    subgraph DataDisplay[Data Display]
+        DataTable[Paginated Table]
+        DataExport[CSV Export]
+        ErrorHandler[Error Handling]
     end
+
+    %% Data Flow
+    Parser --> StateManager
+    StateManager --> FilterEngine
+    FilterEngine --> DataTransformer
+    DataTransformer --> Charts
+    DataTransformer --> DataTable
+
+    FilterPanel --> FilterEngine
+    FilterOperators --> FilterEngine
+    ActiveFilters --> FilterEngine
+
+    ChartOptions --> Charts
+    Charts --> ChartFeatures
     
-    %% Main Data Flow
-    DataProcessor --> ChartSystem
-    DataProcessor --> Display
-    ChartSystem --> Export
-    
-    %% Library Connections
-    Papa -..-> Parser
-    Recharts -..-> Charts
-    Bootstrap -..-> Display
-    
-    %% Styling
-    classDef default fill:#f8fafc,stroke:#475569,color:#0f172a,stroke-width:2px
-    classDef processor fill:#dbeafe,stroke:#2563eb,color:#1e40af,stroke-width:2px
-    classDef charts fill:#f0fdf4,stroke:#16a34a,color:#166534,stroke-width:2px
-    classDef display fill:#fef2f2,stroke:#dc2626,color:#991b1b,stroke-width:2px
-    classDef libraries fill:#fef3c7,stroke:#d97706,color:#92400e,stroke-width:2px
-    classDef mainFlow stroke:#334155,stroke-width:3px,color:#0f172a
-    
-    %% Apply styles
-    class FileInput,Legend default
-    class DataProcessor,Parser,FilterSystem,Transformer processor
-    class ChartSystem,ChartOptions,Charts,Pie,Bar,Line,Scatter charts
-    class Display,Table,Export display
-    class Libraries,Recharts,Papa,Bootstrap libraries
-    
-    %% Update linkStyles for better visibility
-    linkStyle default stroke:#334155,stroke-width:2px
-    %% External library connections
-    linkStyle 10,11,12 stroke:#737373,stroke-width:2px,stroke-dasharray:5
+    %% Component Connections
+    ChartFeatures --> Export
+    DataTable --> DataExport
+    Parser --> ErrorHandler
+
+    %% Style Definitions
+    classDef input fill:#e2f0d9,stroke:#82b366,stroke-width:2px
+    classDef process fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px
+    classDef chart fill:#d5e8d4,stroke:#82b366,stroke-width:2px
+    classDef filter fill:#fff2cc,stroke:#d6b656,stroke-width:2px
+    classDef display fill:#f8cecc,stroke:#b85450,stroke-width:2px
+    classDef feature fill:#e1d5e7,stroke:#9673a6,stroke-width:2px
+
+    %% Apply Styles
+    class FileInput input
+    class DataProcessing,Parser,FilterEngine,DataTransformer,StateManager process
+    class ChartComponents,Charts,PieChart,BarChart,LineChart,ScatterChart chart
+    class FilterComponents,FilterPanel,FilterOperators,ActiveFilters filter
+    class DataDisplay,DataTable,DataExport,ErrorHandler display
+    class ChartFeatures,Legend,Tooltip,Export,AxisConfig,ChartOptions feature
 ```
 
-## Architecture Components
+## Component Details
 
-### 1. Input System
-- File validation & processing
+### 1. File Input & Parsing
+- CSV file validation
+- Papa Parse integration
 - Error handling
-- Initial data parsing
+- File metadata tracking
 
-### 2. Data Processing Layer
-- **Parser**: CSV data parsing and validation
-- **Filter System**: Advanced data filtering
-- **Transformer**: Data format conversion
+### 2. Data Processing
+- State management with React useState/useMemo
+- Data filtering system with operators:
+  - Equal/Not Equal
+  - Greater/Less Than
+  - Contains/Starts With/Ends With
+- Data transformation for charts
 
-### 3. Visualization System
-- **Chart Options**: Configuration controls
-- **Charts**: Multiple visualization types
-  - Pie Chart: Distribution views
-  - Bar Chart: Comparative analysis
-  - Line Chart: Trend analysis
-  - Scatter Plot: Correlation views
-- **Legend**: Interactive data reference
+### 3. Chart System
+- Multiple chart types:
+  - Pie Chart (distribution)
+  - Bar Chart (comparison)
+  - Line Chart (trends)
+  - Scatter Plot (correlation)
+- Features:
+  - Custom legend with pagination
+  - Interactive tooltips
+  - Dynamic axis configuration
+  - PNG export capability
 
-### 4. Display System
-- **Data Table**: Paginated data display
-- **Export Module**: Multiple export formats
+### 4. Filter System
+- Field selection
+- Multiple operators
+- Active filter display
+- Filter removal
 
-### 5. Core Libraries
-- **Recharts**: Chart rendering
-- **Papa Parse**: CSV processing
-- **Bootstrap**: UI components
+### 5. Data Display
+- Paginated data table
+- Filtered data export
+- Loading states
+- Error messaging
 
-## Data Flow
-1. CSV File Input → Parser
-2. Parsed Data → Filter System
-3. Filtered Data → Transformer
-4. Transformed Data → Charts/Table
-5. Visualization → Export
-
-## Features
-- Real-time data processing
-- Multiple chart types
-- Interactive filtering
+### 6. Features
+- Real-time updates
+- Responsive design
+- Data validation
 - Export capabilities
-- Responsive design
 
-## Technical Details
-- React-based components
-- TypeScript implementation
-- Modular architecture
-- Responsive design
-- Error handling
+### 7. State Management
+- React state hooks
+- Memoized computations
+- Callback handling
+- Reference management
 
-## Security
-- File type validation
-- Data sanitization
-- Size limitations
-- Error boundaries
+## Technical Implementation
+- React with TypeScript
+- Recharts for visualization
+- Papa Parse for CSV handling
+- Bootstrap for styling
+- File API for exports
 
-The system provides:
-1. Efficient data handling
-2. Flexible visualization
-3. User-friendly interface
-4. Export capabilities
-5. Robust error handling
+This architecture ensures:
+1. Efficient data processing
+2. Flexible visualization options
+3. Robust filter system
+4. Seamless user experience
+5. Error handling
+6. Export functionality
