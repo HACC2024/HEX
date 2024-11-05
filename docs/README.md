@@ -1,7 +1,7 @@
-<h1>HEX OpenData - Next.js with Firebase Hosting and AWS EC2</h1>
+<h1>UHSPACE Data Hub by HEX at UHM - Next.js with Firebase Hosting and AWS EC2</h1>
 
 <h2>Overview</h2>
-<p>This project is a Next.js web application called <strong>HEX OpenData</strong>. It is deployed using Firebase Hosting. This README will guide you through the development, build, and deployment process.</p>
+<p>This project is a Next.js web application called <strong>UHSPACE Data Hub</strong>, which stands for "Unlocking Hawaii's Solutions for Personalized Analytics and Collaborative Engagement". This README will guide you through the development, build, and deployment process.</p>
 
 <hr />
 
