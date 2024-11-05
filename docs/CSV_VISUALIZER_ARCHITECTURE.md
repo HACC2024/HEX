@@ -1,6 +1,19 @@
 # HEX CSV Data Visualizer Architecture
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'fontSize': '16px',
+    'fontFamily': 'arial',
+    'primaryTextColor': '#000000',
+    'lineColor': '#000000',
+    'arrowheadColor': '#000000',
+    'edgeLabelBackground': '#ffffff',
+    'fontWeight': 'bold'
+  }
+}}%%
+
 flowchart TB
     FileInput[CSV File Input] --> Parser
 
@@ -41,7 +54,7 @@ flowchart TB
         ErrorHandler[Error Handling]
     end
 
-    %% Data Flow
+    %% Data Flow with thicker arrows
     Parser --> StateManager
     StateManager --> FilterEngine
     FilterEngine --> DataTransformer
@@ -60,13 +73,13 @@ flowchart TB
     DataTable --> DataExport
     Parser --> ErrorHandler
 
-    %% Style Definitions
-    classDef input fill:#e2f0d9,stroke:#82b366,stroke-width:2px
-    classDef process fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px
-    classDef chart fill:#d5e8d4,stroke:#82b366,stroke-width:2px
-    classDef filter fill:#fff2cc,stroke:#d6b656,stroke-width:2px
-    classDef display fill:#f8cecc,stroke:#b85450,stroke-width:2px
-    classDef feature fill:#e1d5e7,stroke:#9673a6,stroke-width:2px
+    %% Style Definitions with darker borders and better contrast
+    classDef input fill:#e2f0d9,stroke:#2d5016,stroke-width:3px,color:#000000
+    classDef process fill:#dae8fc,stroke:#1a4f91,stroke-width:3px,color:#000000
+    classDef chart fill:#d5e8d4,stroke:#2d5016,stroke-width:3px,color:#000000
+    classDef filter fill:#fff2cc,stroke:#966c1e,stroke-width:3px,color:#000000
+    classDef display fill:#f8cecc,stroke:#8b2c2c,stroke-width:3px,color:#000000
+    classDef feature fill:#e1d5e7,stroke:#4c3b61,stroke-width:3px,color:#000000
 
     %% Apply Styles
     class FileInput input
@@ -75,6 +88,9 @@ flowchart TB
     class FilterComponents,FilterPanel,FilterOperators,ActiveFilters filter
     class DataDisplay,DataTable,DataExport,ErrorHandler display
     class ChartFeatures,Legend,Tooltip,Export,AxisConfig,ChartOptions feature
+
+    %% Update linkStyles for better visibility
+    linkStyle default stroke:#000000,stroke-width:2px
 ```
 
 ## Component Details
