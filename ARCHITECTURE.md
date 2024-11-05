@@ -1,11 +1,29 @@
-# HEX Chatbot System Architecture
+# HEX Chatbots System Architecture
 
 This diagram represents the complete system architecture of the HEX Chatbot, including both the Admin and Uncle HEX interfaces, backend services, and external integrations.
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'fontSize': '16px',
+    'fontFamily': 'arial',
+    'lineColor': '#2D3748',
+    'primaryColor': '#4299E1',
+    'primaryTextColor': '#1A202C',
+    'primaryBorderColor': '#2B6CB0',
+    'secondaryColor': '#63B3ED',
+    'tertiaryColor': '#BEE3F8'
+  }
+}}%%
+
 flowchart TB
+    %% Same diagram structure but with improved styling
     subgraph Frontend["Next.js Frontend Application"]
+        style Frontend fill:#E6F6FF,stroke:#3182CE,color:#2C5282,stroke-width:2px
+        
         subgraph AdminInterface["Admin Chatbot Interface"]
+            style AdminInterface fill:#EBF8FF,stroke:#2B6CB0,color:#2C5282
             AdminUI["Chat UI Component"]
             AdminForm["Message Input Form"]
             AdminHistory["Chat History State"]
@@ -14,6 +32,7 @@ flowchart TB
         end
 
         subgraph UncleInterface["Uncle HEX Interface"]
+            style UncleInterface fill:#EBF8FF,stroke:#2B6CB0,color:#2C5282
             UncleUI["Chat UI Component"]
             UncleForm["Message Input Form"]
             FileUpload["File Upload Component"]
@@ -24,6 +43,7 @@ flowchart TB
         end
 
         subgraph APIClients["API Client Layer"]
+            style APIClients fill:#EBF8FF,stroke:#2B6CB0,color:#2C5282
             ChatAPIClient["Admin API Client
             - Error handling
             - Response formatting
@@ -37,7 +57,10 @@ flowchart TB
     end
 
     subgraph AWSInfra["AWS EC2 Infrastructure"]
+        style AWSInfra fill:#FFF5F5,stroke:#C53030,color:#822727,stroke-width:2px
+        
         subgraph DockerEnv["Docker Environment"]
+            style DockerEnv fill:#F0FFF4,stroke:#2F855A,color:#22543D
             NGINX["NGINX Reverse Proxy
             - SSL termination
             - Request routing
@@ -45,7 +68,9 @@ flowchart TB
             - Rate limiting"]
             
             subgraph FlaskBackend["Flask Backend Services"]
+                style FlaskBackend fill:#F0FFF4,stroke:#2F855A,color:#22543D
                 subgraph Endpoints["API Endpoints"]
+                    style Endpoints fill:#F0FFF4,stroke:#2F855A,color:#22543D
                     AdminEndpoint["/api/chatbot
                     - Request validation
                     - Error handling"]
@@ -56,7 +81,9 @@ flowchart TB
                 end
                 
                 subgraph AIAgents["AI Agent System"]
+                    style AIAgents fill:#FAF5FF,stroke:#553C9A,color:#44337A
                     subgraph PidginAgent["Pidgin Admin Agent"]
+                        style PidginAgent fill:#FAF5FF,stroke:#553C9A,color:#44337A
                         AdminPersona["Personality:
                         - Professional Pidgin
                         - HR expertise
@@ -69,6 +96,7 @@ flowchart TB
                     end
                     
                     subgraph UncleAgent["Uncle HEX Agent"]
+                        style UncleAgent fill:#FAF5FF,stroke:#553C9A,color:#44337A
                         UnclePersona["Personality:
                         - Clear Pidgin
                         - Data expertise
@@ -82,6 +110,7 @@ flowchart TB
                 end
                 
                 subgraph DataProcessing["Data Processing Layer"]
+                    style DataProcessing fill:#FFFAF0,stroke:#9C4221,color:#7B341E
                     ContextBuilder["Context Builder
                     - Database integration
                     - Context formatting
@@ -102,7 +131,10 @@ flowchart TB
     end
 
     subgraph ExternalServices["External Services"]
+        style ExternalServices fill:#FFFFF0,stroke:#975A16,color:#744210,stroke-width:2px
+        
         subgraph Firebase["Firebase Services"]
+            style Firebase fill:#FFFFF0,stroke:#975A16,color:#744210
             DB["Realtime Database
             - Data storage
             - Real-time updates"]
@@ -113,13 +145,14 @@ flowchart TB
         end
         
         subgraph AI["AI Services"]
+            style AI fill:#FFFFF0,stroke:#975A16,color:#744210
             GroqAI["Groq AI API
             - LLM processing
             - Response generation"]
         end
     end
 
-    %% Frontend Flows
+    %% Frontend Flows - Thicker, darker arrows
     AdminForm --> AdminValidation
     AdminValidation --> AdminState
     AdminState --> AdminHistory
@@ -167,26 +200,7 @@ flowchart TB
     ChatAPIClient --> AdminState
     UncleAPIClient --> UncleState
 
-    %% Styling
-    classDef frontend fill:#dbe9f6,stroke:#2874a6
-    classDef aws fill:#fbe5d6,stroke:#c55a11
-    classDef docker fill:#e2f0d9,stroke:#548235
-    classDef agent fill:#e1d5e7,stroke:#9673a6
-    classDef processing fill:#d5e8d4,stroke:#82b366
-    classDef external fill:#fff2cc,stroke:#bf9000
-    classDef nginx fill:#f8cecc,stroke:#b85450
-    classDef endpoint fill:#ffe6cc,stroke:#d79b00
-    classDef persona fill:#e1d5e7,stroke:#9673a6
-
-    class AdminInterface,UncleInterface,APIClients frontend
-    class AWSInfra aws
-    class DockerEnv docker
-    class PidginAgent,UncleAgent,AdminPersona,UnclePersona agent
-    class DataProcessing,ContextBuilder,FileProcessor,AIHandler processing
-    class Firebase,AI,DB,Storage,GroqAI external
-    class NGINX nginx
-    class AdminEndpoint,UncleEndpoint endpoint
-    class AdminPersona,UnclePersona persona
+    linkStyle default stroke-width:2px,stroke:#2D3748,color:#1A202C
 ```
 
 ## System Components
