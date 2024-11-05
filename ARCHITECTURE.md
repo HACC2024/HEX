@@ -1,4 +1,4 @@
-# HEX Chatbot System Architecture
+# HEX Chatbots System Architecture
 
 This diagram represents the complete system architecture of the HEX Chatbot, including both the Admin and Uncle HEX interfaces, backend services, and external integrations.
 
