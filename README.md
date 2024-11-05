@@ -1,4 +1,4 @@
-<h1>HEX OpenData - Next.js with Firebase Hosting</h1>
+<h1>HEX OpenData - Next.js with Firebase Hosting and AWS EC2</h1>
 
 <h2>Overview</h2>
 <p>This project is a Next.js web application called <strong>HEX OpenData</strong>. It is deployed using Firebase Hosting. This README will guide you through the development, build, and deployment process.</p>
