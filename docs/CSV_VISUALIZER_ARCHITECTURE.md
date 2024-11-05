@@ -1,188 +1,148 @@
 # HEX CSV Data Visualizer Architecture
 
-This document outlines the architecture of the HEX CSV Data Visualizer tool, including its component hierarchy, data flow, and key features.
-
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'fontSize': '16px',
+    'fontFamily': 'arial',
+    'lineColor': '#334155',
+    'primaryColor': '#2563eb',
+    'primaryTextColor': '#1e293b',
+    'primaryBorderColor': '#1e40af',
+    'secondaryColor': '#475569',
+    'tertiaryColor': '#94a3b8'
+  }
+}}%%
+
 flowchart TB
-    subgraph Frontend["CSV Data Visualizer Frontend"]
-        subgraph MainComponent["CsvReader Component"]
-            FileInput["File Input Handler
-            - CSV validation
-            - File processing
-            - Error handling"]
-            
-            subgraph DataProcessing["Data Processing Layer"]
-                Parser["Papa Parse
-                - CSV parsing
-                - Header detection
-                - Data validation"]
-                
-                FilterEngine["Filter Engine
-                - Field filtering
-                - Operator processing
-                - Value matching"]
-                
-                DataTransformer["Data Transformer
-                - Data aggregation
-                - Format conversion
-                - Type checking"]
-            end
-            
-            subgraph Visualization["Visualization Components"]
-                ChartOptions["Chart Options Panel
-                - Chart type selection
-                - Axis configuration
-                - Color customization"]
-                
-                subgraph Charts["Chart Components"]
-                    PieChart["Pie Chart
-                    - Data distribution
-                    - Color coding
-                    - Interactive legend"]
-                    
-                    BarChart["Bar Chart
-                    - Comparison view
-                    - Axis scaling
-                    - Grid display"]
-                    
-                    LineChart["Line Chart
-                    - Trend analysis
-                    - Point markers
-                    - Smooth curves"]
-                    
-                    ScatterChart["Scatter Plot
-                    - Correlation view
-                    - Point distribution
-                    - Axis mapping"]
-                end
-                
-                ChartLegend["Custom Legend
-                - Pagination
-                - Value formatting
-                - Color indicators"]
-            end
-            
-            subgraph DataDisplay["Data Display"]
-                DataTable["Data Table
-                - Pagination
-                - Sorting
-                - Row display"]
-                
-                ExportTools["Export Tools
-                - CSV export
-                - Chart export
-                - PNG generation"]
-            end
+    %% Main Components
+    FileInput["File Input System"] --> DataProcessor
+    
+    subgraph DataProcessor["Data Processing Layer"]
+        direction TB
+        Parser["CSV Parser"] --> FilterSystem["Filter System"]
+        FilterSystem --> Transformer["Data Transformer"]
+    end
+    
+    subgraph ChartSystem["Visualization System"]
+        direction TB
+        ChartOptions["Chart Options Panel"] --> Charts
+        
+        subgraph Charts["Chart Components"]
+            direction LR
+            Pie["Pie Chart"]
+            Bar["Bar Chart"]
+            Line["Line Chart"]
+            Scatter["Scatter Plot"]
         end
-    end
-
-    subgraph Libraries["External Libraries"]
-        Recharts["Recharts
-        - Chart rendering
-        - Responsiveness
-        - Animations"]
         
-        PapaParse["Papa Parse
-        - CSV parsing
-        - Data validation"]
-        
-        Bootstrap["Bootstrap
-        - UI components
-        - Styling
-        - Layout"]
+        Charts --> Legend["Interactive Legend"]
     end
-
-    %% Data Flow
-    FileInput --> Parser
-    Parser --> FilterEngine
-    FilterEngine --> DataTransformer
-    DataTransformer --> Charts
-    DataTransformer --> DataTable
-    ChartOptions --> Charts
-    Charts --> ChartLegend
-    Charts --> ExportTools
-
-    %% Library Integration
-    Recharts --> Charts
-    PapaParse --> Parser
-    Bootstrap --> MainComponent
-
+    
+    subgraph Display["Data Display System"]
+        Table["Data Table"] --> Export["Export Module"]
+    end
+    
+    %% External Libraries
+    subgraph Libraries["Core Libraries"]
+        direction LR
+        Recharts["Recharts"]
+        Papa["Papa Parse"]
+        Bootstrap["Bootstrap"]
+    end
+    
+    %% Main Data Flow
+    DataProcessor --> ChartSystem
+    DataProcessor --> Display
+    ChartSystem --> Export
+    
+    %% Library Connections
+    Papa -..-> Parser
+    Recharts -..-> Charts
+    Bootstrap -..-> Display
+    
     %% Styling
-    classDef frontend fill:#dbe9f6,stroke:#2874a6,color:#2C5282
-    classDef component fill:#e2f0d9,stroke:#548235,color:#2C5282
-    classDef library fill:#fff2cc,stroke:#bf9000,color:#2C5282
-    classDef chart fill:#e1d5e7,stroke:#9673a6,color:#2C5282
-    classDef processing fill:#f8cecc,stroke:#b85450,color:#2C5282
-
-    class Frontend frontend
-    class MainComponent,DataDisplay,Visualization component
-    class Libraries,Recharts,PapaParse,Bootstrap library
-    class Charts,PieChart,BarChart,LineChart,ScatterChart chart
-    class DataProcessing,Parser,FilterEngine,DataTransformer processing
-
+    classDef default fill:#f8fafc,stroke:#475569,color:#0f172a,stroke-width:2px
+    classDef processor fill:#dbeafe,stroke:#2563eb,color:#1e40af,stroke-width:2px
+    classDef charts fill:#f0fdf4,stroke:#16a34a,color:#166534,stroke-width:2px
+    classDef display fill:#fef2f2,stroke:#dc2626,color:#991b1b,stroke-width:2px
+    classDef libraries fill:#fef3c7,stroke:#d97706,color:#92400e,stroke-width:2px
+    classDef mainFlow stroke:#334155,stroke-width:3px,color:#0f172a
+    
+    %% Apply styles
+    class FileInput,Legend default
+    class DataProcessor,Parser,FilterSystem,Transformer processor
+    class ChartSystem,ChartOptions,Charts,Pie,Bar,Line,Scatter charts
+    class Display,Table,Export display
+    class Libraries,Recharts,Papa,Bootstrap libraries
+    
+    %% Update linkStyles for better visibility
+    linkStyle default stroke:#334155,stroke-width:2px
+    %% External library connections
+    linkStyle 10,11,12 stroke:#737373,stroke-width:2px,stroke-dasharray:5
 ```
 
-## Component Overview
+## Architecture Components
 
-### Main Components
-1. **File Input Handler**
-   - CSV file validation
-   - File processing
-   - Error handling
-   - File metadata management
+### 1. Input System
+- File validation & processing
+- Error handling
+- Initial data parsing
 
-2. **Data Processing Layer**
-   - Papa Parse integration for CSV parsing
-   - Data validation and cleaning
-   - Filter engine for data manipulation
-   - Data transformation for visualization
+### 2. Data Processing Layer
+- **Parser**: CSV data parsing and validation
+- **Filter System**: Advanced data filtering
+- **Transformer**: Data format conversion
 
-3. **Visualization Components**
-   - Chart Options Panel for customization
-   - Multiple chart types (Pie, Bar, Line, Scatter)
-   - Custom legend with pagination
-   - Interactive tooltips and animations
+### 3. Visualization System
+- **Chart Options**: Configuration controls
+- **Charts**: Multiple visualization types
+  - Pie Chart: Distribution views
+  - Bar Chart: Comparative analysis
+  - Line Chart: Trend analysis
+  - Scatter Plot: Correlation views
+- **Legend**: Interactive data reference
 
-4. **Data Display**
-   - Paginated data table
-   - Export functionality
-   - Data filtering interface
-   - Row display options
+### 4. Display System
+- **Data Table**: Paginated data display
+- **Export Module**: Multiple export formats
 
-### Features
-1. **Data Processing**
-   - CSV parsing and validation
-   - Dynamic filtering system
-   - Data aggregation
-   - Type conversion
+### 5. Core Libraries
+- **Recharts**: Chart rendering
+- **Papa Parse**: CSV processing
+- **Bootstrap**: UI components
 
-2. **Visualization**
-   - Multiple chart types
-   - Customizable colors
-   - Axis configuration
-   - Legend management
+## Data Flow
+1. CSV File Input → Parser
+2. Parsed Data → Filter System
+3. Filtered Data → Transformer
+4. Transformed Data → Charts/Table
+5. Visualization → Export
 
-3. **Export Capabilities**
-   - Filtered CSV export
-   - Chart image export
-   - PNG generation
-   - Data table export
+## Features
+- Real-time data processing
+- Multiple chart types
+- Interactive filtering
+- Export capabilities
+- Responsive design
 
-4. **User Interface**
-   - Responsive design
-   - Interactive components
-   - Error handling
-   - Loading states
+## Technical Details
+- React-based components
+- TypeScript implementation
+- Modular architecture
+- Responsive design
+- Error handling
 
-### External Libraries
-- Recharts for chart rendering
-- Papa Parse for CSV handling
-- Bootstrap for UI components
-- React for component management
+## Security
+- File type validation
+- Data sanitization
+- Size limitations
+- Error boundaries
 
-This architecture ensures:
-1. Efficient data processing
-2. Flexible visualization options
+The system provides:
+1. Efficient data handling
+2. Flexible visualization
 3. User-friendly interface
-4. Robust error handling
-5. Scalable component structure
+4. Export capabilities
+5. Robust error handling
