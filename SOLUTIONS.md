@@ -6,6 +6,9 @@ Our team, HEX, was inspired by the growing demand for accessible open data solut
 ## What Our Solution Does
 **UHSPACE Data Hub** is a web-based platform designed to enable users to upload, analyze, and visualize CSV data effortlessly. It offers automated data analysis, interactive data filtering, and exportable visualizations, all backed by two AI chatbot assistants. These assistants help users navigate the platform and provide data insights, with each response limited to the dataset selected by the user for precise and relevant feedback.
 
+## Explore Your Data With Ease
+To enhance the user experience in data gathering, we implemented a user interface that simplifies navigation and allows users to bookmark datasets for easy access later. This feature enables users to explore their data with ease, ensuring they can return to important datasets without hassle.
+
 ## How It Was Built
 We developed UHSPACE Data Hub using **Next.js** for the frontend, with **Firebase Hosting** for deployment. Key Firebase services—**Authentication**, **Storage**, and **Realtime Database**—enable secure data handling and user management. The backend API, hosted on **AWS EC2**, is managed with **Nginx** and protected by **SSL/TLS** encryption via an **Elastic Load Balancer**. **Recaptcha v2** further secures sensitive forms against bot activity.
 
