@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import {Row , Col} from 'react-bootstrap';
 import styles from '../styles/Categories.module.css';
 import { House, MoonStarsFill, SunFill, PeopleFill, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
 import { Database, ChevronDown } from "lucide-react";
@@ -181,18 +182,27 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
 
         {/* Light/Dark Mode Toggle (Visible on larger screens) */}
 
-        <button
-          onClick={toggleLightMode}
-          className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline ${styles.themeIcon}`}
-          title="Light/Dark Mode"
-          style={{ width: "45px", height: "45px", padding: "0", lineHeight: "1" }}
-        >
-          {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
-        </button>
-
-        <div className="d-none d-md-inline">
-            <BookmarkDropDown />
-        </div>
+        <Row>
+          <Col className="d-none d-md-block">
+            <button
+              onClick={toggleLightMode}
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline me-5${styles.themeIcon}`}
+              title="Light/Dark Mode"
+              style={{
+                width: "45px",
+                height: "45px",
+                padding: "0",
+                lineHeight: "1",
+              }}
+            >
+              {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
+            </button>
+          </Col>
+  
+          <Col className="d-flex">
+           <BookmarkDropDown />
+          </Col>
+        </Row>
         
       </div>
       

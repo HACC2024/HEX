@@ -80,7 +80,12 @@ const BookmarkDropdown: React.FC = () => {
     : bookmarkedFiles.slice(0, 8);
 
   return (
-    <div className="bookmark-dropdown-container pb-3 px-5">
+    <div className="bookmark-dropdown-container">
+      {bookmarkedFiles.length > 0 && (
+        <div className="notification-badge">
+          {bookmarkedFiles.length}
+        </div>
+      )}
       <DropdownButton
         id="dropdown-basic-button"
         title={<Bookmark size={20} />}
