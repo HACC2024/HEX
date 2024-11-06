@@ -46,8 +46,8 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
 
   useEffect(() => {
     if (!show) {
-      setSelectedFile(""); // Reset selected file when modal is closed
-      setActiveTab("info"); // Reset active tab to "info" when modal is closed
+      setSelectedFile("");
+      setActiveTab("info");
     }
   }, [show]);
 
