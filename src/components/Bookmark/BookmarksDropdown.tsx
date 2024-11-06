@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Image, Dropdown, DropdownButton, Button } from "react-bootstrap";
-import { Trash } from "react-bootstrap-icons";
+import { Trash, Bookmark } from "react-bootstrap-icons";
 import InfoModal from "../datacardComponents/infoModal";
 import "./bookmark.css";
 
@@ -83,7 +83,7 @@ const BookmarkDropdown: React.FC = () => {
     <div className="bookmark-dropdown-container pb-3 px-5">
       <DropdownButton
         id="dropdown-basic-button"
-        title="Bookmarked Files"
+        title={<Bookmark size={20} />}
         align="end"
       >
         {bookmarkedFiles.length > 0 ? (

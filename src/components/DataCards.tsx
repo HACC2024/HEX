@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Image } from "react-bootstrap";
+import { Navbar, Image,  Container, Nav } from "react-bootstrap";
 import { ref as dbRef, onValue, update, get } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
@@ -250,12 +250,22 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   return (
     <div>
-      <div className="search-bar-container">
-        <SearchBar search={search} setSearch={setSearch} />
-      </div>
-      <div className="sort-options-container">
-        <SortOptions sortOption={sortOption} onSortChange={handleSortChange} />
-      </div>
+      <Navbar className="categoryFilterNav">
+        <Container className="sort-options-container">
+          <Nav className="d-flex justify-content-start align-items-center">
+            <div className="search-bar-container">
+              <SearchBar search={search} setSearch={setSearch} />
+            </div>
+          </Nav>
+          <Nav className="d-flex px-3">
+            <div className="sort-options">
+              <SortOptions sortOption={sortOption} onSortChange={handleSortChange} />
+            </div>
+          </Nav>
+        </Container>
+      </Navbar>
+      
+
       {loading ? (
         <p>Loading...</p>
       ) : (

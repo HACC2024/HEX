@@ -7,6 +7,7 @@ import { House, MoonStarsFill, SunFill, PeopleFill, BusFrontFill, Book, Briefcas
 import { Database, ChevronDown } from "lucide-react";
 import Link from 'next/link';
 import DownloadCSVFiles from "./DataCards";
+import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
 
 interface CategoriesContentProps {
   category: "community" | "transportation" | "school" | "employment" | "publicSafety";
@@ -137,7 +138,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
         </div>
 
         {/* Centered Navigation Icons (Only for larger screens) */}
-        <div className="d-none d-md-flex align-items-center gap-3">
+        <div className="d-flex d-none d-md-flex align-items-center gap-3">
           {categoryData.map(({ id, icon: Icon, title, catLink }) => (
             <Link href={catLink} passHref key={id}>
               <button
@@ -153,6 +154,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
             </Link>
           ))}
         </div>
+
 
         {/* Light/Dark Mode Toggle and Hamburger Menu */}
         <div className="d-flex align-items-center gap-2 d-md-none">
@@ -171,17 +173,27 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
           >
             ☰
           </button>
+          
         </div>
 
+
+
+
         {/* Light/Dark Mode Toggle (Visible on larger screens) */}
+
         <button
           onClick={toggleLightMode}
-          className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline me-5 ${styles.themeIcon}`}
+          className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline ${styles.themeIcon}`}
           title="Light/Dark Mode"
           style={{ width: "45px", height: "45px", padding: "0", lineHeight: "1" }}
         >
           {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
         </button>
+
+        <div className="d-none d-md-inline">
+            <BookmarkDropDown />
+        </div>
+        
       </div>
       
 
@@ -241,6 +253,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 <h1 className={`display-4 display-md-3 display-lg-2 ${styles.title} text-breaktext-break`}>
                   {categoryToCap[category]} Data
                 </h1>
+                <h4>explore data here</h4>
               </div>
               <div className={`${styles.rightLight} ${styles.rightLight1}`}></div>
               <div className="datacardsContainer">
