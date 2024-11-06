@@ -18,6 +18,7 @@ Currently, this is the initial release of the HEX Open Data Portal Tools subproj
 | CSV Data Processing | :white_check_mark: |
 | AI Assistant (Uncle HEX) | :white_check_mark: |
 | AI Assistant (Personal Admin Assistant) | :white_check_mark: |
+| reCAPTCHA v2 Checkbox | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
@@ -46,6 +47,11 @@ Our project implements several security measures:
 - Input validation for file uploads
 - Secure file handling practices
 - Regular dependency updates
+- reCAPTCHA v2 Checkbox integration:
+  * Implemented on login forms
+  * Protected API endpoints
+  * Bot detection and prevention
+  * User verification before sensitive actions
 
 ## Contact
 
@@ -74,6 +80,7 @@ For security concerns, please contact:
    - Secure routing through **uhspace.org/api**
    - Clear frontend/backend separation
    - Protected API endpoints
+   - reCAPTCHA verification for sensitive operations
 
 5. **AWS Infrastructure:**
    - Hosted on AWS EC2 instance
@@ -86,6 +93,12 @@ For security concerns, please contact:
    - DNS configuration for both root and subdomain
    - SEO-friendly setup preventing content duplication
 
+7. **Anti-Bot Protection:**
+   - reCAPTCHA v2 Checkbox implementation
+   - Protection against automated attacks
+   - Human verification for critical actions
+   - Rate limiting for API requests
+
 ### Future Security Implementations
 
 - Enhanced security headers
@@ -94,5 +107,7 @@ For security concerns, please contact:
 - Data injection prevention
 - Regular security audits
 - Automated vulnerability scanning
+- Advanced bot detection systems
+- Machine learning-based threat detection
 
-This document was last updated: October 2024
+This document was last updated: November 04, 2024
