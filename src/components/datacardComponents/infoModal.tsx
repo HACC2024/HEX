@@ -42,10 +42,12 @@ const CsvReaderAuto = dynamic(() => import("../csvAuto/CsvReaderAuto"), {
 
 const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
   const [selectedFile, setSelectedFile] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("info");
 
   useEffect(() => {
     if (!show) {
-      setSelectedFile(""); // Reset selected file when modal is closed
+      setSelectedFile("");
+      setActiveTab("info");
     }
   }, [show]);
 
@@ -83,7 +85,10 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
       </Modal.Header>
       <Modal.Body>
         {fileData ? (
-          <Tab.Container defaultActiveKey="info">
+          <Tab.Container
+            defaultActiveKey="info"
+            onSelect={(k) => setActiveTab(k || "info")}
+          >
             <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey="info">Info</Nav.Link>
@@ -211,13 +216,15 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
         <Button variant="secondary" onClick={onHide}>
           Close
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleFileDownload}
-          disabled={!selectedFile}
-        >
-          Download
-        </Button>
+        {activeTab === "download" && (
+          <Button
+            variant="primary"
+            onClick={handleFileDownload}
+            disabled={!selectedFile}
+          >
+            Download
+          </Button>
+        )}
       </Modal.Footer>
     </Modal>
   );

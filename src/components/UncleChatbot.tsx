@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/UncleChatbot.css";
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth'; // Add these imports
 import { MessageSquare, Upload, HelpCircle, Send, XCircle } from 'lucide-react';
+import Switch from "react-switch";
 
 const UncleChatbot: React.FC = () => {
   const [question, setQuestion] = useState<string>(""); // User's query
@@ -29,6 +30,8 @@ const UncleChatbot: React.FC = () => {
   const [showInstructions, setShowInstructions] = useState<boolean>(false); // Toggle instructions
   const [showUpload, setShowUpload] = useState<boolean>(false); // Toggle instructions
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isPidginEnabled, setIsPidginEnabled] = useState<boolean>(true); // Add this state
+
 
   // Fetch available files from Firebase Realtime Database and parse them for the select dropdown
   useEffect(() => {
@@ -125,6 +128,10 @@ const UncleChatbot: React.FC = () => {
     }
   };
 
+  const handlePidginToggle = (checked: boolean) => {
+    setIsPidginEnabled(checked);
+  };
+
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -132,12 +139,21 @@ const UncleChatbot: React.FC = () => {
     setError(null);
 
     try {
-      let fullQuery = `Question: ${question}`;
+      // Prepare the question with or without Pidgin
+      let pidginContext = "";
+
+      if (isPidginEnabled) {
+        pidginContext = " (in Pidgin)";
+      } else {
+        pidginContext = " (in plain English)";
+      }
+
+      let fullQuery = `Question${pidginContext}: ${question}`;
       let fileToSubmit: File | null = null;
 
       if (fetchedFile && selectedFile) {
-        fileToSubmit = fetchedFile; // Submit the fetched file as a File object
-        fullQuery = `File Title: ${selectedFile.label}. ${question}`;
+        fileToSubmit = fetchedFile;
+        fullQuery = `File Title: ${selectedFile.label}. ${question}${pidginContext}`;
       }
 
       const response = await fetchUncleHexResponse(fullQuery, fileToSubmit);
@@ -145,7 +161,7 @@ const UncleChatbot: React.FC = () => {
         ...prev,
         { question, response: response || "No response" },
       ]);
-      setQuestion(""); // Clear input after submission
+      setQuestion("");
     } catch (err) {
       setError("An error occurred while fetching the response.");
       console.error(err);
@@ -239,51 +255,62 @@ const UncleChatbot: React.FC = () => {
       <form onSubmit={handleSubmit} className="chatbox-form mt-4">
         <div className="input-group mb-3">
           <Select
-            options={fileNames}
-            value={selectedFile}
-            onChange={handleFileSelection}
-            placeholder="Search and select a file to analyze"
-            className="file-select"
-            isClearable
-            styles={selectStyles}
+              options={fileNames}
+              value={selectedFile}
+              onChange={handleFileSelection}
+              placeholder="Search and select a file to analyze"
+              className="file-select"
+              isClearable
+              styles={selectStyles}
+          />
+        </div>
+
+        <div className="pidgin-toggle d-flex align-items-center gap-2" style={{ paddingBottom: "8px" }}>
+          <span>Pidgin</span>
+          <Switch
+              onChange={handlePidginToggle}
+              checked={isPidginEnabled}
+              onColor="#2563eb"
+              uncheckedIcon={false}
+              checkedIcon={false}
           />
         </div>
 
         <div className="message-input-group">
           <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask Uncle HEX anything..."
-            required
-            className="form-control"
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask Uncle HEX anything..."
+              required
+              className="form-control"
           />
           <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary d-flex align-items-center gap-2 mt-3"
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary d-flex align-items-center gap-2 mt-3"
           >
             {loading ? (
-              <>
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-                <span>Thinking...</span>
-              </>
+                <>
+                  <div className="spinner-border spinner-border-sm" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <span>Thinking...</span>
+                </>
             ) : (
-              <>
-                <Send size={18} />
-                <span>Send to Uncle HEX</span>
-              </>
+                <>
+                  <Send size={18}/>
+                  <span>Send to Uncle HEX</span>
+                </>
             )}
           </button>
         </div>
 
         {error && (
-          <div className="alert alert-danger mt-3 d-flex align-items-center gap-2">
-            <XCircle size={18} />
-            <span>{error}</span>
-          </div>
+            <div className="alert alert-danger mt-3 d-flex align-items-center gap-2">
+              <XCircle size={18}/>
+              <span>{error}</span>
+            </div>
         )}
       </form>
     </div>

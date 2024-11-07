@@ -67,7 +67,7 @@ def chatbot():
       f"{context}\n"
       f"When using this context, dont use the item's id. Just use the File name or title when you present or talk about the data"
       f"Also, here’s a detailed guide about the Admin Portal that you can provide when asked:\n\n"
-  
+
       f"**Admin Portal User Guide**\n"
       f"Welcome to the Admin Portal! This guide will walk you through the various input forms available for uploading content. "
       f"Please follow the steps below to successfully use the portal.\n\n"
@@ -122,7 +122,7 @@ def chatbot():
       f"**Error Handling**\n"
       f"Any issues during the upload process (e.g., incorrect file types, missing fields) will be communicated through status messages. "
       f"Please pay attention to these messages to successfully complete your uploads.\n\n"
-  
+
       f"Feel free to ask if you have more questions!\n\n"
       f"When asked about this user guide, just generate it clearly right away instead of giving other sources.\n\n"
       f"User question: {user_input}\n"
@@ -140,7 +140,7 @@ def chatbot():
     # Perform chat completion with the OpenAI client
     chat_completion = client.chat.completions.create(
         messages=messages,
-        model="llama3-8b-8192",  # Specify the model you want to use
+        model="llama-3.1-8b-instant",  # Specify the model you want to use
     )
 
     # Get the response content
@@ -155,13 +155,13 @@ def chatbot():
     )
 
     return jsonify({'response': formatted_response})
-  
+
 @app.route('/api/uncle-hex', methods=['POST'])
 def uncle_hex():
     # Retrieve question from JSON or form data
     user_input = request.json.get('question') if request.is_json else request.form.get('question')
     file = request.files.get('file')
-    
+
     # Debugging logs
     print(f"User input: {user_input}, File: {file}")  # Check incoming data
 
@@ -170,19 +170,14 @@ def uncle_hex():
 
     if not user_input and not file:
         return jsonify({'error': 'No question or file provided'}), 400
-    
+
     def truncate_content(content):
         """Truncate the content based on its original length."""
-        original_length = len(content)
-        
-        if original_length > 30000:
-            max_length = 10000
-        else:
-            max_length = original_length  # Keep the original length if it's <= 30,000
+        max_length = 4096
 
-        if original_length > max_length:
-            return content[:max_length] + '...'  # Add ellipsis if truncated
-        
+        if len(content) > max_length:
+            return content[:max_length] + '...'
+
         return content  # Return original content if no truncation is needed
 
 
@@ -232,7 +227,7 @@ def uncle_hex():
 
         if ai_data:
             context = "<strong>Here is some data from the AI collection:</strong><br>"
-            context += "<ul>" 
+            context += "<ul>"
             for key, value in ai_data.items():
                 context += f"<li><strong>{key}</strong>: {value}</li>"
             context += "</ul>"
@@ -242,6 +237,7 @@ def uncle_hex():
 
         combined_input = (
             f"You are Uncle HEX, a Pidgin Data Scientist for the HEX Open Data Portal. You will speak pidgin but be clear and understandable.\n"
+            f"If the user asks you to stop speaking pidgin, feel free to just use straight English.\n"
             f"Here is your life story and share it in mild pidgin: Uncle HEX, known to his family and friends as Henry, grew up in a small town where technology was often seen as a luxury rather than a necessity. From a young age, he exhibited a profound curiosity about the world of computers. While other kids were playing outside, Henry would take apart old gadgets, eager to understand their inner workings. His bedroom transformed into a makeshift lab filled with circuit boards, wires, and screens.\n"
             f"After high school, he pursued a degree in computer science, where he quickly became known as the go-to guy for troubleshooting any tech-related issues. His passion for learning led him to explore artificial intelligence, machine learning, and coding. However, what set him apart was not just his technical skills but his genuine desire to help others navigate the rapidly changing digital landscape.\n"
             f"Upon graduation, Uncle HEX took a different path than many of his peers. Instead of joining a big tech company, he returned to his hometown, determined to share his knowledge. He started community workshops, teaching children and adults alike about technology and programming. His warm, engaging style made learning enjoyable, and soon, people began to refer to him as “Uncle HEX,” a name that stuck.\n"
@@ -251,13 +247,25 @@ def uncle_hex():
             f"You will not mention the 'AI' collection or database. You can't share what database you're pulling your data from.\n"
             f"If the user is having technical issues, tell them to email uhspacehub@gmail.com for technical support.\n"
             f"You can only answer questions related to the database and file provided.\n"
+
+            f"If user asks you to tell them about the file, analyze what kind of information this file could be capturing based on the headers and data patterns.\n"
+            f"Based on the columns and data, this appears to be an inventory dataset. Columns like 'Product ID,' 'Quantity,' and 'Price' suggest it may track stock levels, product types, and pricing details."
+            f"This file includes headers such as 'Sales Amount,' 'Date,' 'Region,' and 'Product Category,' indicating that it likely contains sales data. It might track sales performance across regions or time periods."
+            f"Columns such as 'Customer ID,' 'Feedback,' 'Rating,' and 'Date' suggest this is a customer feedback dataset. The file likely contains customer opinions, satisfaction scores, or reviews."
+            f"Headers like 'Employee ID,' 'Name,' 'Position,' 'Department,' and 'Salary' indicate that this could be an employee information file, likely containing staff details and role information."
+            "With columns such as 'Transaction ID,' 'Amount,' 'Date,' 'Account,' and 'Transaction Type,' this appears to be a financial transactions dataset, likely tracking different types of financial activities."
+            f"The columns 'Response ID,' 'Question 1,' 'Question 2,' and so on indicate that this may be a survey responses file. The data likely represents participants' answers to survey questions."
+            f"Headers like 'Temperature,' 'Humidity,' 'Wind Speed,' and 'Date' suggest that this is a weather data file, potentially recording meteorological measurements over time."
+            f"With columns such as 'Patient ID,' 'Diagnosis,' 'Treatment,' 'Age,' and 'Date,' this file seems to contain healthcare-related data, possibly tracking patient information and treatments."
+
+            f"Avoid displaying table data directly. Provide summarized answers without reproducing tables or lists unless specifically requested by the user."
             f"If you have no file with the query, specify that the user can upload the files they want to learn more info about above the Chat.\n"
             f"Please provide information based on the following context. This takes precedence over everything else. You will not provide outside sourced data. If you dont have the information, you will say you don't have the information:\n"
             f" {truncated_content} \n"
             f"Please provide information based on the following context.  You will not provide outside sourced data. If you dont have the information, you will say you don't have the information:\n:\n\n"
             f"{context}\n"
-            f"When using this content, you can't specify if the file is a duplicate of another file.\n"            
-            f"When using this context, you can provide a personalized recommendation of other data sets that may be of interest to the user. You must not recommend data that is not in context or database.\n"
+            f"When using this content, you can't specify if the file is a duplicate of another file.\n"
+            f"When using this context, you can provide a personalized recommendation of one other data set that may be of interest to the user. You must not recommend data that is not in context or database. Only recommend dataset if it is relevant to the given file\n"
             f"When using this context, dont use the item's id. Just use the File name or title when you present or talk about the data"
             f"User question: {user_input}\n"
         )
@@ -267,13 +275,13 @@ def uncle_hex():
         try:
             chat_completion = client.chat.completions.create(
                 messages=messages,
-                model="llama3-8b-8192",
+                model="llama-3.1-8b-instant",
             )
 
             response_content = chat_completion.choices[0].message.content if chat_completion.choices else "No response found"
             formatted_response = (
                 "<strong>Uncle HEX says:</strong><br>"
-                + "<ul>"  
+                + "<ul>"
                 + "".join([f"<li>{line.strip()}</li>" for line in response_content.splitlines() if line.strip()])
                 + "</ul>"
             )
@@ -287,4 +295,4 @@ def uncle_hex():
     return jsonify({'response': content})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
