@@ -17,7 +17,7 @@ import {
   Shield,
   CaretLeftFill,
   CaretRightFill,
-  ChatRight
+  ChatRight,
 } from "react-bootstrap-icons";
 import Link from "next/link";
 import Footer from "../components/footer";
@@ -41,11 +41,18 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   }, [words.length]);
 
   return (
-    <div  id="Introduction" className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5">
+    <div
+      id="Introduction"
+      className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5"
+    >
       <div className="row w-100">
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center mb-5">
           <h1 className="text-center fw-bold mt-5 mb-4">
-            <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
+            <span
+              className={`flip-word fw-bold ${
+                isLightMode ? "blue-text" : "gradient-text"
+              }`}
+            >
               UHSPACE DATA HUB
             </span>
           </h1>
@@ -55,7 +62,11 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
             Collaborative Engagement
           </h5>
           <h3 className="text-center fw-bold mt-4">
-            <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
+            <span
+              className={`flip-word fw-bold ${
+                isLightMode ? "blue-text" : "gradient-text"
+              }`}
+            >
               {words[currentWordIndex]}
             </span>{" "}
             FOR YOUR DISCOVERY
@@ -240,29 +251,46 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
 });
 
 const calculatePosition = () => {
-  if (typeof window !== 'undefined') {
-    return {
-      x: window.innerWidth - 170,
-      y: window.innerHeight - 200,
-    };
-  }
-  return { x: 0, y: 0 };
+  // Set default position in case of SSR
+  return { x: 0, y: 0 }; // Default to top-left or any preferred position
 };
 
-const AISticker: React.FC = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+const AISticker = () => {
+  const [position, setPosition] = useState(calculatePosition);
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [wasDragged, setWasDragged] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setPosition(calculatePosition());
+    // Ensure the component only runs after it mounts on the client
+    setIsMounted(true);
+
+    const updatePosition = () => {
+      setPosition({
+        x: window.innerWidth - 170,
+        y: window.innerHeight - 200,
+      });
+    };
+
+    if (typeof window !== "undefined") {
+      updatePosition();
+      window.addEventListener("resize", updatePosition);
     }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", updatePosition);
+      }
+    };
   }, []);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseDown = (event: {
+    preventDefault: () => void;
+    clientX: number;
+    clientY: number;
+  }) => {
     event.preventDefault();
     setIsDragging(true);
     setWasDragged(false);
@@ -272,7 +300,7 @@ const AISticker: React.FC = () => {
     });
   };
 
-  const handleMouseMove = (event: MouseEvent) => {
+  const handleMouseMove = (event: { clientX: number; clientY: number }) => {
     if (isDragging) {
       const newX = event.clientX - offset.x;
       const newY = event.clientY - offset.y;
@@ -300,16 +328,6 @@ const AISticker: React.FC = () => {
     };
   }, [isDragging, offset]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (!isDragging) {
-        setPosition(calculatePosition());
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [isDragging]);
-
   const handleOpenModal = () => {
     if (!wasDragged) {
       setIsModalOpen(true);
@@ -319,6 +337,8 @@ const AISticker: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  if (!isMounted) return null; // Don't render until component is mounted
 
   return (
     <>
@@ -330,6 +350,8 @@ const AISticker: React.FC = () => {
           left: `${position.x}px`,
           top: `${position.y}px`,
           zIndex: 10,
+          opacity: 1,
+          transition: "opacity 0.3s ease-in",
         }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleOpenModal}
@@ -337,7 +359,10 @@ const AISticker: React.FC = () => {
       >
         <div className="icon-container">
           <ChatRight className="fs-1" />
-          <span className="chat-text">Chat with <br />Uncle HEX!</span>
+          <span className="chat-text">
+            Chat with <br />
+            Uncle HEX!
+          </span>
         </div>
       </Link>
 
@@ -345,14 +370,15 @@ const AISticker: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <UncleChatbot />
-            <button className="close-button" onClick={handleCloseModal}>Close</button>
+            <button className="close-button" onClick={handleCloseModal}>
+              Close
+            </button>
           </div>
         </div>
       )}
     </>
   );
 };
-
 
 export default function Home() {
   const [isLightMode, setIsLightMode] = useState(false);
@@ -373,7 +399,7 @@ export default function Home() {
       <HowItWorks />
       <ChatBotsDesign />
       <AISticker />
-      <Footer />   
+      <Footer />
     </main>
   );
 }
