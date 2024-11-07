@@ -5,6 +5,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { PeopleFill, BusFrontFill, Book, Briefcase, Shield } from 'react-bootstrap-icons';
 import Link from 'next/link';
 import '../styles/CategoriesFilter.Style.css';
+import AISticker from './AISticker';
+import "../styles.css";
 
 const categoryData = [
     { name: "Community", icon: <PeopleFill className="fs-3" />, link: "/Categories/community" },
@@ -51,6 +53,7 @@ const CategoriesFilter = () => {
                         ))}
                     </Row>
                 </Container>
+                <AISticker />
             </div>
         </div>
     );
