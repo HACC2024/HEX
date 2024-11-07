@@ -8,72 +8,7 @@
   position: relative;
   overflow: hidden;
   padding-bottom: 4rem;
-  z-index: 1; /* Ensure main content is above the background lights */
 }
-
-/* Optional: Add a subtle grid pattern background */
-.mainContainer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: linear-gradient(#3498db10 1px, transparent 1px),
-    linear-gradient(90deg, #3498db10 1px, transparent 1px);
-  background-size: 20px 20px;
-  pointer-events: none;
-  z-index: -1; /* Background grid behind everything */
-}
-
-/* Updated glow styling for lights to ensure visibility */
-.leftLight,
-.rightLight {
-  position: absolute;
-  width: clamp(300px, 30vw, 530px);
-  height: clamp(300px, 30vw, 530px);
-  border-radius: 50%;
-  filter: blur(50px);
-  z-index: 0; /* Keep lights in the background but visible */
-  pointer-events: none; /* Prevent interference with content interaction */
-}
-
-.leftLight {
-  background: radial-gradient(circle, rgba(50, 122, 255, 0.7), transparent 70%);
-  animation: pulsing-glow 8s infinite;
-}
-
-.rightLight {
-  background: radial-gradient(circle, rgba(22, 115, 254, 0.5), transparent 70%);
-  animation: pulsing-glow 5s infinite;
-}
-
-/* Positioning classes for lights */
-.leftLight1 {
-  top: 5%;
-  left: 20%;
-}
-
-.rightLight1 {
-  top: 100%;
-  right: 20%;
-}
-
-.leftLight2 {
-  top: 200%;
-  left: 20%;
-}
-
-.rightLight2 {
-  top: 240%;
-  right: 10%;
-}
-
-.rightLight3 {
-  top: 300%;
-  right: 30%;
-}
-
 
 .title-wrapper {
   text-align: center; /* Center the title */
