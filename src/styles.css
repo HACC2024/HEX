@@ -1,5 +1,5 @@
 /* Global Styles */
-body {
+html, body {
   color: white;
   background-color: #000000;
   font-family: monospace;
@@ -7,6 +7,8 @@ body {
   padding: 0;
   overflow-x: hidden; /* Prevent horizontal scrolling */
   overscroll-behavior: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Main Container */
@@ -14,6 +16,7 @@ main {
   display: flex;
   flex-direction: column;
   width: 100%; /* Take full width */
+  min-height: 100vh;
 }
 
 /* Section Styles */
@@ -46,7 +49,6 @@ h2 {
     #5e07ff,
     #bc98ffdd
   );
-  
 }
 
 .gradient-text {
@@ -627,8 +629,8 @@ footer {
 }
 .StepBox {
   width: 100%;
-  max-width: 300px;
-  min-height: 150px;
+  width: 300px;
+  height: 180px;
   border-radius: 12px;
   padding: 20px;
   background-color: black; /* Solid black background */
@@ -854,4 +856,78 @@ footer {
   font-size: 1rem; /* Adjust font size as needed */
   color: #555; /* Customize the color */
   margin-top: 50px; /* Adjust spacing above the text */
+}
+
+.floating-icon {
+  background-color: rgba(115, 183, 255, 0.775);
+  width: 100px;
+  height: 100px;
+  padding: 10px 0; /* Adjust padding for better fit */
+  box-shadow: 0px 4px 10px rgba(0, 98, 255, 0.8);
+  cursor: grab;
+  transition: transform 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column; /* Stack icon and text vertically */
+  align-items: center;
+}
+
+.chat-text {
+  margin-top: 3px; /* Space between icon and text */
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.modal-content {
+  background: rgba(69, 171, 255, 0.504);
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  width: 60%;
+  max-width: 1000px;
+  min-height: 500px; /* initial size */
+  max-height: 78vh; /* limit height to 80% of viewport */
+  text-align: center;
+  overflow-y: auto !important; /* ensure scroll behavior is applied */
+  box-sizing: border-box; /* include padding in height calculation */
+}
+
+.close-button {
+  margin-top: 20px;
+  background-color: #fe1515b3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  align-self: center; /* Center the button */
+}
+
+.close-button:hover {
+  background-color: #f71414;
 }

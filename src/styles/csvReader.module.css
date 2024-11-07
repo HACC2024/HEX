@@ -8,6 +8,7 @@
   position: relative;
   overflow: hidden;
   padding-bottom: 4rem;
+  z-index: 1; /* Ensure main content is above the background lights */
 }
 
 /* Optional: Add a subtle grid pattern background */
@@ -22,32 +23,32 @@
     linear-gradient(90deg, #3498db10 1px, transparent 1px);
   background-size: 20px 20px;
   pointer-events: none;
+  z-index: -1; /* Background grid behind everything */
 }
 
-/* Default glow styling for leftLight */
-.leftLight {
+/* Updated glow styling for lights to ensure visibility */
+.leftLight,
+.rightLight {
   position: absolute;
   width: clamp(300px, 30vw, 530px);
   height: clamp(300px, 30vw, 530px);
   border-radius: 50%;
+  filter: blur(50px);
+  z-index: 0; /* Keep lights in the background but visible */
+  pointer-events: none; /* Prevent interference with content interaction */
+}
+
+.leftLight {
   background: radial-gradient(circle, rgba(50, 122, 255, 0.7), transparent 70%);
-  filter: blur(50px);
-  animation: pulsing-glow 13s infinite;
-  z-index: 0;
-}
-
-/* Default glow styling for rightLight */
-.rightLight {
-  position: absolute;
-  width: clamp(250px, 25vw, 450px);
-  height: clamp(250px, 25vw, 450px);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(22, 115, 254, 0.5), transparent 70%);
-  filter: blur(50px);
   animation: pulsing-glow 8s infinite;
-  z-index: 0;
 }
 
+.rightLight {
+  background: radial-gradient(circle, rgba(22, 115, 254, 0.5), transparent 70%);
+  animation: pulsing-glow 5s infinite;
+}
+
+/* Positioning classes for lights */
 .leftLight1 {
   top: 5%;
   left: 20%;
@@ -72,6 +73,7 @@
   top: 300%;
   right: 30%;
 }
+
 
 .title-wrapper {
   text-align: center; /* Center the title */
@@ -422,22 +424,4 @@
 .card-body {
   background-color: #e73c3c;
 }
-.chatButton {
-  font-weight: bold;
-  color: #ffffff;
-  border-color: white;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  font-size: 1rem;
-}
 
-.chatButton:hover {
-  background-color: none;
-  transform: translateY(-2px); /* Lift effect */
-}
-
-.chatButton:active {
-  background-color: none; /* Even darker on active press */
-  transform: translateY(0);
-}

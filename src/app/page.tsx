@@ -17,6 +17,7 @@ import {
   Shield,
   CaretLeftFill,
   CaretRightFill,
+  ChatRight,
 } from "react-bootstrap-icons";
 import Link from "next/link";
 import Footer from "../components/footer";
@@ -25,6 +26,8 @@ import HowItWorks from "../components/howItWorks";
 import Introduction from "../components/introduction";
 import React, { useEffect, useState } from "react";
 import ChatBotsDesign from "@/components/ChatBotsDesign";
+import UncleChatbot from "@/components/UncleChatbot";
+import AISticker from "@/components/AISticker";
 
 const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   const words = ["RELIABLE", "RELEVANT", "READY"];
@@ -39,11 +42,18 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   }, [words.length]);
 
   return (
-    <div  id="Introduction" className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5">
+    <div
+      id="Introduction"
+      className="container-fluid HomeImageCt d-flex justify-content-center align-items-center pt-5"
+    >
       <div className="row w-100">
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center mb-5">
           <h1 className="text-center fw-bold mt-5 mb-4">
-            <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
+            <span
+              className={`flip-word fw-bold ${
+                isLightMode ? "blue-text" : "gradient-text"
+              }`}
+            >
               UHSPACE DATA HUB
             </span>
           </h1>
@@ -53,7 +63,11 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
             Collaborative Engagement
           </h5>
           <h3 className="text-center fw-bold mt-4">
-            <span className={`flip-word fw-bold ${isLightMode ? "blue-text" : "gradient-text"}`}>
+            <span
+              className={`flip-word fw-bold ${
+                isLightMode ? "blue-text" : "gradient-text"
+              }`}
+            >
               {words[currentWordIndex]}
             </span>{" "}
             FOR YOUR DISCOVERY
@@ -255,6 +269,7 @@ export default function Home() {
       <Categories isLightMode={isLightMode} />
       <HowItWorks />
       <ChatBotsDesign />
+      <AISticker />
       <Footer />
     </main>
   );
