@@ -270,66 +270,71 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
         <p>Loading...</p>
       ) : (
         <div className="file-list">
+
           {sortedFiles.map((file: FileData) => (
-            <div
-              key={file.name}
-              className="file-card"
-              onClick={() => openInfoModal(file)}
-            >
-              <div className="justify-content-center">
-                <Image
-                  src={file.image}
-                  alt="DataCard Image"
-                  className="card-image"
-                />
-              </div>
-              <div className="file-info">
-                <h3 className="file-name">{file.name}</h3>
-                <p className="file-category">{file.category}</p>
-                <div className="file-tags pt-1">
-                  {Object.keys(file.file).map((key) =>
-                    file.file[key].length > 0 &&
-                    file.file[key].some((url) => url !== "") ? (
-                      <span
-                        key={key}
-                        className="file-tag"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {key}
-                      </span>
-                    ) : null
-                  )}
+            <div key={file.name} className="file-card-border">
+                            <div
+                key={file.name}
+                className="file-card bg-secondary-subtle"
+                onClick={() => openInfoModal(file)}
+              >
+                <div className="justify-content-center">
+                  <Image
+                    src={file.image}
+                    alt="DataCard Image"
+                    className="card-image"
+                  />
                 </div>
-                <div className="views-display">
-                  <p>
-                    Views:{" "}
-                    {file.views >= 1000000
-                      ? (file.views / 1000000).toFixed(1) + "M"
-                      : file.views >= 1000
-                      ? (file.views / 1000).toFixed(1) + "k"
-                      : file.views}
-                  </p>
+                <div className="file-info">
+                  <h3 className="file-name">{file.name}</h3>
+                  <p className="file-category">{file.category}</p>
+                  <div className="file-tags pt-1">
+                    {Object.keys(file.file).map((key) =>
+                      file.file[key].length > 0 &&
+                      file.file[key].some((url) => url !== "") ? (
+                        <span
+                          key={key}
+                          className="file-tag"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {key}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                  <div className="views-display">
+                    <p>
+                      Views:{" "}
+                      {file.views >= 1000000
+                        ? (file.views / 1000000).toFixed(1) + "M"
+                        : file.views >= 1000
+                        ? (file.views / 1000).toFixed(1) + "k"
+                        : file.views}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="button-container d-flex align-items-center">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openDownloadModal(file.file);
-                  }}
-                  className="download-button"
-                >
-                  Download <Download />
-                </button>
-                <Bookmarks
-                  file={file}
-                  isBookmarked={isBookmarked}
-                  toggleBookmark={toggleBookmark}
-                />
+                <div className="button-container d-flex align-items-center">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      openDownloadModal(file.file);
+                    }}
+                    className="download-button"
+                  >
+                    Download <Download />
+                  </button>
+                  <Bookmarks
+                    file={file}
+                    isBookmarked={isBookmarked}
+                    toggleBookmark={toggleBookmark}
+                  />
+                </div>
               </div>
             </div>
+
           ))}
+          
         </div>
       )}
       <InfoModal

@@ -263,7 +263,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 <h1 className={`display-4 display-md-3 display-lg-2 ${styles.title} text-breaktext-break`}>
                   {categoryToCap[category]} Data
                 </h1>
-                <h4>explore data here</h4>
+                <h4>Data made simple, insights made powerful</h4>
               </div>
               <div className={`${styles.rightLight} ${styles.rightLight1}`}></div>
               <div className="datacardsContainer py-5">

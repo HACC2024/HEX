@@ -54,11 +54,12 @@ const Bookmarks: React.FC<BookmarkManagerProps> = ({
       onClick={handleClick}
       className="bookmark-icon-button"
       disabled={buttonDisabled}
+      style={{ backgroundColor: isBookmarked(file.name) ? "white" : "inherit" }}
     >
       {isBookmarked(file.name) ? (
-        <BookmarkFill style={{ color: "black" }} />
+      <BookmarkFill />
       ) : (
-        <BookmarkOutline style={{ color: "black" }} />
+      <BookmarkOutline />
       )}
     </button>
   );
