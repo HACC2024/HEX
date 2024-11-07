@@ -139,7 +139,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
         </div>
 
         {/* Centered Navigation Icons (Only for larger screens) */}
-        <div className="d-flex d-none d-md-flex align-items-center gap-3">
+        <div className="d-flex d-none d-md-flex align-items-center gap-3 " style={{ paddingLeft: '55px' }}>
           {categoryData.map(({ id, icon: Icon, title, catLink }) => (
             <Link href={catLink} passHref key={id}>
               <button
@@ -199,7 +199,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
             </button>
           </Col>
   
-          <Col className="d-flex">
+          <Col className="d-flex " style={{ paddingRight: '30px' }}>
            <BookmarkDropDown />
           </Col>
         </Row>
@@ -266,7 +266,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 <h4>explore data here</h4>
               </div>
               <div className={`${styles.rightLight} ${styles.rightLight1}`}></div>
-              <div className="datacardsContainer">
+              <div className="datacardsContainer py-5">
                 <DownloadCSVFiles category={categoryToCap[category]} />
               </div>
             </div>

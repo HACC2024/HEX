@@ -142,10 +142,10 @@
 .bookmark-icon-button:hover {
   background-color: #f5f5f5;
 }
-
+/* 
 .categoryFilterNav{
   background-color:transparent !important;
-}
+} */
 .sort-options-container {
   display: flex;
   width:100%;
