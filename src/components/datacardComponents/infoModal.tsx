@@ -52,13 +52,16 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
   }, [show]);
 
   const formatDate = (dateString: string): string => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-CA");
-    } catch (error) {
-      console.error("Invalid date format:", dateString, error);
+    if (!dateString) {
       return "";
     }
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+
+    return date.toLocaleDateString("en-CA");
   };
 
   const handleFileDownload = () => {
