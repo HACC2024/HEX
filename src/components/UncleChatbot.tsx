@@ -143,7 +143,7 @@ const UncleChatbot: React.FC = () => {
       let pidginContext = "";
 
       if (isPidginEnabled) {
-        pidginContext = " (in Pidgin)";
+        pidginContext = " (in mild Hawaiian Pidgin)";
       } else {
         pidginContext = " (in plain English)";
       }
@@ -153,7 +153,7 @@ const UncleChatbot: React.FC = () => {
 
       if (fetchedFile && selectedFile) {
         fileToSubmit = fetchedFile;
-        fullQuery = `File Title: ${selectedFile.label}. ${question}${pidginContext}`;
+        fullQuery = `File Title: ${selectedFile.label}. ${pidginContext}${question}`;
       }
 
       const response = await fetchUncleHexResponse(fullQuery, fileToSubmit);
