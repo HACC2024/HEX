@@ -17,6 +17,7 @@ import {
   Shield,
   CaretLeftFill,
   CaretRightFill,
+  ChatRight
 } from "react-bootstrap-icons";
 import Link from "next/link";
 import Footer from "../components/footer";
@@ -25,6 +26,7 @@ import HowItWorks from "../components/howItWorks";
 import Introduction from "../components/introduction";
 import React, { useEffect, useState } from "react";
 import ChatBotsDesign from "@/components/ChatBotsDesign";
+import UncleChatbot from "@/components/UncleChatbot";
 
 const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   const words = ["RELIABLE", "RELEVANT", "READY"];
@@ -237,6 +239,121 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
   );
 });
 
+const calculatePosition = () => {
+  if (typeof window !== 'undefined') {
+    return {
+      x: window.innerWidth - 170,
+      y: window.innerHeight - 200,
+    };
+  }
+  return { x: 0, y: 0 };
+};
+
+const AISticker: React.FC = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [wasDragged, setWasDragged] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setPosition(calculatePosition());
+    }
+  }, []);
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+    setWasDragged(false);
+    setOffset({
+      x: event.clientX - position.x,
+      y: event.clientY - position.y,
+    });
+  };
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (isDragging) {
+      const newX = event.clientX - offset.x;
+      const newY = event.clientY - offset.y;
+      setPosition({ x: newX, y: newY });
+      setWasDragged(true);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, offset]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!isDragging) {
+        setPosition(calculatePosition());
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isDragging]);
+
+  const handleOpenModal = () => {
+    if (!wasDragged) {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <Link
+        href="#"
+        className="floating-icon"
+        style={{
+          position: "fixed",
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          zIndex: 10,
+        }}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleOpenModal}
+        onClick={(event) => event.preventDefault()}
+      >
+        <div className="icon-container">
+          <ChatRight className="fs-1" />
+          <span className="chat-text">Chat with <br />Uncle HEX!</span>
+        </div>
+      </Link>
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <UncleChatbot />
+            <button className="close-button" onClick={handleCloseModal}>Close</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+
 export default function Home() {
   const [isLightMode, setIsLightMode] = useState(false);
 
@@ -255,7 +372,8 @@ export default function Home() {
       <Categories isLightMode={isLightMode} />
       <HowItWorks />
       <ChatBotsDesign />
-      <Footer />
+      <AISticker />
+      <Footer />   
     </main>
   );
 }

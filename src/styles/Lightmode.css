@@ -4,8 +4,12 @@
   color: #121212;
 }
 
+.light-mode main {
+  background-color: rgba(229, 242, 255, 0.81);
+}
+
 .light-mode .navbar {
-  background-color: rgb(155, 205, 255);
+  background-color: rgba(124, 174, 255, 0.942);
   color: #121212;
 }
 
@@ -42,12 +46,10 @@
 
 .light-mode .IntroDiv {
   background: linear-gradient(
-    40deg,
-    rgb(254, 254, 254) 10%,
-    rgb(147, 190, 255) 30%,
-    rgb(126, 186, 255) 60%,
-    rgb(83, 120, 255) 70%,
-    rgba(111, 166, 255, 0.973) 100%
+    45deg,
+    rgb(251, 251, 255) 10%,
+    rgb(81, 171, 255) 60%,    
+    rgb(251, 251, 255) 100%
   );
 }
 
@@ -165,10 +167,6 @@
 
 .light-mode footer {
   color: #ffffff;
-  background: linear-gradient(
-    40deg,
-    rgb(148, 207, 255) 40%,
-    rgb(131, 181, 255) 100%
-  );
+  background: rgba(124, 174, 255, 0.942);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
 }
