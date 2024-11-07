@@ -2,3 +2,39 @@ dropdown-menu {
   right: 0;
   left: auto;
 }
+.bookmark-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+#dropdown-basic-button {
+  border-radius: 50% !important;
+  width: 45px; /* Set the size to match */
+  height: 45px;
+  padding: 0; /* Optional: Removes any padding around the icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#dropdown-basic-button::after {
+  display: none; /* Hide the default arrow */
+}
+
+
+.notification-badge {
+  position: absolute;
+  bottom: -5px; /* Adjust as needed to align with bottom */
+  right: -5px; /* Adjust as needed to align with right edge */
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1; /* Ensures it's above the button */
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); /* Optional: adds a shadow for better visibility */
+}

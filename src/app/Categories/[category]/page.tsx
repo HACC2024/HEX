@@ -1,9 +1,7 @@
+// File: pages/[category]/index.tsx
+
 import "bootstrap/dist/css/bootstrap.min.css";
-// import "../../../styles.css";
-import "../../../styles/CategoriesPage.Style.css";
-import DownloadCSVFiles from "../../../components/DataCards";
-import CategoriesFilter from "../../../components/CategoriesFilter";
-import CategoryNav from "../../../components/CategoryNav";
+import CategoriesContent from "../../../components/CategoriesContent"; // Import the client-side component
 
 export async function generateStaticParams() {
   const categories = [
@@ -19,45 +17,15 @@ export async function generateStaticParams() {
   }));
 }
 
-const DataContent = ({
-  category,
-}: {
-  category:
-    | "community"
-    | "transportation"
-    | "school"
-    | "employment"
-    | "publicSafety";
-}) => {
-  const categoryToCap = {
-    community: "Community",
-    transportation: "Transportation",
-    school: "School",
-    employment: "Employment",
-    publicSafety: "Public Safety",
-  };
-  return (
-    <div className="dataContentDiv">
-      <CategoryNav />
-      <CategoriesFilter />
-      <h2 className="text-center pt-5">
-        <strong>Data for {categoryToCap[category]}</strong>
-      </h2>
-      <DownloadCSVFiles category={categoryToCap[category]} />
-    </div>
-  );
-};
-
-// Define a server component that accepts category as a parameter
-export default function CategoriesPage({
+const CategoriesPage = ({
   params,
 }: {
   params: { category: string };
-}) {
+}) => {
   const { category } = params;
 
   return (
-    <DataContent
+    <CategoriesContent
       category={
         category as
           | "community"
@@ -68,4 +36,6 @@ export default function CategoriesPage({
       }
     />
   );
-}
+};
+
+export default CategoriesPage;
