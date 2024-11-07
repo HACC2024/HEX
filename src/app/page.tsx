@@ -9,6 +9,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles.css";
 import "../styles/styles.css";
 import "../styles/Lightmode.css";
+import "../styles/HomeTopandIntro.css"
+import "../styles/HomeCategory.css"
+import "../styles/HomeHowItWorks.css"
+import "../styles/HomeChatbots.css"
+import "../styles/AISticker.css"
+import "../styles/HomeFooter.css"
 import {
   PeopleFill,
   BusFrontFill,
@@ -26,7 +32,6 @@ import HowItWorks from "../components/howItWorks";
 import Introduction from "../components/introduction";
 import React, { useEffect, useState } from "react";
 import ChatBotsDesign from "@/components/ChatBotsDesign";
-import UncleChatbot from "@/components/UncleChatbot";
 import AISticker from "@/components/AISticker";
 
 const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {

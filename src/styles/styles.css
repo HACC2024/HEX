@@ -1,65 +1,9 @@
-/* Global Styles */
-body {
-    color: rgb(255, 255, 255);
-    background-color: #000000;
-    font-family: monospace;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-}
-
-/* Main Container */
-main {
-    display: flex;
-    flex-direction: column;
-    width: 100%; /* Take full width */
-}
-
-/* Section Styles */
-#introduction,
-#category,
-#how-it-works {
-    padding: 240px; /* Increased padding for sections */
-    border-radius: 8px; /* Rounded corners */
-    background-color: #000000; /* Dark background for sections */
-    margin: 20px 0; /* Adjusted margin for sections to prevent side scrolling */
-    text-align: center; /* Center text within sections */
-}
-
-h2 {
-    margin-bottom: 20px; /* Space below headings */
-}
-
-.custom-link {
-    color: black;
-    text-decoration: none;
-}
-
-/* Optional: Dark Mode Toggle Styling */
-
 
 /* Smaller text size for navbar links on smaller screens */
 @media (max-width: 768px) {
     nav a {
         font-size: 14px; /* Smaller font size for navbar links */
     }
-}
-nav a:hover {
-    color: #5c85f6;
-}
-
-/* Hover effect for dark mode icon */
-.darkmode-icon:hover {
-    color: #5c85f6; /* Same hover color as links */
-}
-
-/* Footer Styles */
-footer {
-    color: #ffffff;
-    text-align: center;
-    padding: 20px;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
 }
 
 /* Responsive Styles */
@@ -78,51 +22,4 @@ footer {
         margin: 10px 0; /* Smaller margin for sections on smaller screens */
         padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
     }
-}
-
-/* Add to your styles.css */
-
-footer .nav-link,
-footer .custom-link {
-    color: white;
-    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    display: flex;
-    align-items: center;
-}
-
-footer .nav-link:hover,
-footer .custom-link:hover {
-    color: #2563eb;
-    transform: translateY(-2px);
-}
-
-/* Optional: Add tooltip style */
-footer .custom-link {
-    position: relative;
-}
-
-footer .custom-link[title]:hover:after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 4px 8px;
-    background-color: #333;
-    color: white;
-    font-size: 12px;
-    border-radius: 4px;
-    white-space: nowrap;
-    margin-bottom: 5px;
-}
-
-footer .custom-link[title]:hover:before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: #333;
-    margin-bottom: -5px;
 }

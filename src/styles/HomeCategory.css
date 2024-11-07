@@ -1,0 +1,222 @@
+.circular-categories-container {
+  background-color: #000000;
+  color: #fff;
+  padding: 70px 20px 200px;
+  max-width: 100vw;
+  margin: 0 auto;
+  perspective: 1500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.circular-display {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  transform-style: preserve-3d;
+  transform-origin: center;
+  transition: transform 1s ease;
+}
+/* Pulse Animation */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5); /* Increase size */
+    opacity: 1; /* Full opacity */
+  }
+}
+
+/* Center Spotlight with Pulsing Effect */
+.spotlight-center {
+  position: absolute;
+  bottom: -20px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(
+    circle at center,
+    rgba(100, 162, 255, 0.5),
+    transparent 70%
+  );
+  filter: blur(30px);
+  border-radius: 50%;
+  z-index: -1;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: pulse 15s ease-in-out infinite; /* Pulsing animation */
+}
+
+/* Left Spotlight with Pulsing Effect */
+.spotlight-left {
+  position: absolute;
+  bottom: 200px;
+  left: 15%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle at center,
+    rgba(100, 162, 255, 0.5),
+    transparent 70%
+  );
+  filter: blur(30px);
+  border-radius: 50%;
+  z-index: -1;
+  animation: pulse 18s ease-in-out infinite; /* Slightly different timing */
+}
+
+/* Right Spotlight with Pulsing Effect */
+.spotlight-right {
+  position: absolute;
+  bottom: -10px;
+  right: 15%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle at center,
+    rgba(100, 162, 255, 0.5),
+    transparent 70%
+  );
+  filter: blur(30px);
+  border-radius: 50%;
+  z-index: -1;
+  animation: pulse 12s ease-in-out infinite; /* Slightly faster timing */
+}
+
+/* Category Box Styling */
+.category-box {
+  text-decoration: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 170px; /* Fixed width for uniform size */
+  height: 180px; /* Fixed height for uniform size */
+  padding: 20px;
+  background: linear-gradient(
+    40deg,
+    rgba(109, 189, 255, 0.64) 10%,
+    rgba(58, 118, 207, 0.625) 30%,
+    rgba(18, 57, 215, 0.599) 60%,
+    rgba(100, 57, 240, 0.531) 70%,
+    rgba(131, 49, 255, 0.477) 100%
+  );
+  color: #ffffff;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s ease;
+}
+
+.category-box.centered:hover {
+  background: linear-gradient(135deg, #5e07ff, #bc98ffdd);
+  color: #ffffff;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.category-box strong {
+  position: relative;
+  display: inline-block;
+  color: inherit; /* Inherit color from the parent element */
+}
+
+.category-box strong::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px; /* Adjusts underline position */
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.3s ease, left 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.category-box.centered:hover strong::after {
+  width: 100%;
+  left: -10;
+}
+
+.category-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+/* Position each category in a circular layout */
+.category-box:nth-child(1) {
+  transform: translate(-50%, -50%) rotateY(0deg) translateZ(250px);
+}
+.category-box:nth-child(2) {
+  transform: translate(-50%, -50%) rotateY(72deg) translateZ(250px);
+}
+.category-box:nth-child(3) {
+  transform: translate(-50%, -50%) rotateY(144deg) translateZ(250px);
+}
+.category-box:nth-child(4) {
+  transform: translate(-50%, -50%) rotateY(216deg) translateZ(250px);
+}
+.category-box:nth-child(5) {
+  transform: translate(-50%, -50%) rotateY(288deg) translateZ(250px);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .circular-display {
+    width: 300px;
+    height: 300px;
+  }
+
+  .category-box {
+    width: 130px;
+    height: 130px;
+    font-size: 1rem;
+  }
+
+  .category-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .circular-display {
+    width: 250px;
+    height: 250px;
+  }
+
+  .category-box {
+    width: 100px;
+    height: 100px;
+    font-size: 0.9rem;
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+  }
+}
+.button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem; /* Space between buttons */
+  flex-wrap: nowrap; /* Prevent wrapping to a new line */
+  width: 100%; /* Ensures the container spans full width */
+}
+
+.btn {
+  display: inline-flex; /* Ensure buttons align inline within flex container */
+  align-items: center;
+  justify-content: center;
+  min-width: 40px; /* Set a minimum width to prevent shrinking */
+  padding: 10px 15px; /* Add padding for consistency */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+}
