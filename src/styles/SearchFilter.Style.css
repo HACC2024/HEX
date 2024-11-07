@@ -23,6 +23,7 @@
     flex: 1 1 250px;
     max-width: 100%;
     transition: width 0.2s ease;
+    font-family:monospace !important; 
 }
 
 /* Large Screens */

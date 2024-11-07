@@ -20,10 +20,6 @@
         "destination": "/security-report.html"
       },
       {
-        "source": "/Categories",
-        "destination": "/Categories/[category]"
-      },
-      {
         "source": "/Categories/community",
         "destination": "/Categories/community.html"
       },

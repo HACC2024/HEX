@@ -72,7 +72,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
     return <div>Loading...</div>;
   }
 
-  const NavBar = () => (
+  const ContentsNavBar = () => (
     <nav
       className="navbar custom-navbar p-3 fixed-top"
       style={{
@@ -242,7 +242,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
 )
 
   return (
-    <main
+    <div
       id="categoriesPageMain"
       className={`mainContainer ${isLightMode ? "light-mode" : ""}`}
       style={{
@@ -252,7 +252,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
         transition: "background-color 0.5s ease",
       }}
     >
-      <NavBar />
+      <ContentsNavBar />
       <div className={`${styles.leftLight} ${styles.leftLight1}`}></div>
 
       <div className="container-fluid">
@@ -263,7 +263,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 <h1 className={`display-4 display-md-3 display-lg-2 ${styles.title} text-breaktext-break`}>
                   {categoryToCap[category]} Data
                 </h1>
-                <h4>Data made simple, insights made powerful</h4>
+                <h4 className={`${styles.catsubtitle}`} >Data made Simple, Insights made Powerful, AI made Accessible</h4>
               </div>
               <div className={`${styles.rightLight} ${styles.rightLight1}`}></div>
               <div className="datacardsContainer py-5">
@@ -273,7 +273,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

@@ -58,11 +58,11 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
             </span>
           </h1>
 
-          <h3 className="text-center mt-2">
+          <h4 className="text-center mt-2">
             Unlocking Hawaii's Solutions for Personalized Analytics and
             Collaborative Engagement
-          </h3>
-          <h3 className="text-center fw-bold mt-4">
+          </h4>
+          <h2 className="text-center fw-bold mt-4">
             <span
               className={`flip-word fw-bold ${
                 isLightMode ? "blue-text" : "gradient-text"
@@ -71,7 +71,7 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
               {words[currentWordIndex]}
             </span>{" "}
             FOR YOUR DISCOVERY
-          </h3>
+          </h2>
         </div>
         <div className="col-md-6 d-flex justify-content-center align-items-center">
           <img

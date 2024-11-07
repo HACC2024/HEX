@@ -79,6 +79,7 @@
   overflow: hidden;
   color:black;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  font-family:monospace !important;
 }
 
 .file-category {
@@ -86,6 +87,7 @@
   color: #666;
   margin: 0;
   color:black;
+  font-family:monospace !important; 
 }
 
 .file-tags.pt-1 {
@@ -93,6 +95,7 @@
   flex-wrap: wrap;
   gap: 8px;
   color:lightgray;
+  font-family:monospace !important; 
 }
 
 .file-tag {
@@ -101,6 +104,7 @@
   border-radius: 6px;
   font-size: 12px;
   color:black;
+  font-family:monospace !important; 
 }
 
 .views-display {
@@ -109,12 +113,14 @@
   padding: 8px 0;
   margin-top: auto;
   color:black;
+  font-family:monospace !important; 
 }
 
 .views-display p {
   margin: 0;
   font-size: 14px;
   color: black;
+  font-family:monospace !important; 
 }
 
 .button-container {
@@ -142,6 +148,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-family:monospace !important; 
 }
 
 .download-button:hover {
@@ -190,6 +197,7 @@
   height:50px;
   border-radius: 10px;
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.5); /* Inner shadow */
+  font-family:monospace !important; 
 }
 
 
