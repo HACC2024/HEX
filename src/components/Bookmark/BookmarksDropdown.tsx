@@ -1,11 +1,9 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { Image, Dropdown, DropdownButton, Button } from "react-bootstrap";
+import { Image, Dropdown, DropdownButton } from "react-bootstrap";
 import { Trash, Bookmark } from "react-bootstrap-icons";
 import InfoModal from "../datacardComponents/infoModal";
 import "./bookmark.css";
-
 export interface FileData {
   name: string;
   file: { [key: string]: string[] };
@@ -19,15 +17,12 @@ export interface FileData {
   department: string;
   views: number;
 }
-
 const BookmarkDropdown: React.FC = () => {
   const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
     null
   );
-  const [showAll, setShowAll] = useState(false);
-
   useEffect(() => {
     const storedBookmarks = localStorage.getItem("bookmarkedFiles");
     if (storedBookmarks) {
@@ -53,7 +48,6 @@ const BookmarkDropdown: React.FC = () => {
     setSelectedFileData(fileData);
     setShowInfoModal(true);
   };
-
   useEffect(() => {
     const handleBookmarksUpdate = () => {
       const storedBookmarks = localStorage.getItem("bookmarkedFiles");
@@ -61,11 +55,8 @@ const BookmarkDropdown: React.FC = () => {
         setBookmarkedFiles(JSON.parse(storedBookmarks));
       }
     };
-
     window.addEventListener("bookmarksUpdated", handleBookmarksUpdate);
-
     handleBookmarksUpdate();
-
     return () => {
       window.removeEventListener("bookmarksUpdated", handleBookmarksUpdate);
     };
@@ -75,9 +66,6 @@ const BookmarkDropdown: React.FC = () => {
     return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
   };
 
-  const displayedBookmarks = showAll
-    ? bookmarkedFiles
-    : bookmarkedFiles.slice(0, 8);
 
   return (
     <div className="bookmark-dropdown-container">
@@ -92,8 +80,7 @@ const BookmarkDropdown: React.FC = () => {
         align="end"
       >
         {bookmarkedFiles.length > 0 ? (
-          <>
-            {displayedBookmarks.map((file: FileData) => (
+          bookmarkedFiles.map((file: FileData) => (
               <Dropdown.Item
                 key={file.name}
                 className="d-flex align-items-center justify-content-between"
@@ -132,19 +119,7 @@ const BookmarkDropdown: React.FC = () => {
                   }}
                 />
               </Dropdown.Item>
-            ))}
-            {bookmarkedFiles.length > 8 && (
-              <Dropdown.Item as="div" className="text-center">
-                <Button
-                  variant="link"
-                  onClick={() => setShowAll(!showAll)}
-                  className="show-more-button"
-                >
-                  {showAll ? "Show Less" : "Show More"}
-                </Button>
-              </Dropdown.Item>
-            )}
-          </>
+          ))
         ) : (
           <Dropdown.Item disabled>No bookmarks yet.</Dropdown.Item>
         )}
@@ -157,5 +132,4 @@ const BookmarkDropdown: React.FC = () => {
     </div>
   );
 };
-
 export default BookmarkDropdown;
