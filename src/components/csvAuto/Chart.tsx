@@ -261,13 +261,14 @@ export const ChartComponent = React.memo(
                     dataKey="x"
                     name={options.xAxisField}
                     tick={{
-                      fontSize: 8,
+                      fontSize: 10,
                       fill: "#666",
                     }}
                     label={{
                       value: options.xAxisField,
                       position: "insideBottom",
-                      offset: -20,
+                      offset: -10,
+                      style: { textAnchor: "middle" },
                     }}
                   />
                   <YAxis
@@ -283,6 +284,7 @@ export const ChartComponent = React.memo(
                       angle: -90,
                       position: "insideLeft",
                       offset: -10,
+                      style: { textAnchor: "middle" },
                     }}
                   />
                   <Tooltip
