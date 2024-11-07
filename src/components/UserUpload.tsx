@@ -33,7 +33,7 @@ const UserUpload: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   //Captcha
-  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -287,7 +287,7 @@ const UserUpload: React.FC = () => {
 
             <ReCAPTCHA className= "py-3"
               ref={recaptchaRef}
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
             />
 
             <button type="submit" className="btn btn-primary w-100">
