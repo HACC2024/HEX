@@ -2,7 +2,7 @@
 
 // Fetch response from the chatbot API
 export const fetchChatbotResponse = async (question: string) => {
-    const response = await fetch('http://127.0.0.1:5000/api/chatbot', {
+    const response = await fetch('https://uhspace.org/api/chatbot', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const fetchUncleHexResponse = async (question: string, file?: File | null
         formData.append('file', file);
     }
 
-    const response = await fetch('http://127.0.0.1:5000/api/uncle-hex', {
+    const response = await fetch('https://uhspace.org/api/uncle-hex', {
         method: 'POST',
         body: formData, // Use FormData for multipart/form-data
     });
