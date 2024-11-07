@@ -58,10 +58,10 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
             </span>
           </h1>
 
-          <h5 className="text-center mt-2">
+          <h3 className="text-center mt-2">
             Unlocking Hawaii's Solutions for Personalized Analytics and
             Collaborative Engagement
-          </h5>
+          </h3>
           <h3 className="text-center fw-bold mt-4">
             <span
               className={`flip-word fw-bold ${
