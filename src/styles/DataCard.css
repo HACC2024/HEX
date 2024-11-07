@@ -4,20 +4,41 @@
   gap: 24px;
   padding: 20px;
 }
-
-.file-card {
-  background-color: #ffffff;
-  border: 1px solid black;
-  border-radius: 12px;
+.file-card-border {
+  background: linear-gradient(45deg, #5c7bc3a7, rgba(45, 69, 190, 0.663));
+  padding: 8px; /* Add some padding to create space around the card */
   display: flex;
-  flex-direction: column;
-  height: 390px;
-  width: 280px;
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  justify-content: center; /* Center the card horizontally */
+  align-items: center; /* Center the card vertically */
+  height: 430px; /* Match the height of .file-card with padding */
+  width: 320px; /* Match the width of .file-card with padding */
+  box-sizing:border-box;
 }
 
+.file-card {
+  background: linear-gradient(45deg, #2566fca7, rgba(116, 193, 245, 0.663));
+  border-radius: 15px;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Height of the card itself */
+  width: 100%; /* Width of the card itself */
+  position: relative;
+  overflow:hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+
 .file-card:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.file-card-border:hover {
   cursor: pointer;
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
@@ -43,6 +64,7 @@
   gap: 12px;
   height: 65%;
   overflow: hidden;
+  color:black;
 }
 
 .file-name {
@@ -55,18 +77,25 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  color:black;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  font-family:monospace !important;
 }
 
 .file-category {
   font-size: 14px;
   color: #666;
   margin: 0;
+  color:black;
+  font-family:monospace !important; 
 }
 
 .file-tags.pt-1 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  color:lightgray;
+  font-family:monospace !important; 
 }
 
 .file-tag {
@@ -74,6 +103,8 @@
   padding: 4px 12px;
   border-radius: 6px;
   font-size: 12px;
+  color:black;
+  font-family:monospace !important; 
 }
 
 .views-display {
@@ -81,12 +112,15 @@
   text-align: center;
   padding: 8px 0;
   margin-top: auto;
+  color:black;
+  font-family:monospace !important; 
 }
 
 .views-display p {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: black;
+  font-family:monospace !important; 
 }
 
 .button-container {
@@ -97,11 +131,12 @@
   justify-content: space-between;
   gap: 12px;
   height: 40px;
+  color:black;
 }
 
 .download-button {
-  background-color: #000000;
-  color: white;
+  background-color:white;
+  color: black;
   padding: 0;
   border-radius: 8px;
   border: none;
@@ -113,10 +148,11 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-family:monospace !important; 
 }
 
 .download-button:hover {
-  background-color: #333333;
+  background-color: #e4e4e4;
 }
 
 .bookmark-icon-button {
@@ -134,9 +170,45 @@
 .bookmark-icon-button:hover {
   background-color: #f5f5f5;
 }
+
+.categoryFilterNav{
+  background-color:transparent !important;
+}
 .sort-options-container {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  padding-right: 50px;
+  width:100%;
+  height: 80px;
+}
+.search-bar-container{
+   flex-grow:1;
+   display:flex;
+}
+.sort-options{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  width:100%;
+}
+
+
+.categorySortButton{
+  background-color: white;
+  color:black;
+  height:50px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.5); /* Inner shadow */
+  font-family:monospace !important; 
+}
+
+
+
+@media (max-width: 550px) {
+  .sort-options-container {
+    display:grid;
+    flex-direction:column;
+    padding:50px;
+  }
+  .search-bar-container{
+    padding:15px;
+  }
 }

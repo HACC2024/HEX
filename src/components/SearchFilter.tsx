@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row, Col, Container} from 'react-bootstrap';
 import { Search } from 'react-bootstrap-icons';
 import '../styles/SearchFilter.Style.css'; // Make sure to import your CSS file
 
@@ -14,24 +13,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
     };
 
     return (
-        <div className=" mt-4 py-5 searchCont">
-            <Row >
-                <Col >
-                        <Container>
-                            <div className="input-with-icon ">
-                                <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search..."
-                                value={search}
-                                onChange={handleChange}
-                                />
-                                    <Search className="search-icon" size={20} />
-                            </div>
-                        </Container>
-                        
-                </Col>
-            </Row>
+        <div className="searchFilterDiv fluid">
+            <div className="input-with-icon ">
+                <input
+                type="text"
+                className="searchBarCategory"
+                placeholder="Search..."
+                value={search}
+                onChange={handleChange}
+                />
+                <Search className="search-icon" size={20} />
+            </div>
         </div>
     );
 };
