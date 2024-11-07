@@ -907,8 +907,11 @@ footer {
   position: relative;
   width: 60%;
   max-width: 1000px;
-  aspect-ratio: 3/1;
+  min-height: 500px; /* initial size */
+  max-height: 78vh; /* limit height to 80% of viewport */
   text-align: center;
+  overflow-y: auto !important; /* ensure scroll behavior is applied */
+  box-sizing: border-box; /* include padding in height calculation */
 }
 
 .close-button {
