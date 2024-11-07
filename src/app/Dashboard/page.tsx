@@ -524,7 +524,7 @@ export default function Page() {
                   <button
                     className={`btn ${
                       showChatbot ? "btn-outline-danger" : "btn-outline-primary"
-                    } ${styles.chatButton}
+                    } 
                     btn-lg mt-3`}
                     onClick={() => setShowChatbot(!showChatbot)}
                   >
@@ -596,7 +596,7 @@ export default function Page() {
                       showAdminChatbot
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
-                    } ${styles.chatButton} btn-lg mt-3`}
+                    } btn-lg mt-3`}
                     onClick={() => setShowAdminChatbot(!showAdminChatbot)}
                   >
                     {showAdminChatbot ? "× Close Chat" : "💬 Chat with Admin"}
@@ -671,7 +671,7 @@ export default function Page() {
                       showSecurityReport
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
-                    } ${styles.chatButton} btn-lg mt-3`}
+                    } btn-lg mt-3`}
                     onClick={() => setShowSecurityReport(!showSecurityReport)}
                   >
                     {showSecurityReport
@@ -742,7 +742,7 @@ export default function Page() {
                       showAdminPortal
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
-                    } ${styles.chatButton} btn-lg mt-3`}
+                    } btn-lg mt-3`}
                     onClick={() => setShowAdminPortal(!showAdminPortal)}
                   >
                     {showAdminPortal

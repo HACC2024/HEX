@@ -10,69 +10,6 @@
   padding-bottom: 4rem;
 }
 
-/* Optional: Add a subtle grid pattern background */
-.mainContainer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: linear-gradient(#3498db10 1px, transparent 1px),
-    linear-gradient(90deg, #3498db10 1px, transparent 1px);
-  background-size: 20px 20px;
-  pointer-events: none;
-}
-
-/* Default glow styling for leftLight */
-.leftLight {
-  position: absolute;
-  width: clamp(300px, 30vw, 530px);
-  height: clamp(300px, 30vw, 530px);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(50, 122, 255, 0.7), transparent 70%);
-  filter: blur(50px);
-  animation: pulsing-glow 13s infinite;
-  z-index: 0;
-}
-
-/* Default glow styling for rightLight */
-.rightLight {
-  position: absolute;
-  width: clamp(250px, 25vw, 450px);
-  height: clamp(250px, 25vw, 450px);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(22, 115, 254, 0.5), transparent 70%);
-  filter: blur(50px);
-  animation: pulsing-glow 8s infinite;
-  z-index: 0;
-}
-
-.leftLight1 {
-  top: 5%;
-  left: 20%;
-}
-
-.rightLight1 {
-  top: 100%;
-  right: 20%;
-}
-
-.leftLight2 {
-  top: 200%;
-  left: 20%;
-}
-
-.rightLight2 {
-  top: 240%;
-  right: 10%;
-}
-
-.rightLight3 {
-  top: 300%;
-  right: 30%;
-}
-
 .title-wrapper {
   text-align: center; /* Center the title */
 }
@@ -422,22 +359,4 @@
 .card-body {
   background-color: #e73c3c;
 }
-.chatButton {
-  font-weight: bold;
-  color: #ffffff;
-  border-color: white;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  font-size: 1rem;
-}
 
-.chatButton:hover {
-  background-color: none;
-  transform: translateY(-2px); /* Lift effect */
-}
-
-.chatButton:active {
-  background-color: none; /* Even darker on active press */
-  transform: translateY(0);
-}
