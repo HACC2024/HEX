@@ -87,13 +87,15 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
 
   // Load saved theme from localStorage on mount (client-side)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('theme');
-      const isLight = savedTheme !== 'dark';
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
+      const isLight = savedTheme !== "dark";
       setIsLightMode(isLight);
 
       const currentPath = window.location.pathname;
-      const activeCategory = categoryData.find((category) => currentPath.includes(category.catLink));
+      const activeCategory = categoryData.find((category) =>
+        currentPath.includes(category.catLink)
+      );
       if (activeCategory) {
         setActiveSection(activeCategory.id);
       }
@@ -198,13 +200,13 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
 
         {/* Centered Navigation Icons (Only for larger screens) */}
         <div
-          className="d-flex d-none d-md-flex align-items-center gap-3 "
+          className="d-flex d-none d-md-flex align-items-center gap-3"
           style={{ paddingLeft: "55px" }}
         >
           {categoryData.map(({ id, icon: Icon, title, catLink }) => (
             <Link href={catLink} passHref key={id}>
               <button
-                onClick={() => handleLinkClick(id)} // Handle active state change
+                onClick={() => handleLinkClick(id)}
                 className={`btn ${
                   activeSection === id
                     ? styles.navButtonActive
@@ -221,32 +223,44 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
           ))}
         </div>
 
-        {/* Light/Dark Mode Toggle and Hamburger Menu */}
-        <div className="d-flex align-items-center gap-2 d-md-none">
-          <button
-            onClick={toggleLightMode}
-            className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
-            title="Light/Dark Mode"
-            style={{ width: "45px", height: "45px" }}
-          >
-            {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
-          </button>
-          <button
-            className={`btn btn-outline-primary rounded-circle me-5 ${styles.themeIcon}`}
-            onClick={toggleMenu}
-            style={{ width: "45px", height: "45px" }}
-          >
-            ☰
-          </button>
-        </div>
+        {/* Mobile Layout - Light/Dark Mode Toggle and Hamburger Menu */}
+        <div className="d-flex align-items-center justify-content-between w-100 d-md-none">
+          {/* Left spacer */}
+          <div style={{ width: "45px" }}></div>
 
-        {/* Light/Dark Mode Toggle (Visible on larger screens) */}
+          {/* Centered Bookmark */}
+          <BookmarkDropDown />
 
-        <Row>
-          <Col className="d-none d-md-block">
+          {/* Right controls */}
+          <div className="d-flex align-items-center gap-2">
             <button
               onClick={toggleLightMode}
-              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline me-5${styles.themeIcon}`}
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
+              title="Light/Dark Mode"
+              style={{ width: "45px", height: "45px" }}
+            >
+              {isLightMode ? (
+                <MoonStarsFill size={18} />
+              ) : (
+                <SunFill size={18} />
+              )}
+            </button>
+            <button
+              className={`btn btn-outline-primary rounded-circle me-5 ${styles.themeIcon}`}
+              onClick={toggleMenu}
+              style={{ width: "45px", height: "45px" }}
+            >
+              ☰
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop Layout - Light/Dark Mode Toggle and Bookmark */}
+        <Row className="d-none d-md-flex">
+          <Col style={{ paddingRight: "0" }}>
+            <button
+              onClick={toggleLightMode}
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
               title="Light/Dark Mode"
               style={{
                 width: "45px",
@@ -263,7 +277,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
             </button>
           </Col>
 
-          <Col className="d-flex " style={{ paddingRight: "30px" }}>
+          <Col className="d-flex me-4" style={{ paddingRight: "30px" }}>
             <BookmarkDropDown />
           </Col>
         </Row>
@@ -387,9 +401,10 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 >
                   {categoryToCap[category]} Data
                 </h1>
-                <h4 className={`${styles.catsubtitle}`}>
-                  Data made Simple, Insights made Powerful, AI made Accessible
-                </h4>
+                <h5 className={`${styles.catsubtitle}`}>
+                  Data Made Simple, Insights Made Powerful, and AI Made
+                  Accessible
+                </h5>
               </div>
               <div
                 className={`${styles.rightLight} ${styles.rightLight1}`}

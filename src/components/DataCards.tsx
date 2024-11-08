@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Image,  Container} from "react-bootstrap";
+import { Image, Container, Col, Row } from "react-bootstrap";
 import { ref as dbRef, onValue, update, get } from "firebase/database";
 import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
@@ -250,35 +250,48 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   return (
     <div>
-      <div className="categoryFilterNav">
-        <Container className="sort-options-container">
-          <div className="d-flex justify-content-start align-items-center">
-            <div className="search-bar-container">
-              <SearchBar search={search} setSearch={setSearch} />
-            </div>
-          </div>
-          <div className="d-flex px-3">
-            <div className="sort-options">
-              <SortOptions sortOption={sortOption} onSortChange={handleSortChange} />
-            </div>
-          </div>
+      <div style={{ padding: "1rem" }}>
+        <Container>
+          <Row>
+            <Col xs={12}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "20px",
+                  width: "100%",
+                  margin: 0,
+                  flexWrap: "wrap",
+                }}
+              >
+                <div style={{ flex: "1",  minWidth: "250px"}}>
+                  <SearchBar search={search} setSearch={setSearch} />
+                </div>
+
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  <SortOptions
+                    sortOption={sortOption}
+                    onSortChange={handleSortChange}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
         </Container>
       </div>
-      
 
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="file-list">
-
           {sortedFiles.map((file: FileData) => (
             <div key={file.name} className="file-card-border">
-                            <div
+              <div
                 key={file.name}
                 className="file-card bg-secondary-subtle"
                 onClick={() => openInfoModal(file)}
               >
-                <div className="justify-content-center">
+                <div className="cardbox">
                   <Image
                     src={file.image}
                     alt="DataCard Image"
@@ -332,9 +345,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
                 </div>
               </div>
             </div>
-
           ))}
-          
         </div>
       )}
       <InfoModal

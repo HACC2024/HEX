@@ -1,6 +1,5 @@
 import React from 'react';
 import { Search } from 'react-bootstrap-icons';
-import '../styles/SearchFilter.Style.css'; // Make sure to import your CSS file
 
 interface SearchBarProps {
     search: string;
@@ -13,16 +12,37 @@ const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
     };
 
     return (
-        <div className="searchFilterDiv fluid">
-            <div className="input-with-icon ">
+        <div style={{ 
+            width: '100%',
+        }}>
+            <div style={{
+                position: 'relative',
+                width: '100%'
+            }}>
                 <input
-                type="text"
-                className="searchBarCategory"
-                placeholder="Search..."
-                value={search}
-                onChange={handleChange}
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={handleChange}
+                    style={{
+                        width: '100%',
+                        padding: '8px 36px 8px 12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        outline: 'none'
+                    }}
                 />
-                <Search className="search-icon" size={20} />
+                <Search 
+                    style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#666'
+                    }} 
+                    size={20} 
+                />
             </div>
         </div>
     );
