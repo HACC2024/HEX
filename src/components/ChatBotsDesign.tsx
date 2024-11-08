@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect } from "react";
 import "../styles.css";
 import { Download, Upload, HelpCircle, BarChart2 } from "lucide-react";
@@ -46,7 +47,7 @@ const ChatBotsDesign: React.FC = () => {
           transition: "all 0.5s ease",
         }}
       >
-        PERSONALIZED CHATBOTS
+        PERSONALIZED CHATBOTS AND TOOLS
       </h1>
 
       <div
@@ -85,7 +86,7 @@ const ChatBotsDesign: React.FC = () => {
               style={{
                 opacity: 0,
                 transform: "translateY(20px)",
-                transition: "all 0.5s ease 0.4s",
+                transition: "ease 0.6s",
               }}
             >
               <img src="/AI.jpg" alt="AI" className="AI-image" />
@@ -107,7 +108,7 @@ const ChatBotsDesign: React.FC = () => {
               style={{
                 opacity: 0,
                 transform: "translateY(20px)",
-                transition: "all 0.5s ease 0.6s",
+                transition: "ease 0.6s",
                 fontSize: "25px",
                 display: "flex",
                 flexDirection: "column",
@@ -144,7 +145,7 @@ const ChatBotsDesign: React.FC = () => {
               style={{
                 opacity: 0,
                 transform: "translateY(20px)",
-                transition: "all 0.5s ease 0.8s",
+                transition: "ease 0.1s",
               }}
             >
               <h3 className="fw-bold text-center mt-5 mb-4">
@@ -165,7 +166,7 @@ const ChatBotsDesign: React.FC = () => {
               style={{
                 opacity: 0,
                 transform: "translateY(20px)",
-                transition: "all 0.5s ease 1s",
+                transition: "ease 0.1s",
               }}
             >
               <img

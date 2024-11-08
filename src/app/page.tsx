@@ -35,6 +35,11 @@ import AISticker from "@/components/AISticker";
 const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   const words = ["RELIABLE", "RELEVANT", "READY"];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [text, setText] = useState("");
+  const fullText =
+    "Unlocking Hawaii's Solutions for Personalized Analytics and Collaborative Engagement";
+  const [isTyping, setIsTyping] = useState(true);
+  const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,6 +48,34 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
 
     return () => clearInterval(interval);
   }, [words.length]);
+
+  useEffect(() => {
+    let currentIndex = 0;
+    let typingTimer: string | number | NodeJS.Timeout | undefined;
+
+    // Cursor blinking effect
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+
+    // Typing effect
+    if (isTyping) {
+      typingTimer = setInterval(() => {
+        if (currentIndex < fullText.length) {
+          setText(fullText.slice(0, currentIndex + 1));
+          currentIndex++;
+        } else {
+          setIsTyping(false);
+          clearInterval(typingTimer);
+        }
+      }, 50); // Adjust speed here (lower number = faster)
+    }
+
+    return () => {
+      clearInterval(typingTimer);
+      clearInterval(cursorInterval);
+    };
+  }, [isTyping]);
 
   return (
     <div
@@ -61,13 +94,17 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
             </span>
           </h1>
 
-          <h4 className="text-center mt-2">
-            Unlocking Hawaii's Solutions for Personalized Analytics and
-            Collaborative Engagement
+          <h4 className="text-center mt-2 font-medium text-lg min-h-[28px]">
+            {text}
+            <span
+              className={`inline-block w-0.5 h-5 bg-black ml-1 -mb-0.5 ${
+                showCursor ? "opacity-100" : "opacity-0"
+              }`}
+            />
           </h4>
           <h2 className="text-center fw-bold mt-4">
             <span
-            key={currentWordIndex}
+              key={currentWordIndex}
               className={`flip-word fw-bold ${
                 isLightMode ? "blue-text" : "gradient-text"
               } flip-animation`}
@@ -94,7 +131,7 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
 
 const categoryData = [
   {
-    id: "community", 
+    id: "community",
     name: "Community",
     icon: <PeopleFill className="fs-1" />,
     link: "/Categories/community",
@@ -217,7 +254,6 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
             onMouseLeave={
               index === centeredIndex ? handleMouseLeave : undefined
             }
-            
           >
             <div className="category-icon">{category.icon}</div>
             <strong>{category.name}</strong>

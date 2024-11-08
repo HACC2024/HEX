@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import '../../styles/DataCard.css'; 
 
 interface SortOptionsProps {
   sortOption: string;
@@ -13,7 +12,22 @@ const SortOptions: React.FC<SortOptionsProps> = ({
   onSortChange,
 }) => {
   return (
-    <select className="categorySortButton" onChange={onSortChange} value={sortOption}>
+    <select 
+      onChange={onSortChange} 
+      value={sortOption}
+      style={{
+        padding: '8px 8px',
+        borderRadius: '6px',
+        border: '1px solid #ddd',
+        backgroundColor: '#fff',
+        fontSize: '14px',
+        cursor: 'pointer',
+        outline: 'none',
+        minWidth: '140px',
+        appearance: 'auto',
+        color: '#333'
+      }}
+    >
       <option value="nameAsc">Name Ascending</option>
       <option value="nameDesc">Name Descending</option>
       <option value="mostPopular">Most Popular</option>
