@@ -7,14 +7,12 @@
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles.css";
-import "../styles/styles.css";
 import "../styles/Lightmode.css";
-import "../styles/HomeTopandIntro.css"
-import "../styles/HomeCategory.css"
-import "../styles/HomeHowItWorks.css"
-import "../styles/HomeChatbots.css"
-import "../styles/AISticker.css"
-import "../styles/HomeFooter.css"
+import "../styles/HomeTopandIntro.css";
+import "../styles/HomeCategory.css";
+import "../styles/HomeHowItWorks.css";
+import "../styles/HomeChatbots.css";
+
 import {
   PeopleFill,
   BusFrontFill,
@@ -41,7 +39,7 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 3000);
+    }, 2500);
 
     return () => clearInterval(interval);
   }, [words.length]);
@@ -69,9 +67,10 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
           </h4>
           <h2 className="text-center fw-bold mt-4">
             <span
+            key={currentWordIndex}
               className={`flip-word fw-bold ${
                 isLightMode ? "blue-text" : "gradient-text"
-              }`}
+              } flip-animation`}
             >
               {words[currentWordIndex]}
             </span>{" "}
@@ -95,7 +94,7 @@ const HomeImage: React.FC<{ isLightMode: boolean }> = ({ isLightMode }) => {
 
 const categoryData = [
   {
-    id: "community", // Use a unique ID instead of index
+    id: "community", 
     name: "Community",
     icon: <PeopleFill className="fs-1" />,
     link: "/Categories/community",
@@ -218,6 +217,7 @@ const Categories: React.FC<{ isLightMode: boolean }> = React.memo(() => {
             onMouseLeave={
               index === centeredIndex ? handleMouseLeave : undefined
             }
+            
           >
             <div className="category-icon">{category.icon}</div>
             <strong>{category.name}</strong>

@@ -1,25 +1,24 @@
-
 /* Smaller text size for navbar links on smaller screens */
 @media (max-width: 768px) {
-    nav a {
-        font-size: 14px; /* Smaller font size for navbar links */
-    }
+  nav a {
+    font-size: 14px; /* Smaller font size for navbar links */
+  }
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    nav ul li {
-        display: block; /* Stack navbar items on smaller screens */
-        margin: 10px 20px; /* Margin for vertical spacing */
-    }
-    nav {
-        padding: 5px; /* Reduce padding for navbar on smaller screens */
-    }
+  nav ul li {
+    display: block; /* Stack navbar items on smaller screens */
+    margin: 10px 20px; /* Margin for vertical spacing */
+  }
+  nav {
+    padding: 5px; /* Reduce padding for navbar on smaller screens */
+  }
 
-    #introduction,
-    #category,
-    #how-it-works {
-        margin: 10px 0; /* Smaller margin for sections on smaller screens */
-        padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
-    }
+  #introduction,
+  #category,
+  #how-it-works {
+    margin: 10px 0; /* Smaller margin for sections on smaller screens */
+    padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
+  }
 }

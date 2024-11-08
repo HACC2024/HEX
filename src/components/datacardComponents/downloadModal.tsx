@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Modal, Button, Table } from "react-bootstrap";
+import "./modal.css";
 
 interface DownloadModalProps {
   show: boolean;
@@ -34,10 +35,10 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
       centered
       dialogClassName="fixed-size-modal"
     >
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="custom-modal-header">
         <Modal.Title>Select a File to Download</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="custom-modal-body">
         {Object.keys(fileOptions).length > 0 ? (
           <>
             <Table striped bordered hover>
@@ -78,7 +79,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
           <p>No available files for download.</p>
         )}
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className="custom-modal-footer">
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>

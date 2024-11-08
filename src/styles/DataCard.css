@@ -3,6 +3,9 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
   padding: 20px;
+  width: 80%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 .file-card-border {
   background: linear-gradient(45deg, #5c7bc3a7, rgba(45, 69, 190, 0.663));
@@ -12,7 +15,7 @@
   justify-content: center; /* Center the card horizontally */
   align-items: center; /* Center the card vertically */
   height: 430px; /* Match the height of .file-card with padding */
-  width: 320px; /* Match the width of .file-card with padding */
+  max-width: 320px; /* Match the width of .file-card with padding */
   box-sizing:border-box;
 }
 
@@ -42,6 +45,28 @@
   cursor: pointer;
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .file-list {
+    padding: 40px;
+    gap: 32px; /* Increase the gap on larger screens for consistent spacing */
+  }
+}
+
+@media (max-width: 550px) {
+  .file-list {
+    gap: 16px; /* Reduce gap slightly for smaller screens */
+    padding: 20px; /* Padding for smaller screens */
+  }
+  .sort-options-container {
+    display: grid;
+    flex-direction: column;
+    padding: 50px;
+  }
+  .search-bar-container {
+    padding: 15px;
+  }
 }
 
 .justify-content-center {
@@ -179,17 +204,18 @@
   width:100%;
   height: 80px;
 }
+
 .search-bar-container{
    flex-grow:1;
    display:flex;
 }
+
 .sort-options{
   margin-left:auto;
   display:flex;
   align-items:center;
   width:100%;
 }
-
 
 .categorySortButton{
   background-color: white;
@@ -198,17 +224,4 @@
   border-radius: 10px;
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.5); /* Inner shadow */
   font-family:monospace !important; 
-}
-
-
-
-@media (max-width: 550px) {
-  .sort-options-container {
-    display:grid;
-    flex-direction:column;
-    padding:50px;
-  }
-  .search-bar-container{
-    padding:15px;
-  }
 }

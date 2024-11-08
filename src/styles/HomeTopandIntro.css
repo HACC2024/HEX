@@ -1,22 +1,4 @@
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  nav ul li {
-    display: block; /* Stack navbar items on smaller screens */
-    margin: 10px 20px; /* Margin for vertical spacing */
-  }
-  nav {
-    padding: 5px; /* Reduce padding for navbar on smaller screens */
-  }
-
-  #introduction,
-  #category,
-  #how-it-works {
-    margin: 10px 0; /* Smaller margin for sections on smaller screens */
-    padding: 100px; /* Reduce padding for sections on smaller screens (optional) */
-  }
-}
-
 .HomeImageCt {
   background-color: rgb(0, 0, 0);
   height: 800px;
@@ -74,12 +56,6 @@
   }
 }
 
-.flip-word {
-  display: inline-block;
-  animation: flipUp 0.6s ease-in-out forwards;
-  transform-origin: bottom; /* Rotate from the bottom edge */
-}
-
 @keyframes flipUp {
   0% {
     opacity: 0;
@@ -93,6 +69,12 @@
     opacity: 1;
     transform: rotateX(0deg); /* End at normal position */
   }
+}
+
+.flip-word {
+  display: inline-block;
+  animation: flipUp 0.6s ease-in-out forwards;
+  transform-origin: top; /* Rotate from the bottom edge */
 }
 
 .blue-text {

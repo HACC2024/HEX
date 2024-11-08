@@ -107,7 +107,7 @@ nav ul li {
 }
 
 nav a {
-  color: #f72222; /* Bright cyan color for links */
+  color: #ffffff;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
@@ -131,8 +131,12 @@ nav a {
   margin-left: auto; /* Push icon to the far right */
 }
 
+.darkmode-icon:hover {
+  color: #8088ffd8;
+}
+
 .custom-navbar a:hover {
-  color: #8088ffd8; /* Change to a lighter blue on hover for contrast */
+  color: #8088ffd8; 
 }
 
 /* Smaller text size for navbar links on smaller screens */
@@ -205,6 +209,10 @@ footer .custom-link[title]:hover:before {
   font-size: 1.2em; /* Optional: adjust icon size */
 }
 
+.footer-icon:hover {
+  color: #6796fb !important;
+}
+
 /* Footer Styles */
 footer {
   color: #ffffff !important;
@@ -218,3 +226,4 @@ footer {
   width: 100%;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
 }
+

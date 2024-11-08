@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import UncleChatbot from "./UncleChatbot";
 import "../styles.css";
+import "../styles/AISticker.css";
 import { MessageSquare } from "lucide-react";
 
 const calculatePosition = () => {
@@ -87,7 +88,7 @@ const AISticker = () => {
   if (!isMounted) return null;
 
   return (
-    <>
+    <div className="ai-sticker-container">
       <div
         className="floating-icon"
         style={{
@@ -105,7 +106,7 @@ const AISticker = () => {
       >
         <div className="icon-container">
           <MessageSquare size={32} color="white" />
-          <span className="chat-text text-white">Uncle HEX!</span>
+          <span className="chat-text text-white">Uncle HEX</span>
         </div>
       </div>
 
@@ -119,7 +120,7 @@ const AISticker = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

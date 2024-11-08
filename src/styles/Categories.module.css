@@ -1,471 +1,458 @@
 /* page.module.css */
 .mainContainer {
-    min-height: 100vh;
-    padding: 0;
-    margin-top: 0;
-    background-color: #000000;
-    color: #2c3e50;
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 4rem;
-  }
-  
-  /* Optional: Add a subtle grid pattern background */
-  .mainContainer::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: linear-gradient(#3498db10 1px, transparent 1px),
-      linear-gradient(90deg, #3498db10 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
-  }
-  
-  /* Default glow styling for leftLight */
-  .leftLight {
-    position: absolute;
-    width: clamp(300px, 30vw, 530px);
-    height: clamp(300px, 30vw, 530px);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(50, 122, 255, 0.7), transparent 70%);
-    filter: blur(50px);
-    animation: pulsing-glow 13s infinite;
-    z-index: 0;
-  }
-  
-  /* Default glow styling for rightLight */
-  .rightLight {
-    position: absolute;
-    width: clamp(250px, 25vw, 450px);
-    height: clamp(250px, 25vw, 450px);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(22, 115, 254, 0.5), transparent 70%);
-    filter: blur(50px);
-    animation: pulsing-glow 8s infinite;
-    z-index: 0;
-  }
-  
-  .leftLight1 {
-    top: 10%;
-    left: 20%;
-  }
-  
-  .rightLight1 {
-    top: 50%;
-    right: 0%;
-  }
-  
-  .leftLight2 {
-    top: 200%;
-    left: 20%;
-  }
-  
-  .rightLight2 {
-    top: 240%;
-    right: 10%;
-  }
-  
-  .rightLight3 {
-    top: 300%;
-    right: 30%;
-  }
-  
-  .title-wrapper {
-    text-align: center; /* Center the title */
-  }
-  
+  min-height: 100vh;
+  padding: 0;
+  margin-top: 0;
+  background-color: #000000;
+  color: #2c3e50;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 4rem;
+}
+
+/* Optional: Add a subtle grid pattern background */
+.mainContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(#3498db10 1px, transparent 1px),
+    linear-gradient(90deg, #3498db10 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+/* Default glow styling for leftLight */
+.leftLight {
+  position: absolute;
+  width: clamp(300px, 30vw, 530px);
+  height: clamp(300px, 30vw, 530px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(50, 122, 255, 0.7), transparent 70%);
+  filter: blur(50px);
+  animation: pulsing-glow 13s infinite;
+  z-index: 0;
+}
+
+/* Default glow styling for rightLight */
+.rightLight {
+  position: absolute;
+  width: clamp(250px, 25vw, 450px);
+  height: clamp(250px, 25vw, 450px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(22, 115, 254, 0.5), transparent 70%);
+  filter: blur(50px);
+  animation: pulsing-glow 8s infinite;
+  z-index: 0;
+}
+
+.leftLight1 {
+  top: 10%;
+  left: 20%;
+}
+
+.rightLight1 {
+  top: 50%;
+  right: 0%;
+}
+
+.leftLight2 {
+  top: 200%;
+  left: 20%;
+}
+
+.rightLight2 {
+  top: 240%;
+  right: 10%;
+}
+
+.rightLight3 {
+  top: 300%;
+  right: 30%;
+}
+
+.title-wrapper {
+  text-align: center; /* Center the title */
+}
+
+.title {
+  display: inline-block !important;
+  font-size: 2.5rem !important;
+  font-weight: bold !important;
+  margin-top: 6rem !important;
+  margin-bottom: 6rem !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important;
+  background: linear-gradient(90deg, #001ac5, rgb(131, 228, 255)) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-family:monospace !important;
+
+  /* Typing effect */
+  overflow: hidden ;
+  border-right: 0.15em solid rgba(0, 0, 0, 0.1) ; /* Optional: cursor effect */
+  white-space: nowrap ;
+  animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite ;
+}
+
+.catsubtitle{
+  font-family:monospace;
+}
+@media (max-width: 768px) {
   .title {
-    display: inline-block !important;
-    font-size: 2.5rem !important;
-    font-weight: bold !important;
-    margin-top: 6rem !important;
-    margin-bottom: 6rem !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important;
-    background: linear-gradient(90deg, #001ac5, rgb(131, 228, 255)) !important;
-    background-clip: text !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    font-family:monospace !important;
-  
-    /* Typing effect */
-    overflow: hidden ;
-    border-right: 0.15em solid rgba(0, 0, 0, 0.1) ; /* Optional: cursor effect */
-    white-space: nowrap ;
-    animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite ;
+    font-size: 2rem;
+    margin-top: 7rem;
+    margin-bottom: 4rem;
+    animation: typing 2.5s steps(30, end), blink-caret 0.75s step-end infinite;
+  }
+}
+
+@media (max-width: 576px) {
+  .title {
+    font-size: 1.5rem;
+    margin-top: 7rem;
+    margin-bottom: 3rem;
+    animation: typing 2s steps(20, end), blink-caret 0.75s step-end infinite;
+  }
+}
+
+/* Typing effect */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Blinking cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+.subtitle {
+  @media (max-width: 576px) {
+    .title-wrapper h1 {
+      font-size: 1rem; /* Adjust font size as needed */
+      line-height: 1.2;
+    }
   }
 
-  .catsubtitle{
-    font-family:monospace;
+  color: #70a6fc;
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(37, 99, 235, 0.2);
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+.loadingText {
+  color: #2563eb;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  @media (max-width: 768px) {
-    .title {
-      font-size: 2rem;
-      margin-top: 7rem;
-      margin-bottom: 4rem;
-      animation: typing 2.5s steps(30, end), blink-caret 0.75s step-end infinite;
-    }
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @media (max-width: 576px) {
-    .title {
-      font-size: 1.5rem;
-      margin-top: 7rem;
-      margin-bottom: 3rem;
-      animation: typing 2s steps(20, end), blink-caret 0.75s step-end infinite;
-    }
+}
+
+.uncleTitle {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.wavingHand {
+  display: inline-block;
+  animation: wave 2.5s infinite;
+  transform-origin: 70% 70%;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  /* Typing effect */
-  @keyframes typing {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
-    }
+  10% {
+    transform: rotate(14deg);
   }
-  
-  /* Blinking cursor effect */
-  @keyframes blink-caret {
-    from,
-    to {
-      border-color: transparent;
-    }
-    50% {
-      border-color: transparent;
-    }
+  20% {
+    transform: rotate(-8deg);
   }
-  .subtitle {
-    @media (max-width: 576px) {
-      .title-wrapper h1 {
-        font-size: 1rem; /* Adjust font size as needed */
-        line-height: 1.2;
-      }
-    }
-  
-    color: #70a6fc;
-    font-size: 1.1rem;
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.6;
+  30% {
+    transform: rotate(14deg);
   }
-  
-  .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid rgba(37, 99, 235, 0.2);
-    border-top: 4px solid #2563eb;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+  40% {
+    transform: rotate(-4deg);
   }
-  
-  .loadingText {
-    color: #2563eb;
-    font-size: 1.1rem;
-    font-weight: 500;
+  50% {
+    transform: rotate(10deg);
   }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  60% {
+    transform: rotate(0deg);
   }
-  
-  .uncleTitle {
-    color: #ffffff;
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+  100% {
+    transform: rotate(0deg);
   }
-  
-  .wavingHand {
-    display: inline-block;
-    animation: wave 2.5s infinite;
-    transform-origin: 70% 70%;
-  }
-  
-  @keyframes wave {
-    0% {
-      transform: rotate(0deg);
-    }
-    10% {
-      transform: rotate(14deg);
-    }
-    20% {
-      transform: rotate(-8deg);
-    }
-    30% {
-      transform: rotate(14deg);
-    }
-    40% {
-      transform: rotate(-4deg);
-    }
-    50% {
-      transform: rotate(10deg);
-    }
-    60% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(0deg);
-    }
-  }
-  
-  .uncleSubtitle {
-    color: #ffffff;
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-  }
-  
-  .uncleDescription {
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-  
-  .uncleDescription p {
-    color: #fffd9e;
-    margin-bottom: 0.5rem;
-  }
-  
-  .chatbotContainer {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98); /* Slightly scale down for a subtle 3D effect */
-    animation: slideIn 0.3s ease-out forwards;
-    background: rgba(114, 184, 255, 0.658);
-    border-radius: 12px;
-    padding: 1rem;
-  
-    /* Shadow for a 3D effect */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
-      /* Lighter shadow for base depth */ 0 6px 22px rgba(0, 0, 0, 0.15),
-      /* Deeper shadow for 3D effect */ inset 0 0 10px rgba(255, 255, 255, 0.2); /* Optional inset shadow for inner glow */
-  
-    transition: transform 0.8s ease, box-shadow 0.8s ease; /* Smooth transition */
-  }
-  
-  .chatbotContainer:hover {
-    transform: translateY(0) scale(1); /* Bring up slightly on hover */
-    box-shadow: 0 6px 12px rgba(49, 152, 255, 0.636),
-      /* Stronger shadow when hovered */ 0 8px 30px rgba(33, 110, 252, 0.645); /* Enhance depth on hover */
-  }
-  
-  @keyframes slideIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .toolBadge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .numberCircle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #0c45cb, rgb(149, 213, 255));
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
-    transition: transform 0.3s ease;
-  }
-  
-  .numberCircle:hover {
-    transform: rotate(360deg); /* Rotate the circle fully on hover */
-    transition: transform 0.7s ease-in-out;
-  }
-  
-  .toolIcon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background-color: #59b2ffe2;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
-  }
-  
-  .toolLabel {
-    font-size: 1.25rem;
-    font-weight: 800;
-    background: linear-gradient(45deg, #2b68eb, #73b2ff);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .tool-section {
-    position: relative;
-    padding-top: 2rem;
-  }
-  
-  .fixedNav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background-color: #000000b4;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #316dfa;
-  }
-  
-  .fixedNav::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px; /* Adjust the thickness of the gradient line */
-    background: linear-gradient(to right, #316efa, rgb(149, 208, 247));
-  }
-  
-  .backButtonIcon {
-    margin-top: 0.5rem;
-    margin-left: 0.5rem;
-  }
-  
-  .navButton,
-  .backButtonIcon,
-  .themeIcon {
-    transition: all 0.2s ease;
-    border-color: #316dfa;
-    color: #316dfa;
-    box-shadow: 0 2px 4px rgba(122, 182, 255, 0.902);
-  }
-  
-  .navButton:hover,
-  .backButtonIcon:hover,
-  .themeIcon:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #358dff8f;
-    border-color: #316dfa;
-    color: white;
-  }
-  
-  /* Add padding to account for fixed navbar */
-  .mainContainer {
-    padding-top: 80px; /* Adjust this value based on your navbar height */
-  }
-  
-  /* Adjust scroll offset for smooth scrolling */
-  .section {
-    scroll-margin-top: 90px; /* Adjust this value to control where sections stop when scrolling */
-    padding-bottom: 3rem;
-  }
-  
-  /* Optional: Add transition for active state */
-  .navButton {
-    position: relative;
-  }
-  
-  .navButton::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    width: 100%;
-    height: 2px;
-    background-color: currentColor;
-    transition: transform 0.2s ease;
-  }
-  
-  .navButton:global(.btn-primary)::after {
-    transform: translateX(-50%) scaleX(1);
-    background: linear-gradient(to right, #316efa, rgb(107, 196, 255));
-  }
-  
-  .navButtonActive {
-    background: linear-gradient(45deg, #316dfa, rgb(107, 196, 255));
-    color: #ffffff; /* White text */
-    border-color: #f9f9f9; /* Remove border color */
-    transform: scale(1.1); /* Slightly enlarge the button */
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.798); /* Add a soft shadow */
-    transition: all 0.3s ease; /* Smooth transition for scale and shadow */
-  }
-  
-  /* Customize card background color with a gradient */
-  .customCard {
-    background: linear-gradient(45deg, #2566fca7, rgba(116, 193, 245, 0.663));
-    color: #ffffffb3; /* White text for contrast */
-    border: none; /* Remove default border */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Optional soft shadow */
-    transition: transform 0.2s ease; /* Smooth transition on hover */
-  }
-  
-  .customCard:hover {
-    transform: translateY(-3px); /* Slight lift on hover */
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-  }
-  
-  .card-body {
-    background-color: #e73c3c;
-  }
-  .chatButton {
-    font-weight: bold;
-    color: #ffffff;
-    border-color: white;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    font-size: 1rem;
-  }
-  
-  .chatButton:hover {
-    background-color: none;
-    transform: translateY(-2px); /* Lift effect */
-  }
-  
-  .chatButton:active {
-    background-color: none; /* Even darker on active press */
+}
+
+.uncleSubtitle {
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.uncleDescription {
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.uncleDescription p {
+  color: #fffd9e;
+  margin-bottom: 0.5rem;
+}
+
+.chatbotContainer {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98); /* Slightly scale down for a subtle 3D effect */
+  animation: slideIn 0.3s ease-out forwards;
+  background: rgba(114, 184, 255, 0.658);
+  border-radius: 12px;
+  padding: 1rem;
+
+  /* Shadow for a 3D effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+    /* Lighter shadow for base depth */ 0 6px 22px rgba(0, 0, 0, 0.15),
+    /* Deeper shadow for 3D effect */ inset 0 0 10px rgba(255, 255, 255, 0.2); /* Optional inset shadow for inner glow */
+
+  transition: transform 0.8s ease, box-shadow 0.8s ease; /* Smooth transition */
+}
+
+.chatbotContainer:hover {
+  transform: translateY(0) scale(1); /* Bring up slightly on hover */
+  box-shadow: 0 6px 12px rgba(49, 152, 255, 0.636),
+    /* Stronger shadow when hovered */ 0 8px 30px rgba(33, 110, 252, 0.645); /* Enhance depth on hover */
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
-  
+}
+
+.toolBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.numberCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #0c45cb, rgb(149, 213, 255));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.numberCircle:hover {
+  transform: rotate(360deg); /* Rotate the circle fully on hover */
+  transition: transform 0.7s ease-in-out;
+}
+
+.toolIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #59b2ffe2;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+}
+
+.toolLabel {
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #2b68eb, #73b2ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tool-section {
+  position: relative;
+  padding-top: 2rem;
+}
+
+.fixedNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #000000b4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #316dfa;
+}
+
+.fixedNav::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px; /* Adjust the thickness of the gradient line */
+  background: linear-gradient(to right, #316efa, rgb(149, 208, 247));
+}
+
+.backButtonIcon {
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.navButton,
+.backButtonIcon,
+.themeIcon {
+  transition: all 0.2s ease;
+  border-color: #316dfa;
+  color: #316dfa;
+  box-shadow: 0 2px 4px rgba(122, 182, 255, 0.902);
+}
+
+.navButton:hover,
+.backButtonIcon:hover,
+.themeIcon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #358dff8f;
+  border-color: #316dfa;
+  color: white;
+}
+
+/* Add padding to account for fixed navbar */
+.mainContainer {
+  padding-top: 80px; /* Adjust this value based on your navbar height */
+}
+
+/* Adjust scroll offset for smooth scrolling */
+.section {
+  scroll-margin-top: 90px; /* Adjust this value to control where sections stop when scrolling */
+  padding-bottom: 3rem;
+}
+
+/* Optional: Add transition for active state */
+.navButton {
+  position: relative;
+}
+
+.navButton::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.navButton:global(.btn-primary)::after {
+  transform: translateX(-50%) scaleX(1);
+  background: linear-gradient(to right, #316efa, rgb(107, 196, 255));
+}
+
+.navButtonActive {
+  background: linear-gradient(45deg, #316dfa, rgb(107, 196, 255));
+  color: #ffffff; /* White text */
+  border-color: #f9f9f9; /* Remove border color */
+  transform: scale(1.1); /* Slightly enlarge the button */
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.798); /* Add a soft shadow */
+  transition: all 0.3s ease; /* Smooth transition for scale and shadow */
+}
+
+/* Customize card background color with a gradient */
+.customCard {
+  background: linear-gradient(45deg, #2566fca7, rgba(116, 193, 245, 0.663));
+  color: #ffffffb3; /* White text for contrast */
+  border: none; /* Remove default border */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Optional soft shadow */
+  transition: transform 0.2s ease; /* Smooth transition on hover */
+}
+
+.customCard:hover {
+  transform: translateY(-3px); /* Slight lift on hover */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  background-color: #e73c3c;
+}
+.chatButton {
+  font-weight: bold;
+  color: #ffffff;
+  border-color: white;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 1rem;
+}
+
+.chatButton:hover {
+  background-color: none;
+  transform: translateY(-2px); /* Lift effect */
+}
+
+.chatButton:active {
+  background-color: none; /* Even darker on active press */
+  transform: translateY(0);
+}
 
 
 
 
-  /* new */
 
-  .downloadCsvDiv{
-    position:relative;
-  }
+/* new */
 
-
-
-
-
-
-
-
-
-
-
-
-
+.downloadCsvDiv{
+  position:relative;
+}
