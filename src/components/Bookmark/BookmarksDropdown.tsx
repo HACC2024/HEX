@@ -82,6 +82,7 @@ const BookmarkDropdown: React.FC = () => {
             <Dropdown.Item
               key={file.name}
               className="d-flex align-items-center justify-content-between"
+              style={{ cursor: "pointer", color: "#6796fb" }}
               onClick={() => openInfoModal(file)}
             >
               <div className="d-flex align-items-center">

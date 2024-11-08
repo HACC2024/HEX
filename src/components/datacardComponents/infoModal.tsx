@@ -221,7 +221,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
         </Button>
         {activeTab === "download" && (
           <Button
-            variant="primary"
+            variant="success"
             onClick={handleFileDownload}
             disabled={!selectedFile}
           >
