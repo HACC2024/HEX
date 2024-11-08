@@ -14,7 +14,7 @@ import {
   Briefcase,
   Shield,
 } from "react-bootstrap-icons";
-import { Database, ChevronDown } from "lucide-react";
+import { BarChart4, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import DownloadCSVFiles from "./DataCards";
 import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
@@ -184,14 +184,14 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
               >
                 <House size={18} />
               </button>
-              {/* Database Icon */}
+              {/* Bar Char Icon */}
               <Link href="../Dashboard" passHref>
                 <button
                   className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
                   style={{ width: "45px", height: "45px" }}
                   title="Dashboard"
                 >
-                  <Database size={18} />
+                  <BarChart4 size={18} />
                 </button>
               </Link>
             </div>

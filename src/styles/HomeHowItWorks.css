@@ -29,21 +29,17 @@
   font-weight: bold;
 }
 
-.HowItWorksImageWrapper {
-  width: 100%;
-  display: inline-block;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+.HowItWorksVideo {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
-.HowItWorksImage {
-  width: 100%;
-  max-width: 700px;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+.HowItWorksVideo:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .steps-section {

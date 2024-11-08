@@ -55,9 +55,9 @@ const Introduction: React.FC = () => {
             </h3>
             <p>
               Unlock the power of data with personalized Pidgin Chatbots! Uncle
-              HEX dives into insights and analysis, while HEX Admin Assistant
+              HEX dives into insights and analysis, while HEX Admin
               manages your data hub and tackles technical queries—all powered by
-              the cutting-edge Groq Llama3-8b-8192.
+              the cutting-edge Groq Llama3-8b-Instant.
             </p>
           </div>
         </Col>

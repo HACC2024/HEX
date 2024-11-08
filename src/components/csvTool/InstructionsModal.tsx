@@ -12,7 +12,10 @@ const InstructionsModal = React.memo(
         style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
       >
         <div className="modal-dialog modal-lg modal-dialog-scrollable">
-          <div className="modal-content">
+          <div 
+            className="modal-content"
+            style={{ backgroundColor: "rgba(69, 171, 255, 1)", color: "black", textAlign: "left" }} 
+          >
             <div className="modal-header">
               <h5 className="modal-title">
                 How to Use the CSV Data Visualizer

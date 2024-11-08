@@ -50,7 +50,7 @@ const HowItWorks: React.FC = () => {
         </h1>
 
         <Row className="d-flex align-items-center">
-          <Col xs={12} md={4} className="d-flex justify-content-start ps-md-5">
+          <Col xs={10} md={4} className="d-flex justify-content-start ps-md-5">
             <div
               className="AnimatedBox"
               style={{
@@ -59,12 +59,12 @@ const HowItWorks: React.FC = () => {
                 transition: "all 0.5s ease 0.2s",
               }}
             >
-              <h1 className="custom-heading">
-                Here is to new insights and experiences
+              <h1 className="custom-heading mb-3">
+                Discover Our Powerful Data Solutions You Can Trust!
               </h1>
-              <h4 className="custom-h4">
-                Experience a quick overview of what is in store for you
-              </h4>
+              <h5 className="custom-h4 mb-5 mt-5">
+               Its Fast, Reliable, and Effective! Experience a quick overview of what is in store for you...
+              </h5>
             </div>
           </Col>
 
@@ -72,18 +72,23 @@ const HowItWorks: React.FC = () => {
             <div
               className="HowItWorksImageWrapper p-4 text-center AnimatedBox"
               style={{
-                marginBottom: "80px",
+                marginBottom: "60px",
                 opacity: 0,
                 transform: "translateY(20px)",
                 transition: "all 0.5s ease 0.4s",
               }}
             >
-              <img
-                src="https://t3.ftcdn.net/jpg/03/29/17/78/360_F_329177878_ij7ooGdwU9EKqBFtyJQvWsDmYSfI1evZ.jpg"
-                alt="How It Works Image 1"
-                className="HowItWorksImage"
-                style={{ width: "70%", height: "auto" }}
-              />
+              <video
+                className="HowItWorksVideo"
+                style={{ width: "100%", height: "auto" }}
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src="/Demo1.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </Col>
         </Row>
@@ -108,7 +113,7 @@ const HowItWorks: React.FC = () => {
                 }}
               >
                 <div
-                  className="AnimatedBox"
+                  className="AnimatedBox mt-4"
                   style={{
                     opacity: 0,
                     transform: "translateY(20px)",
@@ -133,7 +138,7 @@ const HowItWorks: React.FC = () => {
                 }}
               >
                 <div
-                  className="AnimatedBox"
+                  className="AnimatedBox mt-4"
                   style={{
                     opacity: 0,
                     transform: "translateY(20px)",

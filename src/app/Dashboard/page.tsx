@@ -10,17 +10,19 @@ import UncleChatbot from "../../components/UncleChatbot";
 import Chatbot from "../../components/Chatbot";
 import SecurityReport from "../security-report/page";
 import AdminPortal from "../Admin/_components/AdminPortal";
+import BookmarkDropDown from "@/components/Bookmark/BookmarksDropdown";
 import {
   BarChart,
   MessageCircle,
   WrenchIcon,
   ShieldAlert,
   Settings,
-  Database,
+  LayoutGrid,
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { House, MoonStarsFill, SunFill } from "react-bootstrap-icons";
+import { Row, Col } from "react-bootstrap";
 
 const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
   ssr: false,
@@ -240,14 +242,14 @@ export default function Page() {
                 </button>
               </Link>
 
-              {/* Database Icon */}
+              {/* Layout Grid Icon */}
               <Link href="/Categories/community" passHref>
                 <button
                   className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
                   style={{ width: "45px", height: "45px" }}
                   title="Explore Data Categories"
                 >
-                  <Database size={18} />
+                  <LayoutGrid size={18} />
                 </button>
               </Link>
             </div>
@@ -285,40 +287,64 @@ export default function Page() {
           ))}
         </div>
 
-        {/* Light/Dark Mode Toggle and Hamburger Menu */}
-        <div className="d-flex align-items-center gap-2 d-md-none">
-          <button
-            onClick={toggleLightMode}
-            className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
-            title="Light/Dark Mode"
-            style={{ width: "45px", height: "45px" }}
-          >
-            {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
-          </button>
+        {/* Mobile Layout - Light/Dark Mode Toggle and Hamburger Menu */}
+        <div className="d-flex align-items-center justify-content-between w-100 d-md-none">
+          {/* Left spacer */}
+          <div style={{ width: "45px" }}></div>
 
-          <button
-            className={`btn btn-outline-primary rounded-circle me-5 ${styles.themeIcon}`}
-            onClick={toggleMenu}
-            style={{ width: "45px", height: "45px" }}
-          >
-            ☰
-          </button>
+          {/* Centered Bookmark */}
+          <BookmarkDropDown />
+
+          {/* Right controls */}
+          <div className="d-flex align-items-center gap-2">
+            <button
+              onClick={toggleLightMode}
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
+              title="Light/Dark Mode"
+              style={{ width: "45px", height: "45px" }}
+            >
+              {isLightMode ? (
+                <MoonStarsFill size={18} />
+              ) : (
+                <SunFill size={18} />
+              )}
+            </button>
+            <button
+              className={`btn btn-outline-primary rounded-circle me-5 ${styles.themeIcon}`}
+              onClick={toggleMenu}
+              style={{ width: "45px", height: "45px" }}
+            >
+              ☰
+            </button>
+          </div>
         </div>
 
-        {/* Light/Dark Mode Toggle (Visible on larger screens) */}
-        <button
-          onClick={toggleLightMode}
-          className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center d-none d-md-inline me-5 ${styles.themeIcon}`}
-          title="Light/Dark Mode"
-          style={{
-            width: "45px",
-            height: "45px",
-            padding: "0",
-            lineHeight: "1",
-          }}
-        >
-          {isLightMode ? <MoonStarsFill size={18} /> : <SunFill size={18} />}
-        </button>
+        {/* Desktop Layout - Light/Dark Mode Toggle and Bookmark */}
+        <Row className="d-none d-md-flex">
+          <Col style={{ paddingRight: "0" }}>
+            <button
+              onClick={toggleLightMode}
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
+              title="Light/Dark Mode"
+              style={{
+                width: "45px",
+                height: "45px",
+                padding: "0",
+                lineHeight: "1",
+              }}
+            >
+              {isLightMode ? (
+                <MoonStarsFill size={18} />
+              ) : (
+                <SunFill size={18} />
+              )}
+            </button>
+          </Col>
+
+          <Col className="d-flex me-4" style={{ paddingRight: "30px" }}>
+            <BookmarkDropDown />
+          </Col>
+        </Row>
       </div>
 
       {/* Sidebar Menu for Small Screens */}

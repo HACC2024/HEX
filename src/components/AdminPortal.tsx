@@ -8,7 +8,7 @@ import {
   toggleSignOut,
   stateChange,
 } from "../../.firebase/auth";
-import { storage, database } from "../../.firebase/firebase"; // Firebase imports
+import { storage, database, auth } from "../../.firebase/firebase"; // Firebase imports
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database"; // Realtime Database methods
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
@@ -49,7 +49,7 @@ const AdminPortal: React.FC = () => {
    * @return {void}
    */
   useEffect(() => {
-    const unsubscribe = stateChange((currentUser) => {
+    const unsubscribe = stateChange(auth, (currentUser) => {
       setUser(currentUser);
       setIsLoading(false);
     });
@@ -77,7 +77,7 @@ const AdminPortal: React.FC = () => {
    */
   const handleLogout = async () => {
     try {
-      await toggleSignOut();
+      await toggleSignOut(auth);
       Swal.fire("Success", "Logged out successfully", "success");
     } catch (error: any) {
       Swal.fire("Error", error.message, "error");

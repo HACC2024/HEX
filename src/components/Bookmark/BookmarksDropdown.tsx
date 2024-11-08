@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { Image, Dropdown, DropdownButton } from "react-bootstrap";
 import { Trash, Bookmark } from "react-bootstrap-icons";
@@ -133,7 +134,7 @@ const BookmarkDropdown: React.FC = () => {
             </Dropdown.Item>
           ))
         ) : (
-          <Dropdown.Item disabled>No bookmarks yet.</Dropdown.Item>
+          <Dropdown.Item disabled style={{color: "#b0b4b8"}}>No bookmarks yet.</Dropdown.Item>
         )}
       </DropdownButton>
       <InfoModal
