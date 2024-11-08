@@ -1,0 +1,106 @@
+.HowItWorksDiv {
+  background-color: rgb(0, 0, 0); /* Apply background to the entire section */
+  color: white;
+  padding: 100px;
+  margin: 0;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.how-it-works-section {
+  padding: 60px;
+}
+
+.custom-h1 {
+  font-weight: bold;
+}
+
+.custom-heading {
+  /* gradient color */
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  background: linear-gradient(to right, #6ab7ff, #7615ff);
+  background-clip: text; /* Standard property */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.custom-h4 {
+  font-weight: bold;
+}
+
+.HowItWorksImageWrapper {
+  width: 100%;
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.HowItWorksImage {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.steps-section {
+  padding: 50px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.StepBox {
+  width: 100%;
+  width: 300px;
+  height: 180px;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: black; /* Solid black background */
+  color: white; /* White text for contrast */
+  text-align: center;
+
+  /* Light blue border */
+  border: 3px solid #7ec1ff;
+  box-shadow: 0 4px 10px rgba(18, 136, 255, 0.814),
+    /* Main shadow for depth */ inset 0 0 8px rgba(126, 193, 255, 0.3),
+    /* Soft inner glow */ inset 0 0 15px rgba(126, 193, 255, 0.4); /* Enhanced inner glow */
+  transition: transform 0.3s ease; /* Smooth scaling effect */
+}
+
+/* Rotate the StepNumber on hover of StepBox */
+.StepBox:hover .StepNumber {
+  transform: rotate(360deg); /* Rotate the number circle */
+  transition: transform 0.7s ease-in-out; /* Smooth rotation */
+}
+
+.StepBox:hover {
+  transform: scale(1.1);
+  opacity: 0.99; /* Slight opacity change to trigger repaint */
+}
+
+.StepNumber {
+  font-size: 2rem;
+  font-weight: bold;
+  background: linear-gradient(
+    40deg,
+    rgb(163, 214, 255),
+    rgba(0, 86, 214, 0.925)
+  );
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+
+.StepText {
+  padding-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.5;
+}

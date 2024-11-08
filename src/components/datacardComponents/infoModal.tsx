@@ -83,10 +83,10 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered size="xl">
-      <Modal.Header closeButton>
+      <Modal.Header closeButton  className="custom-modal-header">
         <Modal.Title>{fileData?.name}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="custom-modal-body">
         {fileData ? (
           <Tab.Container
             defaultActiveKey="info"
@@ -215,7 +215,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
           <p>No file information available.</p>
         )}
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className="custom-modal-footer">
         <Button variant="secondary" onClick={onHide}>
           Close
         </Button>

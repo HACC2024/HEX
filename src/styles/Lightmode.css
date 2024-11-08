@@ -14,11 +14,19 @@
 }
 
 .light-mode .custom-navbar a {
-  color: #ffffff !important; /* Link color for light mode */
+  color: #ffffff; /* Link color for light mode */
+}
+
+.light-mode .custom-navbar a:hover {
+  color: #787dfff1
 }
 
 .light-mode .darkmode-icon {
   color: #ffffff; /* Icon color for dark mode toggle */
+}
+
+.light-mode .darkmode-icon:hover {
+  color: #787dfff1 
 }
 
 .light-mode .HomeImageCt {

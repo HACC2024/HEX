@@ -1,0 +1,178 @@
+.FullPageBackground {
+  background-color: rgb(0, 0, 0);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.button-container {
+  position: sticky;
+  bottom: 20px; /* Distance from bottom of viewport */
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.ChatBotsContainer {
+  width: 80%;
+  max-width: 800px;
+  margin-bottom: 100px;
+}
+
+/* Row layout */
+.Row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Box styling */
+.Box {
+  background-color: #000000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  padding: 20px;
+  height: 400px; /* Uniform height for all boxes */
+}
+
+/* Specific widths for each box */
+.LargeBox {
+  width: 68%; /* Longer left box */
+  border: 3px solid #62b3ff;
+  background: radial-gradient(circle, #029affaf 3%, #000000 50%);
+}
+
+.SmallBox {
+  width: 30%; /* Shorter right box */
+  border: 3px solid #62b3ff;
+}
+
+.MediumBox-left {
+  width: 49%; /* Equal width for both bottom boxes */
+  border: 3px solid #62b3ff;
+}
+
+.MediumBox-right {
+  width: 49%; /* Equal width for both bottom boxes */
+  border: 3px solid #62b3ff;
+}
+
+.AI-image {
+  width: 90%; /* Makes image responsive to the box size */
+  height: auto;
+  border-radius: 15px; /* Adjust the roundness */
+  margin-top: 20px; /* Space between the image and "Left Box" text */
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.smallBoxText {
+  font-size: 1.7rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px; /* Space around the text */
+  color: #ffffff; /* Text color */
+  background: linear-gradient(
+    to bottom left,
+    #029affaf 3%,
+    #000000 60%,
+    #000000 100%
+  ); /* Light background color */
+  line-height: 3rem;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  /* Tablet size */
+  .smallBoxText {
+    font-size: 1rem;
+    line-height: 2.5rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Mobile size */
+  .smallBoxText {
+    font-size: 0.9rem;
+    line-height: 2rem;
+    padding: 6px;
+  }
+}
+
+/* Container styling for the 3-bar chart */
+.MediumBox-left .bar-chart {
+  display: flex;
+  align-items: flex-end; /* Align bars to the bottom */
+  justify-content: center; /* Center the bars horizontally */
+  height: 200px; /* Total height of the chart */
+  gap: 10px; /* Space between bars */
+  padding-bottom: 20px;
+}
+
+/* Base styling for each bar */
+.MediumBox-left .bar {
+  width: 50px; /* Width of each bar */
+  border-radius: 5px; /* Optional: Rounds the top of the bars */
+  animation: grow-shrink 5s ease-in-out infinite; /* Infinite animation */
+  transform-origin: bottom; /* Animates height from the bottom */
+}
+
+/* Individual heights for each bar */
+.MediumBox-left .bar-1 {
+  height: 80px; /* Adjust height as needed */
+  animation-delay: 0s;
+  background: linear-gradient(180deg, #2146ff9a, #1e96f1d5);
+}
+.MediumBox-left .bar-2 {
+  height: 180px; /* Adjust height as needed */
+  animation-delay: 0.8s;
+  background: linear-gradient(180deg, #2146ff9a, #1e96f1d5);
+}
+.MediumBox-left .bar-3 {
+  height: 130px; /* Adjust height as needed */
+  animation-delay: 1.6s;
+  background: linear-gradient(180deg, #2146ff9a, #1e96f1d5);
+}
+
+/* Keyframes for grow-shrink animation */
+@keyframes grow-shrink {
+  0% {
+    height: 50%; /* Minimum height */
+  }
+  50% {
+    height: 100%; /* Maximum height */
+  }
+  100% {
+    height: 50%; /* Return to minimum height */
+  }
+}
+
+/* Hide bar-chart on smaller screens */
+@media (max-width: 500px) {
+  .MediumBox-left .bar-chart {
+    display: none;
+  }
+}
+
+.Text-image {
+  width: 90%; /* Makes image responsive to the box size */
+  height: auto;
+  border-radius: 15px; /* Adjust the roundness */
+  margin-bottom: 40px; /* Space between the image and "Left Box" text */
+}
+
+.text-below-image {
+  text-align: center;
+  font-size: 1rem; /* Adjust font size as needed */
+  color: #555; /* Customize the color */
+  margin-top: 50px; /* Adjust spacing above the text */
+}
