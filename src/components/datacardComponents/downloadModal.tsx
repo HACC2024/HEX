@@ -84,7 +84,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
           Close
         </Button>
         <Button
-          variant="primary"
+          variant="success"
           onClick={handleDownload}
           disabled={!selectedFile}
         >
