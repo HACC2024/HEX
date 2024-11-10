@@ -5,6 +5,7 @@
 <p><strong>Final Deployed Website:</strong> https://uhspace.org</p>
 <p><strong>Temporary Administrator Access for Judging</strong> (Available Only on 11/11/2024):</p> 
 <ul>
+  <li>Go to the footer of the homepage, on the bottom right, and click on the 'Admin Portal' logo.
   <li><strong>Username:</strong> defaultadmin@hacc2024.com</li> 
   <li><strong>Password:</strong> HACC2024</li> 
 </ul> 
