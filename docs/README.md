@@ -2,6 +2,7 @@
 
 <h2>Overview</h2>
 <p>This project is a Next.js web application called <strong>UHSPACE Data Hub</strong>, which stands for "Unlocking Hawaii's Solutions for Personalized Analytics and Collaborative Engagement". This README will guide you through the development, build, and deployment process.</p>
+<p><strong>Final Deployed Website:</strong> https://uhspace.org</p>
 <p><strong>Temporary Administrator Access for Judging</strong> (Available Only on 11/11/2024):</p> 
 <ul>
   <li><strong>Username:</strong> defaultadmin@hacc2024.com</li> 
