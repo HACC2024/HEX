@@ -2,11 +2,12 @@
 
 <h2>Overview</h2>
 <p>This project is a Next.js web application called <strong>UHSPACE Data Hub</strong>, which stands for "Unlocking Hawaii's Solutions for Personalized Analytics and Collaborative Engagement". This README will guide you through the development, build, and deployment process.</p>
-<p>For <strong>Admin Privileges</strong>, use:</p>
+<p><strong>Temporary Administrator Access for Judging</strong> (Available Only on 11/11/2024):</p> 
 <ul>
-  <li>Email: defaultadmin@hacc2024.com</li>
-  <li>Password: HACC2024</li>
-</ul>
+  <li><strong>Username:</strong> defaultadmin@hacc2024.com</li> 
+  <li><strong>Password:</strong> HACC2024</li> 
+</ul> 
+<p><strong>Important Notice:</strong> This login is exclusively for judges to review the project on 11/11/2024. Access will be removed promptly on 11/12/2024 to ensure the security and integrity of our systems. Please be assured that this temporary login does not compromise any sensitive data or system functionality. Thank you for your understanding and cooperation during the evaluation period.</p>
 
 <hr />
 
