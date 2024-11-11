@@ -6,8 +6,8 @@
 <p><strong>Temporary Administrator Access for Judging</strong> (Available Only on 11/11/2024):</p> 
 <ul>
   <li>Go to the footer of the homepage, on the bottom right, and click on the 'Admin Portal' logo.
-  <li><strong>Email:</strong> defaultadmin@hacc2024.com</li> 
-  <li><strong>Password:</strong> HACC2024</li> 
+  <li><strong>Email:</strong> View Submitted Google Form</li> 
+  <li><strong>Password:</strong> View Submitted Google Form</li> 
 </ul> 
 <p><strong>Important Notice:</strong> This login is exclusively for judges to review the project on 11/11/2024. Access will be removed promptly on 11/12/2024 to ensure the security and integrity of our systems. Please be assured that this temporary login does not compromise any sensitive data or system functionality. Thank you for your understanding and cooperation during the evaluation period.</p>
 
