@@ -62,7 +62,7 @@ For security concerns, please contact:
 
 1. **SSL/TLS Configuration:**
    - SSL/TLS configured for **uhspace.org** using Let's Encrypt certificates
-   - AWS Certificate Manager handles SSL for **uhspace.org** and **www.uhspace.org**
+   - AWS Certificate Manager handles SSL for **uhspace.org**
    - Automatic certificate renewal and management
 
 2. **Nginx as a Reverse Proxy:**
