@@ -57,7 +57,6 @@ Our project implements several security measures:
 
 For security concerns, please contact:
 - Primary Contact: Email uhspacehub@gmail.com
-- Alternative: Submit issues through our [GitHub repository](https://github.com/HACC-2024/HEX)
 
 # Website Infrastructure Security
 
@@ -89,7 +88,7 @@ For security concerns, please contact:
    - Version control management
 
 6. **Domain Security:**
-   - Full support for both **uhspace.org** and **www.uhspace.org**
+   - Full support for both **uhspace.org**
    - DNS configuration for both root and subdomain
    - SEO-friendly setup preventing content duplication
 
