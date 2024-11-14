@@ -17,6 +17,7 @@ export interface FileData {
   maintainer: string;
   department: string;
   views: number;
+  type?: string;
 }
 
 interface InfoModalProps {

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Modal, Tab, Nav, Row, Col, Table, Button } from "react-bootstrap";
-import dynamic from "next/dynamic";
 import "./modal.css";
 
 export interface FileData {
@@ -17,30 +16,16 @@ export interface FileData {
   maintainer: string;
   department: string;
   views: number;
+  type?: string;
 }
 
-interface InfoModalProps {
+interface ProjectInfoModalProps {
   show: boolean;
   onHide: () => void;
   fileData: FileData | null;
 }
 
-const CsvReaderAuto = dynamic(() => import("../csvAuto/CsvReaderAuto"), {
-  ssr: false,
-  loading: () => (
-    <div
-      className="d-flex justify-content-center align-items-center"
-      style={{ height: "300px" }}
-    >
-      <div className="text-center">
-        <div className="spinner-border text-primary mb-3 mx-auto"></div>
-        <p>Loading CSV Visualizer...</p>
-      </div>
-    </div>
-  ),
-});
-
-const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
+const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ show, onHide, fileData }) => {
   const [selectedFile, setSelectedFile] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>("info");
 
@@ -83,7 +68,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered size="xl">
-      <Modal.Header closeButton  className="custom-modal-header">
+      <Modal.Header closeButton className="custom-modal-header">
         <Modal.Title>{fileData?.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="custom-modal-body">
@@ -95,9 +80,6 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
             <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey="info">Info</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="details">Data</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="download">Download</Nav.Link>
@@ -133,10 +115,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
                           <td>Author</td>
                           <td>{fileData.author}</td>
                         </tr>
-                        <tr>
-                          <td>Maintainer</td>
-                          <td>{fileData.maintainer}</td>
-                        </tr>
+
                         <tr>
                           <td>Department</td>
                           <td>{fileData.department}</td>
@@ -153,9 +132,6 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
                     </Table>
                   </Col>
                 </Row>
-              </Tab.Pane>
-              <Tab.Pane eventKey="details">
-                <CsvReaderAuto file={fileData.file} />
               </Tab.Pane>
               <Tab.Pane eventKey="download">
                 <Row className="pt-3">
@@ -233,4 +209,4 @@ const InfoModal: React.FC<InfoModalProps> = ({ show, onHide, fileData }) => {
   );
 };
 
-export default InfoModal;
+export default ProjectInfoModal;
