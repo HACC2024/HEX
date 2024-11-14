@@ -14,7 +14,7 @@ import {
   Briefcase,
   Shield,
 } from "react-bootstrap-icons";
-import { BarChart4, ChevronDown } from "lucide-react";
+import { BarChart4, ChevronDown, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import ProjectCards from "./ProjectCards";
 import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
@@ -192,6 +192,15 @@ const ProjectContent = ({ category }: ProjectContentProps) => {
                   title="Dashboard"
                 >
                   <BarChart4 size={18} />
+                </button>
+              </Link>
+              <Link href="/Categories/community" passHref>
+                <button
+                  className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
+                  style={{ width: "45px", height: "45px" }}
+                  title="Explore Data Categories"
+                >
+                  <LayoutGrid size={18} />
                 </button>
               </Link>
             </div>
@@ -402,7 +411,8 @@ const ProjectContent = ({ category }: ProjectContentProps) => {
                   {categoryToCap[category]} Projects
                 </h1>
                 <h5 className={`${styles.catsubtitle}`}>
-                  Discover Past Projects To Gain Inspiration And Connect With The Community
+                  Discover Past Projects To Gain Inspiration And Connect With
+                  The Community
                 </h5>
               </div>
               <div

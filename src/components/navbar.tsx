@@ -148,6 +148,11 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
               </Link>
             </li>
             <li className="nav-item">
+              <Link href="Projects/community" style={{ fontSize: "1rem" }}>
+                Commnity Projects
+              </Link>
+            </li>
+            <li className="nav-item">
               <div
                 onClick={toggleLightMode}
                 className="darkmode-icon d-flex align-items-center nav-link gap-2"
@@ -234,6 +239,16 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
                   style={{ fontSize: "1rem" }}
                 >
                   Virtual Assistants
+                </Link>
+              </li>
+              <li className="nav-item mb-2">
+                <Link
+                  href="Projects/community"
+                  className="nav-link"
+                  onClick={() => setIsOffcanvasOpen(false)}
+                  style={{ fontSize: "1rem" }}
+                >
+                  Community Projects
                 </Link>
               </li>
             </ul>

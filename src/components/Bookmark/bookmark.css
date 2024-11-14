@@ -20,7 +20,6 @@ dropdown-menu {
   display: none; /* Hide the default arrow */
 }
 
-
 .notification-badge {
   position: absolute;
   bottom: -5px; /* Adjust as needed to align with bottom */
@@ -37,4 +36,51 @@ dropdown-menu {
   font-weight: bold;
   z-index: 1; /* Ensures it's above the button */
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); /* Optional: adds a shadow for better visibility */
+}
+#dropdown-basic-button + .dropdown-menu {
+  min-width: 300px !important;
+  padding: 0;
+}
+
+.bookmark-tabs {
+  display: flex !important;
+  border-bottom: 1px solid #dee2e6;
+  margin: 0 !important;
+}
+
+.bookmark-tabs .nav-item {
+  flex: 1;
+  margin: 0 !important;
+}
+
+.bookmark-tabs .nav-link {
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  width: 100%;
+  text-align: center;
+}
+
+.bookmark-items-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-top: 8px;
+}
+
+/* Optional: Custom scrollbar styling */
+.bookmark-items-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bookmark-items-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.bookmark-items-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.bookmark-items-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
