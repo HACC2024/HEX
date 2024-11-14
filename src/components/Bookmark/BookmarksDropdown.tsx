@@ -26,7 +26,9 @@ const BookmarkDropdown: React.FC = () => {
   const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showProjectInfoModal, setShowProjectInfoModal] = useState(false);
-  const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
+  const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
+    null
+  );
 
   useEffect(() => {
     const storedBookmarks = localStorage.getItem("bookmarkedFiles");
@@ -46,22 +48,22 @@ const BookmarkDropdown: React.FC = () => {
 
     setTimeout(() => {
       window.dispatchEvent(new Event("bookmarksUpdated"));
-    }, 100);
+    }, 50);
   };
 
   const handleItemClick = (fileData: FileData) => {
     setSelectedFileData(fileData);
-    console.log('File Data:', fileData); // Debug the entire fileData object
-    console.log('Type:', fileData.type); // Debug the type specifically
-    console.log('Type comparison:', fileData.type === 'project'); // Debug the comparison
-  
+    console.log("File Data:", fileData); // Debug the entire fileData object
+    console.log("Type:", fileData.type); // Debug the type specifically
+    console.log("Type comparison:", fileData.type === "project"); // Debug the comparison
+
     // Use strict equality and ensure type is case-sensitive
-    if (fileData.type && fileData.type.toLowerCase() === 'project') {
-      console.log('Opening Project Modal');
+    if (fileData.type && fileData.type.toLowerCase() === "project") {
+      console.log("Opening Project Modal");
       setShowProjectInfoModal(true);
       setShowInfoModal(false); // Ensure other modal is closed
     } else {
-      console.log('Opening Info Modal');
+      console.log("Opening Info Modal");
       setShowInfoModal(true);
       setShowProjectInfoModal(false); // Ensure other modal is closed
     }
@@ -153,7 +155,9 @@ const BookmarkDropdown: React.FC = () => {
             </Dropdown.Item>
           ))
         ) : (
-          <Dropdown.Item disabled style={{color: "#b0b4b8"}}>No bookmarks yet.</Dropdown.Item>
+          <Dropdown.Item disabled style={{ color: "#b0b4b8" }}>
+            No bookmarks yet.
+          </Dropdown.Item>
         )}
       </DropdownButton>
       {/* Regular InfoModal for non-project items */}
