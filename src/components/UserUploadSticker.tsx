@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import UncleChatbot from "./UncleChatbot";
 import "../styles.css";
 import "../styles/AISticker.css";
-import { MessageSquare } from "lucide-react";
+import { User } from "lucide-react";
+import UserUploadManagement from "./UserUploadManagement";
 
 const calculatePosition = () => {
   return { x: 0, y: 0 };
@@ -105,15 +105,15 @@ const UserUploadSticker = () => {
         onClick={(event) => event.preventDefault()}
       >
         <div className="icon-container">
-          <MessageSquare size={32} color="white" />
-          <span className="chat-text text-white">Upload</span>
+          <User size={32} color="white" />
+          <span className="chat-text text-white">Manage</span>
         </div>
       </div>
 
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <UncleChatbot />
+            <UserUploadManagement />
             <button className="close-button" onClick={handleCloseModal}>
               Close
             </button>

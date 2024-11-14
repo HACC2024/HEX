@@ -13,8 +13,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
-import ReCAPTCHA from 'react-google-recaptcha';
-
+import ReCAPTCHA from "react-google-recaptcha";
 
 const UserUpload: React.FC = () => {
   // Auth states
@@ -92,20 +91,26 @@ const UserUpload: React.FC = () => {
         return;
       }
       setAuthError("");
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
       // Check user status in database
       const userRef = dbRef(database, `users/${userCredential.user.uid}`);
       const userSnapshot = await get(userRef);
       const userData = userSnapshot.val();
-  
+
       // Check if account is deactivated
-      if (userData.status === 'deactivated' || userData.active === false) {
+      if (userData.status === "deactivated" || userData.active === false) {
         await signOut(auth);
-        setAuthError("This account has been deactivated. Please contact an administrator.");
+        setAuthError(
+          "This account has been deactivated. Please contact an administrator."
+        );
         return;
       }
-  
+
       setEmail("");
       setPassword("");
     } catch (error: any) {
@@ -213,7 +218,6 @@ const UserUpload: React.FC = () => {
 
   if (!user) {
     return (
-      
       <div className="card border-0 shadow-sm">
         <div className="card-body p-4">
           <h3 className="text-center mb-2" style={{ color: "#2563eb" }}>
@@ -244,6 +248,7 @@ const UserUpload: React.FC = () => {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   required
+                  placeholder="Enter your name"
                   style={{
                     backgroundColor: "#f8fafc",
                     border: "1px solid rgba(37, 99, 235, 0.2)",
@@ -285,7 +290,8 @@ const UserUpload: React.FC = () => {
               />
             </div>
 
-            <ReCAPTCHA className= "py-3"
+            <ReCAPTCHA
+              className="py-3"
               ref={recaptchaRef}
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
             />
@@ -312,7 +318,6 @@ const UserUpload: React.FC = () => {
   }
 
   return (
-    
     <div className="card border-0 shadow-sm">
       <div className="card-body p-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -426,4 +431,4 @@ const UserUpload: React.FC = () => {
   );
 };
 
-export default UserUpload;  
+export default UserUpload;
