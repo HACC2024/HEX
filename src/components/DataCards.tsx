@@ -102,7 +102,14 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   const sortedFiles = sortFiles(
     files.filter((file) =>
-      file.name.toLowerCase().includes(search.toLowerCase())
+      file.name.toLowerCase().includes(search.toLowerCase()) ||
+      file.description.toLowerCase().includes(search.toLowerCase()) ||
+      file.author.toLowerCase().includes(search.toLowerCase()) ||
+      file.department.toLowerCase().includes(search.toLowerCase()) ||
+      Object.values(file.file).some((arr) =>
+        arr.some((str) => str.toLowerCase().includes(search.toLowerCase()))
+      )
+  
     )
   );
 
