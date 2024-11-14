@@ -16,7 +16,7 @@ import {
 } from "react-bootstrap-icons";
 import { BarChart4, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import DownloadCSVFiles from "./DataCards";
+import ProjectCards from "./ProjectCards";
 import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
 import AISticker from "./AISticker";
 
@@ -409,7 +409,7 @@ const ProjectContent = ({ category }: ProjectContentProps) => {
                 className={`${styles.rightLight} ${styles.rightLight1}`}
               ></div>
               <div className="datacardsContainer py-5">
-                <DownloadCSVFiles category={categoryToCap[category]} />
+                <ProjectCards category={categoryToCap[category]} />
               </div>
             </div>
           </div>

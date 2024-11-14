@@ -7,7 +7,7 @@ import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
 import SearchBar from "./SearchFilter";
 import "../styles/DataCard.css";
-import InfoModal from "./projectcardComponents/infoModal";
+import ProjectInfoModal from "./projectcardComponents/infoModal";
 import DownloadModal from "./projectcardComponents/downloadModal";
 import Bookmarks from "./Bookmark/Bookmarks";
 import SortOptions from "./projectcardComponents/sortFilter";
@@ -24,6 +24,7 @@ export interface FileData {
   maintainer: string;
   department: string;
   views: number;
+  type?: string;
 }
 
 const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
@@ -43,7 +44,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
   const [sortOption, setSortOption] = useState("mostRecent");
 
   useEffect(() => {
-    const dbRefPath = dbRef(database, "Admin");
+    const dbRefPath = dbRef(database, "Projects");
 
     const unsubscribe = onValue(
       dbRefPath,
@@ -63,6 +64,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
               maintainer: fileList[key].maintainer,
               department: fileList[key].department,
               views: fileList[key].views || 0,
+              type: 'project'
             }))
             .filter((file: FileData) => file.category === category);
 
@@ -112,7 +114,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
 
   const incrementViews = async (fileData: FileData) => {
     try {
-      const adminRef = dbRef(database, "Admin");
+      const adminRef = dbRef(database, "Projects");
       const snapshot = await get(adminRef);
 
       if (snapshot.exists()) {
@@ -122,7 +124,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
         );
 
         if (fileKey) {
-          const fileRef = dbRef(database, `Admin/${fileKey}`);
+          const fileRef = dbRef(database, `Projects/${fileKey}`);
           const currentViews = fileData.views || 0;
 
           await update(fileRef, {
@@ -348,7 +350,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
           ))}
         </div>
       )}
-      <InfoModal
+      <ProjectInfoModal
         show={showInfoModal}
         onHide={() => setShowInfoModal(false)}
         fileData={selectedFileData}
@@ -367,4 +369,3 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
 };
 
 export default ProjectCards;
-

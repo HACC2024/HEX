@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Image, Dropdown, DropdownButton } from "react-bootstrap";
 import { Trash, Bookmark } from "react-bootstrap-icons";
 import InfoModal from "../datacardComponents/infoModal";
+import ProjectInfoModal from "../projectcardComponents/infoModal";
 import "./bookmark.css";
+
 export interface FileData {
   name: string;
   file: { [key: string]: string[] };
@@ -17,13 +19,15 @@ export interface FileData {
   maintainer: string;
   department: string;
   views: number;
+  type?: string;
 }
+
 const BookmarkDropdown: React.FC = () => {
   const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
-    null
-  );
+  const [showProjectInfoModal, setShowProjectInfoModal] = useState(false);
+  const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
+
   useEffect(() => {
     const storedBookmarks = localStorage.getItem("bookmarkedFiles");
     if (storedBookmarks) {
@@ -45,10 +49,24 @@ const BookmarkDropdown: React.FC = () => {
     }, 100);
   };
 
-  const openInfoModal = (fileData: FileData) => {
+  const handleItemClick = (fileData: FileData) => {
     setSelectedFileData(fileData);
-    setShowInfoModal(true);
+    console.log('File Data:', fileData); // Debug the entire fileData object
+    console.log('Type:', fileData.type); // Debug the type specifically
+    console.log('Type comparison:', fileData.type === 'project'); // Debug the comparison
+  
+    // Use strict equality and ensure type is case-sensitive
+    if (fileData.type && fileData.type.toLowerCase() === 'project') {
+      console.log('Opening Project Modal');
+      setShowProjectInfoModal(true);
+      setShowInfoModal(false); // Ensure other modal is closed
+    } else {
+      console.log('Opening Info Modal');
+      setShowInfoModal(true);
+      setShowProjectInfoModal(false); // Ensure other modal is closed
+    }
   };
+
   useEffect(() => {
     const handleBookmarksUpdate = () => {
       const storedBookmarks = localStorage.getItem("bookmarkedFiles");
@@ -83,7 +101,7 @@ const BookmarkDropdown: React.FC = () => {
               key={file.name}
               className="d-flex align-items-center justify-content-between"
               style={{ cursor: "pointer", color: "#6796fb" }}
-              onClick={() => openInfoModal(file)}
+              onClick={() => handleItemClick(file)}
             >
               <div className="d-flex align-items-center">
                 <Image
@@ -116,20 +134,20 @@ const BookmarkDropdown: React.FC = () => {
                   cursor: "pointer",
                   marginLeft: "20px",
                   padding: "8px",
-                  backgroundColor: "#f8f9fa", // Light gray background
-                  borderRadius: "50%", // Makes it circular
-                  width: "32px", // Fixed width
-                  height: "32px", // Fixed height
-                  display: "flex", // For centering
-                  alignItems: "center", // Center vertically
-                  justifyContent: "center", // Center horizontally
-                  transition: "background-color 0.2s", // Smooth hover effect
+                  backgroundColor: "#f8f9fa",
+                  borderRadius: "50%",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "background-color 0.2s",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#e9ecef"; // Darker on hover
+                  e.currentTarget.style.backgroundColor = "#e9ecef";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f8f9fa"; // Back to normal
+                  e.currentTarget.style.backgroundColor = "#f8f9fa";
                 }}
               />
             </Dropdown.Item>
@@ -138,12 +156,20 @@ const BookmarkDropdown: React.FC = () => {
           <Dropdown.Item disabled style={{color: "#b0b4b8"}}>No bookmarks yet.</Dropdown.Item>
         )}
       </DropdownButton>
+      {/* Regular InfoModal for non-project items */}
       <InfoModal
         show={showInfoModal}
         onHide={() => setShowInfoModal(false)}
         fileData={selectedFileData}
       />
+      {/* ProjectInfoModal for project items */}
+      <ProjectInfoModal
+        show={showProjectInfoModal}
+        onHide={() => setShowProjectInfoModal(false)}
+        fileData={selectedFileData}
+      />
     </div>
   );
 };
+
 export default BookmarkDropdown;
