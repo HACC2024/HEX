@@ -36,6 +36,7 @@ import UserManagement from "./UserManagement";
 import Chatbot from "../../../components/Chatbot";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import ReCAPTCHA from "react-google-recaptcha";
+import ProjectManagement from "./ProjectManagement";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -57,7 +58,7 @@ const AdminPortal: React.FC = () => {
   const [authChecked, setAuthChecked] = useState<boolean>(false);
   const [isUnmounting, setIsUnmounting] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "content" | "admins" | "security" | "users"
+    "content" | "admins" | "security" | "users" | "projects"
   >("content");
   const [userName, setUserName] = useState<string>("");
   const [showChatbot, setShowChatbot] = useState(false);
@@ -791,7 +792,7 @@ const AdminPortal: React.FC = () => {
             <ul className="nav nav-tabs">
               <li className="nav-item">
                 <button
-                  className={`nav-link ${
+                  className={`nav-link text-primary ${
                     activeTab === "content" ? "active" : ""
                   }`}
                   onClick={() => setActiveTab("content")}
@@ -801,7 +802,7 @@ const AdminPortal: React.FC = () => {
               </li>
               <li className="nav-item">
                 <button
-                  className={`nav-link ${
+                  className={`nav-link text-primary ${
                     activeTab === "admins" ? "active" : ""
                   }`}
                   onClick={() => setActiveTab("admins")}
@@ -811,7 +812,7 @@ const AdminPortal: React.FC = () => {
               </li>
               <li className="nav-item">
                 <button
-                  className={`nav-link ${
+                  className={`nav-link text-primary ${
                     activeTab === "users" ? "active" : ""
                   }`}
                   onClick={() => setActiveTab("users")}
@@ -821,12 +822,22 @@ const AdminPortal: React.FC = () => {
               </li>
               <li className="nav-item">
                 <button
-                  className={`nav-link ${
+                  className={`nav-link text-primary ${
                     activeTab === "security" ? "active" : ""
                   }`}
                   onClick={() => setActiveTab("security")}
                 >
                   Security Reports
+                </button>
+              </li>
+              <li className="nav-item">
+                <button
+                  className={`nav-link text-primary ${
+                    activeTab === "projects" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveTab("projects")}
+                >
+                  Project Management
                 </button>
               </li>
               <li className="nav-item ms-auto">
@@ -1019,7 +1030,7 @@ const AdminPortal: React.FC = () => {
                             <th>Description</th>
                             <th>Files</th>
                             <th>Image</th>
-                            <th>Upload Date</th>
+                            <th>Date</th>
                             <th>Actions</th>
                           </tr>
                         </thead>
@@ -1130,7 +1141,7 @@ const AdminPortal: React.FC = () => {
                     style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
                   >
                     <div className="modal-dialog modal-lg">
-                      <div className="modal-content">
+                      <div className="modal-content" style={{ backgroundColor: "white" }}>
                         <div className="modal-header bg-dark text-info">
                           <h5 className="modal-title">Edit Record</h5>
                           <button
@@ -1348,6 +1359,8 @@ const AdminPortal: React.FC = () => {
             <SecurityManagement />
           ) : activeTab === "users" ? (
             <UserManagement />
+          ) : activeTab === "projects" ? (
+            <ProjectManagement />
           ) : null}
         </div>
       </div>

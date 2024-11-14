@@ -112,7 +112,7 @@ const AISticker = () => {
 
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content" style={{ width: "1000px" }}>
             <UncleChatbot />
             <button className="close-button" onClick={handleCloseModal}>
               Close

@@ -6,8 +6,12 @@
 import dynamic from "next/dynamic";
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
-import { toggleSignOut, stateChange, userRole } from "../../.firebase/auth";
-import { storage, database, auth } from "../../.firebase/firebase";
+import {
+  toggleSignOut,
+  stateChange,
+  userRole,
+} from "../../../../.firebase/auth";
+import { storage, database, auth } from "../../../../.firebase/firebase";
 import {
   ref,
   uploadBytesResumable,
@@ -25,8 +29,8 @@ import {
 } from "firebase/database";
 import "react-quill/dist/quill.snow.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles.css";
-import Chatbot from "./Chatbot";
+import "../../../styles.css";
+import Chatbot from "../../../components/Chatbot";
 import {
   signInWithEmailAndPassword,
   signOut,
@@ -37,7 +41,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const UserUploadManagement: React.FC = () => {
+const ProjectManagement: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
@@ -907,517 +911,458 @@ const UserUploadManagement: React.FC = () => {
   }
 
   return (
-    <div className="container mt-5 mb-4">
+    <>
       <div className="card">
-        <div className="bg-dark text-white card-header">
-          <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
-            <h5 className="mb-0 text-info">
-              Welcome, {userName || user?.email || "User"}
-            </h5>
-            <span
-              className="badge bg-primary"
-              style={{ cursor: "pointer" }}
-              onClick={() => setShowChatbot(!showChatbot)}
+        <div className="card-header bg-info">
+          <h3 className="card-title mb-0">Manage Projects</h3>
+        </div>
+        <div className="card-body">
+          <div className="row mb-3 g-3">
+            <div className="col">
+              <label className="form-label">Title:</label>
+              <span style={{ color: "red" }}>*</span>
+              <input
+                type="text"
+                value={name}
+                onChange={handleNameChange}
+                placeholder="Enter the title"
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="col">
+              <label className="form-label">Author:</label>
+              <input
+                type="text"
+                value={author}
+                onChange={handleAuthorChange}
+                placeholder="Enter author name"
+                className="form-control"
+              />
+            </div>
+            <div className="col">
+              <label className="form-label">Department/Agency:</label>
+              <input
+                type="text"
+                value={department}
+                onChange={handleDepartmentChange}
+                placeholder="Enter department or agency"
+                className="form-control"
+              />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Description:</label>
+            <span style={{ color: "red" }}>*</span>
+            <ReactQuill
+              value={description}
+              onChange={handleDescriptionChange}
+              theme="snow"
+              className="border"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Category:</label>
+            <span style={{ color: "red" }}>*</span>
+            <select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              className="form-select"
+              required
             >
-              {showChatbot ? "Hide Chat" : "Chat With HEX Admin"}{" "}
-            </span>
-          </div>
-          <div className="mb-4">
-            <ul className="nav nav-tabs">
-              <li className="nav-item">
-                <button
-                  className={`nav-link ${
-                    activeTab === "content" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("content")}
-                >
-                  Manage Your Projects
-                </button>
-              </li>
-              <li className="nav-item ms-auto">
-                <button className="nav-link text-danger" onClick={handleLogout}>
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-          <div className="card bg-info mb-4">
-            {showChatbot && (
-              <div className="chatbot-container mt-0 mb-0">
-                <Chatbot />
-              </div>
-            )}
+              <option value="">Select a category</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Community">Community</option>
+              <option value="School">School</option>
+              <option value="Employment">Employment</option>
+              <option value="Public Safety">Public Safety</option>
+            </select>
           </div>
 
-          <>
-            <div className="card">
-              <div className="card-header bg-info">
-                <h3 className="card-title mb-0">Manage Your Projects</h3>
+          <div className="mb-3">
+            <p className="mt-4" style={{ color: "grey" }}>
+              Note: You can upload multiple files at once.
+            </p>
+            <label className="form-label">Upload Your Project Sources:</label>
+            <span style={{ color: "red" }}>*</span>
+            <input
+              type="file"
+              accept=".csv,application/json,application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              multiple
+              className="d-none"
+              required
+            />
+            <button
+              type="button"
+              className="btn btn-primary btn-sm ms-2"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Add Files
+            </button>
+            {Object.entries(selectedFiles).map(([fileType, files]) => (
+              <div key={fileType} className="mt-2">
+                <strong>{fileType.toUpperCase()} files:</strong>
+                <ul className="list-unstyled ms-3">
+                  {Array.isArray(files) &&
+                    files.map((file, index) => (
+                      <li key={index}>{file.name}</li>
+                    ))}
+                </ul>
               </div>
-              <div className="card-body">
-                <div className="row mb-3 g-3">
-                  <div className="col">
-                    <label className="form-label">Title:</label>
-                    <span style={{ color: "red" }}>*</span>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={handleNameChange}
-                      placeholder="Enter the title"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col">
-                    <label className="form-label">Author:</label>
-                    <input
-                      type="text"
-                      value={author}
-                      onChange={handleAuthorChange}
-                      placeholder="Enter author name"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col">
-                    <label className="form-label">Department/Agency:</label>
-                    <input
-                      type="text"
-                      value={department}
-                      onChange={handleDepartmentChange}
-                      placeholder="Enter department or agency"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
+            ))}
+          </div>
 
-                <div className="mb-3">
-                  <label className="form-label">Description:</label>
-                  <span style={{ color: "red" }}>*</span>
-                  <ReactQuill
-                    value={description}
-                    onChange={handleDescriptionChange}
-                    theme="snow"
-                    className="border"
-                  />
-                </div>
+          <div className="mb-3">
+            <label className="form-label">Cover Image (PNG, JPEG):</label>
+            <span style={{ color: "red" }}>*</span>
+            <input
+              type="file"
+              accept=".png,.jpeg,.jpg"
+              onChange={handleImageChange}
+              ref={imageInputRef}
+              className="form-control"
+              required
+            />
+          </div>
 
-                <div className="mb-3">
-                  <label className="form-label">Category:</label>
-                  <span style={{ color: "red" }}>*</span>
-                  <select
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                    className="form-select"
-                    required
-                  >
-                    <option value="">Select a category</option>
-                    <option value="Transportation">Transportation</option>
-                    <option value="Community">Community</option>
-                    <option value="School">School</option>
-                    <option value="Employment">Employment</option>
-                    <option value="Public Safety">Public Safety</option>
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <p className="mt-4" style={{ color: "grey" }}>
-                    Note: You can upload multiple files at once.
-                  </p>
-                  <label className="form-label">
-                    Upload Your Project Sources:
-                  </label>
-                  <span style={{ color: "red" }}>*</span>
-                  <input
-                    type="file"
-                    accept=".csv,application/json,application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
-                    onChange={handleFileChange}
-                    ref={fileInputRef}
-                    multiple
-                    className="d-none"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-sm ms-2"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    Add Files
-                  </button>
-                  {Object.entries(selectedFiles).map(([fileType, files]) => (
-                    <div key={fileType} className="mt-2">
-                      <strong>{fileType.toUpperCase()} files:</strong>
-                      <ul className="list-unstyled ms-3">
-                        {Array.isArray(files) &&
-                          files.map((file, index) => (
-                            <li key={index}>{file.name}</li>
-                          ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Cover Image (PNG, JPEG):</label>
-                  <span style={{ color: "red" }}>*</span>
-                  <input
-                    type="file"
-                    accept=".png,.jpeg,.jpg"
-                    onChange={handleImageChange}
-                    ref={imageInputRef}
-                    className="form-control"
-                    required
-                  />
-                </div>
-
-                <div className="d-flex justify-content-between">
-                  <button
-                    onClick={handleFileUpload}
-                    className="btn btn-primary"
-                  >
-                    Upload
-                  </button>
-                  <div>
-                    <button onClick={handleReset} className="btn btn-secondary">
-                      Start Over
-                    </button>
-                  </div>
-                </div>
-              </div>
+          <div className="d-flex justify-content-between">
+            <button onClick={handleFileUpload} className="btn btn-primary">
+              Upload
+            </button>
+            <div>
+              <button onClick={handleReset} className="btn btn-secondary">
+                Start Over
+              </button>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
+      {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
 
-            <div className="mt-4">
-              <div className="card mb-4">
-                <div className="card-header bg-info">
-                  <h3 className="card-title mb-0">View Uploaded Projects</h3>
-                </div>
-                <div className="card-body mb-2">
-                  <div
-                    className="table-responsive"
-                    style={{ maxHeight: "500px" }}
-                  >
-                    <table className="table table-striped table-bordered">
-                      <thead className="sticky-top bg-white">
-                        <tr>
-                          <th>Title</th>
-                          <th>Author</th>
-                          <th>Department</th>
-                          <th>Category</th>
-                          <th>Description</th>
-                          <th>Files</th>
-                          <th>Image</th>
-                          <th>Upload Date</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {uploadsData
-                          .filter((upload) => upload.owner === user.email)
-                          .map((upload) => (
-                            <tr key={upload.id}>
-                              <td>{upload.name}</td>
-                              <td>{upload.author || "N/A"}</td>
-                              <td>{upload.department || "N/A"}</td>
-                              <td>{upload.category}</td>
-                              <td>
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: upload.description,
-                                  }}
-                                  style={{
-                                    maxWidth: "300px",
-                                    maxHeight: "100px",
-                                    overflow: "auto",
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                <div
-                                  style={{
-                                    maxWidth: "200px",
-                                    maxHeight: "100px",
-                                    overflow: "auto",
-                                  }}
-                                >
-                                  {Object.entries(upload.file || {}).map(
-                                    ([fileType, urls]) => (
-                                      <div key={fileType}>
-                                        <strong>{fileType}:</strong>
-                                        <ul className="list-unstyled ms-2">
-                                          {Array.isArray(urls) &&
-                                            urls.map((url, index) => (
-                                              <li key={index}>
-                                                <a
-                                                  href={url}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                >
-                                                  File {index + 1}
-                                                </a>
-                                              </li>
-                                            ))}
-                                        </ul>
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              </td>
-                              <td>
-                                <img
-                                  src={upload.image}
-                                  alt={upload.name}
-                                  style={{
-                                    maxWidth: "100px",
-                                    maxHeight: "100px",
-                                    objectFit: "contain",
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                {new Date(upload.uploadedAt).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )}
-                              </td>
-                              <td>
-                                <div className="d-flex gap-2">
-                                  <button
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => handleEditClick(upload)}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() => handleDelete(upload)}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Edit Modal */}
-            {showEditModal && (
-              <div className="card">
-                <div
-                  className="modal show d-block"
-                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-                >
-                  <div className="modal-dialog modal-lg" >
-                    <div className="modal-content" style={{ backgroundColor: "white", width: "800px" }}>
-                      <div className="modal-header bg-dark text-info">
-                        <h5 className="modal-title">Edit Record</h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          onClick={() => setShowEditModal(false)}
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        <div className="mb-3">
-                          <label className="form-label">Title:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editName}
-                            onChange={(e) => setEditName(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Author:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editAuthor}
-                            onChange={(e) => setEditAuthor(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Department:</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={editDepartment}
-                            onChange={(e) => setEditDepartment(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Description:</label>
-                          <ReactQuill
-                            value={editDescription}
-                            onChange={setEditDescription}
-                            theme="snow"
-                          />
-                        </div>
-                        <div className="mb-5">
-                          <label className="form-label">Category:</label>
-                          <select
-                            className="form-select"
-                            value={editCategory}
-                            onChange={(e) => setEditCategory(e.target.value)}
-                          >
-                            <option value="">Select a category</option>
-                            <option value="Transportation">
-                              Transportation
-                            </option>
-                            <option value="Community">Community</option>
-                            <option value="School">School</option>
-                            <option value="Employment">Employment</option>
-                            <option value="Public Safety">Public Safety</option>
-                          </select>
-                        </div>
-                        <div className="mb-3">
-                          {/* Existing Files */}
-                          {Object.entries(editFiles).map(
-                            ([fileType, files]) => (
-                              <div key={fileType} className="mb-3">
-                                <h6 className="text-center">
-                                  <u>{fileType} Files:</u>
-                                </h6>
-
-                                {/* Existing Files List */}
-                                {files.existing.length > 0 && (
-                                  <div className="mb-2">
-                                    <h6>Existing:</h6>
-                                    <ul className="list-group">
-                                      {files.existing.map((file, index) => (
-                                        <li
-                                          key={index}
-                                          className="list-group-item d-flex justify-content-between align-items-center"
+      <div className="mt-4">
+        <div className="card mb-4">
+          <div className="card-header bg-info">
+            <h3 className="card-title mb-0">View All Projects</h3>
+          </div>
+          <div className="card-body mb-2">
+            <div className="table-responsive" style={{ maxHeight: "500px" }}>
+              <table className="table table-striped table-bordered">
+                <thead className="sticky-top bg-white">
+                  <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Department</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Files</th>
+                    <th>Image</th>
+                    <th>Date</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {uploadsData.map((upload) => (
+                    <tr key={upload.id}>
+                      <td>{upload.name}</td>
+                      <td>{upload.author || "N/A"}</td>
+                      <td>{upload.department || "N/A"}</td>
+                      <td>{upload.category}</td>
+                      <td>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: upload.description,
+                          }}
+                          style={{
+                            maxWidth: "300px",
+                            maxHeight: "100px",
+                            overflow: "auto",
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <div
+                          style={{
+                            maxWidth: "200px",
+                            maxHeight: "100px",
+                            overflow: "auto",
+                          }}
+                        >
+                          {Object.entries(upload.file || {}).map(
+                            ([fileType, urls]) => (
+                              <div key={fileType}>
+                                <strong>{fileType}:</strong>
+                                <ul className="list-unstyled ms-2">
+                                  {Array.isArray(urls) &&
+                                    urls.map((url, index) => (
+                                      <li key={index}>
+                                        <a
+                                          href={url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
                                         >
-                                          <a
-                                            href={file.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={
-                                              file.toDelete
-                                                ? "text-decoration-line-through"
-                                                : ""
-                                            }
-                                          >
-                                            File {index + 1}
-                                          </a>
-                                          <button
-                                            type="button"
-                                            className={`btn btn-${
-                                              file.toDelete
-                                                ? "warning"
-                                                : "danger"
-                                            } btn-sm`}
-                                            onClick={() =>
-                                              toggleFileDelete(fileType, index)
-                                            }
-                                          >
-                                            {file.toDelete
-                                              ? "Undo Delete"
-                                              : "Delete"}
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-
-                                {/* New Files List */}
-                                {files.new.length > 0 && (
-                                  <div className="mb-2">
-                                    <h6>New:</h6>
-                                    <ul className="list-group">
-                                      {files.new.map((file, index) => (
-                                        <li
-                                          key={index}
-                                          className="list-group-item d-flex justify-content-between align-items-center"
-                                        >
-                                          <span>{file.name}</span>
-                                          <button
-                                            type="button"
-                                            className="btn btn-danger btn-sm"
-                                            onClick={() =>
-                                              removeNewFile(fileType, index)
-                                            }
-                                          >
-                                            Remove
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
+                                          File {index + 1}
+                                        </a>
+                                      </li>
+                                    ))}
+                                </ul>
                               </div>
                             )
                           )}
-
-                          {/* Add New Files */}
-                          <div className="mt-5">
-                            <label className="form-label">
-                              Add New Project Sources:
-                            </label>
-                            <input
-                              type="file"
-                              accept=".csv,application/json,application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
-                              onChange={handleEditFileChange}
-                              multiple
-                              className="form-control"
-                            />
-                          </div>
                         </div>
-                        <div className="mb-3">
-                          <label className="form-label">
-                            New Cover Image (optional):
-                          </label>
-                          <input
-                            type="file"
-                            accept=".png,.jpeg,.jpg"
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files[0]) {
-                                setEditImage(e.target.files[0]);
-                              }
-                            }}
-                            className="form-control"
-                          />
+                      </td>
+                      <td>
+                        <img
+                          src={upload.image}
+                          alt={upload.name}
+                          style={{
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </td>
+                      <td>
+                        {new Date(upload.uploadedAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ maxWidth: "50px" }}>{upload.owner}</div>
+                      </td>
+                      <td>
+                        <div className="d-flex gap-2">
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleEditClick(upload)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDelete(upload)}
+                          >
+                            Delete
+                          </button>
                         </div>
-                      </div>
-                      <div className="modal-footer">
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          onClick={() => setShowEditModal(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={handleUpdate}
-                        >
-                          Save Changes
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="card">
+          <div
+            className="modal show d-block"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          >
+            <div className="modal-dialog modal-lg">
+              <div className="modal-content">
+                <div className="modal-header bg-dark text-info">
+                  <h5 className="modal-title">Edit Record</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setShowEditModal(false)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label">Title:</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Author:</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={editAuthor}
+                      onChange={(e) => setEditAuthor(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Department:</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={editDepartment}
+                      onChange={(e) => setEditDepartment(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Description:</label>
+                    <ReactQuill
+                      value={editDescription}
+                      onChange={setEditDescription}
+                      theme="snow"
+                    />
+                  </div>
+                  <div className="mb-5">
+                    <label className="form-label">Category:</label>
+                    <select
+                      className="form-select"
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                    >
+                      <option value="">Select a category</option>
+                      <option value="Transportation">Transportation</option>
+                      <option value="Community">Community</option>
+                      <option value="School">School</option>
+                      <option value="Employment">Employment</option>
+                      <option value="Public Safety">Public Safety</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    {/* Existing Files */}
+                    {Object.entries(editFiles).map(([fileType, files]) => (
+                      <div key={fileType} className="mb-3">
+                        <h6 className="text-center">
+                          <u>{fileType} Files:</u>
+                        </h6>
+
+                        {/* Existing Files List */}
+                        {files.existing.length > 0 && (
+                          <div className="mb-2">
+                            <h6>Existing:</h6>
+                            <ul className="list-group">
+                              {files.existing.map((file, index) => (
+                                <li
+                                  key={index}
+                                  className="list-group-item d-flex justify-content-between align-items-center"
+                                >
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={
+                                      file.toDelete
+                                        ? "text-decoration-line-through"
+                                        : ""
+                                    }
+                                  >
+                                    File {index + 1}
+                                  </a>
+                                  <button
+                                    type="button"
+                                    className={`btn btn-${
+                                      file.toDelete ? "warning" : "danger"
+                                    } btn-sm`}
+                                    onClick={() =>
+                                      toggleFileDelete(fileType, index)
+                                    }
+                                  >
+                                    {file.toDelete ? "Undo Delete" : "Delete"}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* New Files List */}
+                        {files.new.length > 0 && (
+                          <div className="mb-2">
+                            <h6>New:</h6>
+                            <ul className="list-group">
+                              {files.new.map((file, index) => (
+                                <li
+                                  key={index}
+                                  className="list-group-item d-flex justify-content-between align-items-center"
+                                >
+                                  <span>{file.name}</span>
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                      removeNewFile(fileType, index)
+                                    }
+                                  >
+                                    Remove
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Add New Files */}
+                    <div className="mt-5">
+                      <label className="form-label">
+                        Add New Project Sources:
+                      </label>
+                      <input
+                        type="file"
+                        accept=".csv,application/json,application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
+                        onChange={handleEditFileChange}
+                        multiple
+                        className="form-control"
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      New Cover Image (optional):
+                    </label>
+                    <input
+                      type="file"
+                      accept=".png,.jpeg,.jpg"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setEditImage(e.target.files[0]);
+                        }
+                      }}
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowEditModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleUpdate}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
-export default UserUploadManagement;
+export default ProjectManagement;

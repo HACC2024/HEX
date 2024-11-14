@@ -7,7 +7,8 @@ import {
     Globe,
     Linkedin,
     Person,
-    ShieldLock // Added security icon
+    ShieldLock,
+    Pencil
 } from 'react-bootstrap-icons';
 
 const Footer: React.FC = () => {
@@ -24,10 +25,13 @@ const Footer: React.FC = () => {
 
                     {/* Right-aligned Section */}
                     <Nav>
+                        <Link href="Project-Management" className="footer-icon custom-link me-4" title="Manage Your Projects">
+                            <Pencil/>
+                        </Link>
                         <Link href="security-report" className="footer-icon custom-link" title="Report Security Issue">
                             <ShieldLock/>
                         </Link>
-                        <Link href="Admin" className="footer-icon custom-link ms-3" title="Go to Admin Portal">
+                        <Link href="Admin" className="footer-icon custom-link ms-4" title="Go to Admin Portal">
                             <Person/>
                         </Link>
                     </Nav>

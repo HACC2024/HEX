@@ -126,6 +126,7 @@ const BookmarkDropdown: React.FC = () => {
             <Nav.Link
               eventKey="other"
               onClick={(e) => handleTabSelect("other", e)}
+              style={{ color: "black" }}
             >
               Datasets
             </Nav.Link>
@@ -134,6 +135,7 @@ const BookmarkDropdown: React.FC = () => {
             <Nav.Link
               eventKey="projects"
               onClick={(e) => handleTabSelect("projects", e)}
+              style={{ color: "black" }}
             >
               Projects
             </Nav.Link>

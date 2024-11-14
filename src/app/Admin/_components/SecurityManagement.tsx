@@ -101,7 +101,6 @@ const SecurityManagement: React.FC = () => {
           <div className="card">
             <div className="card-header d-flex flex-column flex-md-row justify-content-between align-items-center bg-dark text-white">
               <h3 className="text-info m-0 mb-3 mb-md-0">Security Reports Management</h3>
-
               <div className="btn-group d-flex flex-wrap gap-1">
                 <button
                   className={`btn btn-sm px-3 py-2 ${

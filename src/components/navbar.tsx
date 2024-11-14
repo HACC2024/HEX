@@ -139,7 +139,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
             </li>
             <li className="nav-item">
               <Link href="#Chatbot" style={{ fontSize: "1rem" }}>
-                Virtual Assistants
+                AI Assistants
               </Link>
             </li>
             <li className="nav-item">
@@ -149,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
             </li>
             <li className="nav-item">
               <Link href="Projects/community" style={{ fontSize: "1rem" }}>
-                Commnity Projects
+                Projects
               </Link>
             </li>
             <li className="nav-item">

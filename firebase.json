@@ -12,6 +12,10 @@
         "destination": "/Admin.html"
       },
       {
+        "source": "/Project-Management",
+        "destination": "/Project-Management.html"
+      },
+      {
         "source": "/Dashboard",
         "destination": "/Dashboard.html"
       },
