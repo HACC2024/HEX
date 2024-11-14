@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Image, Dropdown, DropdownButton } from "react-bootstrap";
+import { Image, Dropdown, DropdownButton, Nav } from "react-bootstrap";
 import { Trash, Bookmark } from "react-bootstrap-icons";
 import InfoModal from "../datacardComponents/infoModal";
 import ProjectInfoModal from "../projectcardComponents/infoModal";
@@ -29,13 +29,41 @@ const BookmarkDropdown: React.FC = () => {
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
     null
   );
+  const [activeTab, setActiveTab] = useState<"datasets" | "projects" | "other">(
+    "other"
+  );
+  const [show, setShow] = useState(false);
 
-  useEffect(() => {
+  const loadBookmarks = () => {
     const storedBookmarks = localStorage.getItem("bookmarkedFiles");
     if (storedBookmarks) {
-      setBookmarkedFiles(JSON.parse(storedBookmarks));
+      const parsedBookmarks = JSON.parse(storedBookmarks);
+      setBookmarkedFiles(parsedBookmarks);
     }
+  };
+
+  useEffect(() => {
+    loadBookmarks();
+
+    window.addEventListener("bookmarksUpdated", loadBookmarks);
+    return () => {
+      window.removeEventListener("bookmarksUpdated", loadBookmarks);
+    };
   }, []);
+
+  useEffect(() => {
+    if (show) {
+      loadBookmarks();
+    }
+  }, [show]);
+
+  const handleTabSelect = (tab: string | null, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (tab) {
+      setActiveTab(tab as "datasets" | "projects" | "other");
+    }
+  };
 
   const removeBookmark = (fileName: string) => {
     setBookmarkedFiles((prev) => {
@@ -53,39 +81,26 @@ const BookmarkDropdown: React.FC = () => {
 
   const handleItemClick = (fileData: FileData) => {
     setSelectedFileData(fileData);
-    console.log("File Data:", fileData); // Debug the entire fileData object
-    console.log("Type:", fileData.type); // Debug the type specifically
-    console.log("Type comparison:", fileData.type === "project"); // Debug the comparison
-
-    // Use strict equality and ensure type is case-sensitive
-    if (fileData.type && fileData.type.toLowerCase() === "project") {
-      console.log("Opening Project Modal");
+    if (fileData.type?.toLowerCase() === "project") {
       setShowProjectInfoModal(true);
-      setShowInfoModal(false); // Ensure other modal is closed
+      setShowInfoModal(false);
     } else {
-      console.log("Opening Info Modal");
       setShowInfoModal(true);
-      setShowProjectInfoModal(false); // Ensure other modal is closed
+      setShowProjectInfoModal(false);
     }
   };
-
-  useEffect(() => {
-    const handleBookmarksUpdate = () => {
-      const storedBookmarks = localStorage.getItem("bookmarkedFiles");
-      if (storedBookmarks) {
-        setBookmarkedFiles(JSON.parse(storedBookmarks));
-      }
-    };
-    window.addEventListener("bookmarksUpdated", handleBookmarksUpdate);
-    handleBookmarksUpdate();
-    return () => {
-      window.removeEventListener("bookmarksUpdated", handleBookmarksUpdate);
-    };
-  }, []);
 
   const cutText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
   };
+
+  const filteredBookmarks = bookmarkedFiles.filter((file) => {
+    if (activeTab === "projects") {
+      return file.type?.toLowerCase() === "project";
+    } else {
+      return file.type?.toLowerCase() !== "project";
+    }
+  });
 
   return (
     <div className="bookmark-dropdown-container">
@@ -96,9 +111,36 @@ const BookmarkDropdown: React.FC = () => {
         id="dropdown-basic-button"
         title={<Bookmark size={20} />}
         align="end"
+        show={show}
+        onToggle={(isOpen) => setShow(isOpen)}
       >
-        {bookmarkedFiles.length > 0 ? (
-          bookmarkedFiles.map((file: FileData) => (
+        <Nav
+          variant="tabs"
+          activeKey={activeTab}
+          onSelect={(tab) =>
+            setActiveTab(tab as "datasets" | "projects" | "other")
+          }
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Nav.Item>
+            <Nav.Link
+              eventKey="other"
+              onClick={(e) => handleTabSelect("other", e)}
+            >
+              Datasets
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
+              eventKey="projects"
+              onClick={(e) => handleTabSelect("projects", e)}
+            >
+              Projects
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
+        {filteredBookmarks.length > 0 ? (
+          filteredBookmarks.map((file: FileData) => (
             <Dropdown.Item
               key={file.name}
               className="d-flex align-items-center justify-content-between"
@@ -160,13 +202,11 @@ const BookmarkDropdown: React.FC = () => {
           </Dropdown.Item>
         )}
       </DropdownButton>
-      {/* Regular InfoModal for non-project items */}
       <InfoModal
         show={showInfoModal}
         onHide={() => setShowInfoModal(false)}
         fileData={selectedFileData}
       />
-      {/* ProjectInfoModal for project items */}
       <ProjectInfoModal
         show={showProjectInfoModal}
         onHide={() => setShowProjectInfoModal(false)}
