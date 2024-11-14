@@ -64,7 +64,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
               maintainer: fileList[key].maintainer,
               department: fileList[key].department,
               views: fileList[key].views || 0,
-              type: 'project'
+              type: "project",
             }))
             .filter((file: FileData) => file.category === category);
 
@@ -159,30 +159,26 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
   };
 
   const toggleBookmark = (file: FileData) => {
-    if (isBookmarked(file.name)) {
-      removeBookmark(file.name);
-    } else {
-      addBookmark(file);
-    }
-
-    window.dispatchEvent(new Event("bookmarksUpdated"));
-  };
-
-  const addBookmark = (file: FileData) => {
-    if (isBookmarked(file.name)) return;
-
     setBookmarkedFiles((prev) => {
-      const updatedBookmarks = [...prev, file];
-      localStorage.setItem("bookmarkedFiles", JSON.stringify(updatedBookmarks));
-      return updatedBookmarks;
-    });
-  };
-  const removeBookmark = (fileName: string) => {
-    setBookmarkedFiles((prev) => {
-      const updatedBookmarks = prev.filter(
-        (bookmarkedFile) => bookmarkedFile.name !== fileName
+      const isCurrentlyBookmarked = prev.some(
+        (bookmarkedFile) => bookmarkedFile.name === file.name
       );
+
+      let updatedBookmarks;
+      if (isCurrentlyBookmarked) {
+        updatedBookmarks = prev.filter(
+          (bookmarkedFile) => bookmarkedFile.name !== file.name
+        );
+      } else {
+        updatedBookmarks = [...prev, file];
+      }
+
       localStorage.setItem("bookmarkedFiles", JSON.stringify(updatedBookmarks));
+
+      setTimeout(() => {
+        window.dispatchEvent(new Event("bookmarksUpdated"));
+      }, 0);
+
       return updatedBookmarks;
     });
   };
@@ -266,7 +262,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
                   flexWrap: "wrap",
                 }}
               >
-                <div style={{ flex: "1",  minWidth: "250px"}}>
+                <div style={{ flex: "1", minWidth: "250px" }}>
                   <SearchBar search={search} setSearch={setSearch} />
                 </div>
 
