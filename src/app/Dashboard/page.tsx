@@ -21,7 +21,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
-import { House, MoonStarsFill, SunFill } from "react-bootstrap-icons";
+import { House, MoonStarsFill, SunFill, Pencil } from "react-bootstrap-icons";
 import { Row, Col } from "react-bootstrap";
 
 const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
@@ -48,7 +48,9 @@ export default function Page() {
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -72,13 +74,15 @@ export default function Page() {
 
   // Track active section AND handle responsive menu
   useEffect(() => {
-    
     // Debounce function
     interface DebouncedFunction {
       (...args: any[]): void;
     }
 
-    const debounce = (func: (...args: any[]) => void, wait: number): DebouncedFunction => {
+    const debounce = (
+      func: (...args: any[]) => void,
+      wait: number
+    ): DebouncedFunction => {
       let timeout: NodeJS.Timeout;
       return function executedFunction(...args: any[]): void {
         const later = () => {
@@ -165,16 +169,16 @@ export default function Page() {
       },
       {
         root: null,
-        rootMargin: '0px',
-        threshold: 0.1
+        rootMargin: "0px",
+        threshold: 0.1,
       }
     );
-  
+
     // Observe all sections
-    document.querySelectorAll('.tool-section').forEach((section) => {
+    document.querySelectorAll(".tool-section").forEach((section) => {
       observer.observe(section);
     });
-  
+
     return () => observer.disconnect();
   }, []);
 
@@ -252,12 +256,24 @@ export default function Page() {
                   <LayoutGrid size={18} />
                 </button>
               </Link>
+              <Link href="../Projects/community" passHref>
+                <button
+                  className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
+                  style={{ width: "45px", height: "45px" }}
+                  title="Go to Projects"
+                >
+                  <Pencil size={18} />
+                </button>
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Centered Navigation Icons (Only for larger screens) */}
-        <div className="d-none d-md-flex align-items-center gap-3">
+        <div
+          className="d-none d-md-flex align-items-center gap-3"
+          style={{ paddingLeft: "55px" }}
+        >
           {[
             { id: 1, icon: BarChart, title: "Data Visualizer" },
             { id: 2, icon: MessageCircle, title: "AI Assistant" },
@@ -467,9 +483,11 @@ export default function Page() {
               id="section-1"
               className={`tool-section mb-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-1') ? 1 : 0,
-                transform: visibleSections.has('section-1') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-1") ? 1 : 0,
+                transform: visibleSections.has("section-1")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
@@ -509,9 +527,11 @@ export default function Page() {
               id="section-2"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-2') ? 1 : 0,
-                transform: visibleSections.has('section-2') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-2") ? 1 : 0,
+                transform: visibleSections.has("section-2")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
@@ -576,9 +596,11 @@ export default function Page() {
               id="section-3"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-3') ? 1 : 0,
-                transform: visibleSections.has('section-3') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-3") ? 1 : 0,
+                transform: visibleSections.has("section-3")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
                 position: "relative",
                 zIndex: 10,
               }}
@@ -647,9 +669,11 @@ export default function Page() {
               id="section-4"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-4') ? 1 : 0,
-                transform: visibleSections.has('section-4') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-4") ? 1 : 0,
+                transform: visibleSections.has("section-4")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
@@ -724,9 +748,11 @@ export default function Page() {
               id="section-5"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-5') ? 1 : 0,
-                transform: visibleSections.has('section-5') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-5") ? 1 : 0,
+                transform: visibleSections.has("section-5")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
