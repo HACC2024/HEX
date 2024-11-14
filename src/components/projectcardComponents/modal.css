@@ -1,0 +1,26 @@
+.nav-tabs {
+  display: flex !important;
+  flex-direction: row !important;
+}
+.nav-tabs .nav-link {
+  flex-grow: 1;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: black;
+}
+
+.custom-modal-header,
+.custom-modal-footer {
+  background-color: #4da0ff;
+  color: white; /* Header text color */
+}
+
+.custom-modal-body {
+  background: linear-gradient(
+    135deg,
+    rgba(54, 139, 243, 0.944) 20%,
+    rgba(209, 235, 255, 0.85) 100%
+  );
+  color: white;
+}
