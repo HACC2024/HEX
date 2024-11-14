@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles.css";
 import "../styles/AISticker.css";
-import { User } from "lucide-react";
+import { Pencil } from "lucide-react";
 import UserUploadManagement from "./UserUploadManagement";
 
 const calculatePosition = () => {
@@ -105,14 +105,14 @@ const UserUploadSticker = () => {
         onClick={(event) => event.preventDefault()}
       >
         <div className="icon-container">
-          <User size={32} color="white" />
+          <Pencil size={32} color="white" />
           <span className="chat-text text-white">Manage</span>
         </div>
       </div>
 
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content" style={{ width:"1000px", height: 'auto' }}>
             <UserUploadManagement />
             <button className="close-button" onClick={handleCloseModal}>
               Close
