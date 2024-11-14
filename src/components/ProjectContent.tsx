@@ -18,7 +18,7 @@ import { BarChart4, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import ProjectCards from "./ProjectCards";
 import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
-import AISticker from "./AISticker";
+import UserUploadSticker from "./UserUploadSticker";
 
 interface ProjectContentProps {
   category:
@@ -415,7 +415,7 @@ const ProjectContent = ({ category }: ProjectContentProps) => {
           </div>
         </div>
       </div>
-      <AISticker />
+      <UserUploadSticker />
     </div>
   );
 };

@@ -91,7 +91,7 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ show, onHide, fileD
                 <Row>
                   <Col>
                     <p className="pt-3">
-                      <strong>Dataset Description</strong>
+                      <strong>Project Description</strong>
                     </p>
                     <div
                       dangerouslySetInnerHTML={{
