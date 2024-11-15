@@ -28,7 +28,7 @@ export const fetchUncleHexResponse = async (question: string, file?: File | null
         formData.append('file', file);
     }
 
-    const response = await fetch('https://uhspace.orggoi/api/uncle-hex', {
+    const response = await fetch('https://uhspace.org/api/uncle-hex', {
         method: 'POST',
         body: formData, // Use FormData for multipart/form-data
     });
