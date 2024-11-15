@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../../styles/csvReader.module.css";
 import UncleChatbot from "../../components/UncleChatbot";
-import Chatbot from "../../components/Chatbot";
 import SecurityReport from "../security-report/page";
 import AdminPortal from "../Admin/_components/AdminPortal";
 import BookmarkDropDown from "@/components/Bookmark/BookmarksDropdown";
@@ -23,6 +22,7 @@ import {
 import Link from "next/link";
 import { House, MoonStarsFill, SunFill, Pencil } from "react-bootstrap-icons";
 import { Row, Col } from "react-bootstrap";
+import NotepadEditor from "./Notebook/NotepadEditor";
 
 const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
   ssr: false,
@@ -41,7 +41,7 @@ const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
 
 export default function Page() {
   const [showChatbot, setShowChatbot] = useState(false);
-  const [showAdminChatbot, setShowAdminChatbot] = useState(false);
+  const [showNotebook, setShowNotebook] = useState(false);
   const [showSecurityReport, setShowSecurityReport] = useState(false);
   const [showAdminPortal, setShowAdminPortal] = useState(false);
   const [activeSection, setActiveSection] = useState(1);
@@ -421,7 +421,7 @@ export default function Page() {
                   fontSize: "1rem",
                 }}
               >
-                Admin Assistant
+                Notebook Workspace
               </div>
             </Link>
             <Link href="#section-4" passHref>
@@ -610,7 +610,7 @@ export default function Page() {
                 <div className={styles.toolIcon}>
                   <WrenchIcon size={24} />
                 </div>
-                <div className={styles.toolLabel}>Admin Portal Assistant</div>
+                <div className={styles.toolLabel}>Interactive Workspace</div>
               </div>
 
               <p
@@ -621,41 +621,40 @@ export default function Page() {
                   marginBottom: "5rem",
                 }}
               >
-                Need technical support or admin access? Our Admin Assistant is
-                here to help!
+                Create custom reports, explore insights, and drive your research
+                forward—all in one place.
               </p>
 
               <div className={`card mt-5 mb-5 ${styles.customCard}`}>
                 <div className="card-body text-center py-4">
                   <h2 className={styles.uncleTitle}>
-                    <span className={styles.wavingHand}>🔧</span> HEX Admin
-                    Assistant
+                    <span className={styles.wavingHand}>🔧</span> HEX InstaNote
                   </h2>
-                  <h3 className={styles.uncleSubtitle}>Your Technical Guide</h3>
+                  <h3 className={styles.uncleSubtitle}>Your All-in-One Report Notebook</h3>
 
                   <div className={styles.uncleDescription}>
                     <p>
-                      Get help with HEX administration and technical questions!
+                    Create, edit, and generate reports effortlessly, all in one place!
                     </p>
                   </div>
 
                   <button
                     className={`btn ${
-                      showAdminChatbot
+                      showNotebook
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
                     } btn-lg mt-3`}
-                    onClick={() => setShowAdminChatbot(!showAdminChatbot)}
+                    onClick={() => setShowNotebook(!showNotebook)}
                   >
-                    {showAdminChatbot ? "× Close Chat" : "💬 Chat with Admin"}
+                    {showNotebook ? "× Close Notebook" : "✏️ Build A Report"}
                   </button>
                 </div>
               </div>
 
-              {showAdminChatbot && (
+              {showNotebook && (
                 <div className={`card mt-4 ${styles.chatbotContainer}`}>
                   <div className="card-body p-4">
-                    <Chatbot />
+                    <NotepadEditor />
                   </div>
                 </div>
               )}
