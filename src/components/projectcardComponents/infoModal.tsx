@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Modal, Tab, Nav, Row, Col, Table, Button } from "react-bootstrap";
+import FilePreview from "../FileReader/FilePreview";
 import "./modal.css";
 
 export interface FileData {
@@ -25,7 +26,11 @@ interface ProjectInfoModalProps {
   fileData: FileData | null;
 }
 
-const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ show, onHide, fileData }) => {
+const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({
+  show,
+  onHide,
+  fileData,
+}) => {
   const [selectedFile, setSelectedFile] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>("info");
 
@@ -82,6 +87,9 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ show, onHide, fileD
                 <Nav.Link eventKey="info">Info</Nav.Link>
               </Nav.Item>
               <Nav.Item>
+                <Nav.Link eventKey="preview">Preview</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
                 <Nav.Link eventKey="download">Download</Nav.Link>
               </Nav.Item>
             </Nav>
@@ -115,7 +123,10 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ show, onHide, fileD
                           <td>Author</td>
                           <td>{fileData.author}</td>
                         </tr>
-
+                        <tr>
+                          <td>Category</td>
+                          <td>{fileData.category}</td>
+                        </tr>
                         <tr>
                           <td>Department</td>
                           <td>{fileData.department}</td>
@@ -132,6 +143,9 @@ const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ show, onHide, fileD
                     </Table>
                   </Col>
                 </Row>
+              </Tab.Pane>
+              <Tab.Pane eventKey="preview">
+                <FilePreview file={fileData.file} />
               </Tab.Pane>
               <Tab.Pane eventKey="download">
                 <Row className="pt-3">

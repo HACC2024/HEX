@@ -256,7 +256,7 @@ export default function Page() {
                   <LayoutGrid size={18} />
                 </button>
               </Link>
-              <Link href="../Projects/community" passHref>
+              <Link href="../Project" passHref>
                 <button
                   className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
                   style={{ width: "45px", height: "45px" }}
@@ -630,11 +630,14 @@ export default function Page() {
                   <h2 className={styles.uncleTitle}>
                     <span className={styles.wavingHand}>🔧</span> HEX InstaNote
                   </h2>
-                  <h3 className={styles.uncleSubtitle}>Your All-in-One Report Notebook</h3>
+                  <h3 className={styles.uncleSubtitle}>
+                    Your All-in-One Report Notebook
+                  </h3>
 
                   <div className={styles.uncleDescription}>
                     <p>
-                    Create, edit, and generate reports effortlessly, all in one place!
+                      Create, edit, and generate reports effortlessly, all in
+                      one place!
                     </p>
                   </div>
 

@@ -27,7 +27,7 @@ export interface FileData {
   type?: string;
 }
 
-const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
+const ProjectCards: React.FC = () => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
     null
   );
-  const [sortOption, setSortOption] = useState("mostRecent");
+  const [sortOption, setSortOption] = useState("mostPopular");
 
   useEffect(() => {
     const dbRefPath = dbRef(database, "Projects");
@@ -51,8 +51,8 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
       (snapshot) => {
         if (snapshot.exists()) {
           const fileList = snapshot.val();
-          const filteredFiles: FileData[] = Object.keys(fileList)
-            .map((key) => ({
+          const filteredFiles: FileData[] = Object.keys(fileList).map(
+            (key) => ({
               name: fileList[key].name,
               file: fileList[key].file,
               image: fileList[key].image,
@@ -65,8 +65,8 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
               department: fileList[key].department,
               views: fileList[key].views || 0,
               type: "project",
-            }))
-            .filter((file: FileData) => file.category === category);
+            })
+          );
 
           setFiles(filteredFiles);
         } else {
@@ -82,7 +82,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
     );
 
     return () => unsubscribe();
-  }, [category]);
+  });
 
   const sortFiles = (files: FileData[]) => {
     switch (sortOption) {
@@ -103,8 +103,16 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
   };
 
   const sortedFiles = sortFiles(
-    files.filter((file) =>
-      file.name.toLowerCase().includes(search.toLowerCase())
+    files.filter(
+      (file) =>
+        file.name.toLowerCase().includes(search.toLowerCase()) ||
+        file.description.toLowerCase().includes(search.toLowerCase()) ||
+        file.author.toLowerCase().includes(search.toLowerCase()) ||
+        file.department.toLowerCase().includes(search.toLowerCase()) ||
+        file.category.toLowerCase().includes(search.toLowerCase()) ||
+        Object.values(file.file).some((arr) =>
+          arr.some((str) => str.toLowerCase().includes(search.toLowerCase()))
+        )
     )
   );
 
@@ -300,9 +308,14 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
                   <h3 className="file-name">{file.name}</h3>
                   <p className="file-category">{file.category}</p>
                   <div className="file-tags pt-1">
-                    {Object.keys(file.file).map((key) =>
-                      file.file[key].length > 0 &&
-                      file.file[key].some((url) => url !== "") ? (
+                    {Object.keys(file.file)
+                      .filter(
+                        (key) =>
+                          file.file[key].length > 0 &&
+                          file.file[key].some((url) => url !== "")
+                      )
+                      .slice(0, 4) // Display only the first 4 tags
+                      .map((key) => (
                         <span
                           key={key}
                           className="file-tag"
@@ -310,7 +323,20 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
                         >
                           {key}
                         </span>
-                      ) : null
+                      ))}
+                    {Object.keys(file.file).filter(
+                      (key) =>
+                        file.file[key].length > 0 &&
+                        file.file[key].some((url) => url !== "")
+                    ).length > 4 && (
+                      <span className="file-tag">
+                        +
+                        {Object.keys(file.file).filter(
+                          (key) =>
+                            file.file[key].length > 0 &&
+                            file.file[key].some((url) => url !== "")
+                        ).length - 4}
+                      </span>
                     )}
                   </div>
                   <div className="views-display">

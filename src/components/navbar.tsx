@@ -148,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="Projects/community" style={{ fontSize: "1rem" }}>
+              <Link href="Project" style={{ fontSize: "1rem" }}>
                 Projects
               </Link>
             </li>
@@ -243,12 +243,12 @@ const Navbar: React.FC<NavbarProps> = ({ isLightMode, setIsLightMode }) => {
               </li>
               <li className="nav-item mb-2">
                 <Link
-                  href="Projects/community"
+                  href="Project"
                   className="nav-link"
                   onClick={() => setIsOffcanvasOpen(false)}
                   style={{ fontSize: "1rem" }}
                 >
-                  Community Projects
+                  Project Showcase
                 </Link>
               </li>
             </ul>

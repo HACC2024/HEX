@@ -194,7 +194,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                   <BarChart4 size={18} />
                 </button>
               </Link>
-              <Link href="../Projects/community" passHref>
+              <Link href="../Project" passHref>
                 <button
                   className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
                   style={{ width: "45px", height: "45px" }}
