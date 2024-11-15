@@ -314,7 +314,7 @@ const ProjectCards: React.FC = () => {
                           file.file[key].length > 0 &&
                           file.file[key].some((url) => url !== "")
                       )
-                      .slice(0, 4) // Display only the first 4 tags
+                      .slice(0, 3) // Display only the first 4 tags
                       .map((key) => (
                         <span
                           key={key}
@@ -328,14 +328,14 @@ const ProjectCards: React.FC = () => {
                       (key) =>
                         file.file[key].length > 0 &&
                         file.file[key].some((url) => url !== "")
-                    ).length > 4 && (
+                    ).length > 3 && (
                       <span className="file-tag">
                         +
                         {Object.keys(file.file).filter(
                           (key) =>
                             file.file[key].length > 0 &&
                             file.file[key].some((url) => url !== "")
-                        ).length - 4}
+                        ).length - 3}
                       </span>
                     )}
                   </div>
