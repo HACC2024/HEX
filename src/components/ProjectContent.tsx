@@ -14,13 +14,13 @@ import {
   Briefcase,
   Shield,
 } from "react-bootstrap-icons";
-import { BarChart4, ChevronDown, Pencil } from "lucide-react";
+import { BarChart4, ChevronDown, LayoutGrid } from "lucide-react";
 import Link from "next/link";
-import DownloadCSVFiles from "./DataCards";
+import ProjectCards from "./ProjectCards";
 import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
-import AISticker from "./AISticker";
+import UserUploadSticker from "./UserUploadSticker";
 
-interface CategoriesContentProps {
+interface ProjectContentProps {
   category:
     | "community"
     | "transportation"
@@ -29,7 +29,7 @@ interface CategoriesContentProps {
     | "publicSafety";
 }
 
-const CategoriesContent = ({ category }: CategoriesContentProps) => {
+const ProjectContent = ({ category }: ProjectContentProps) => {
   const categoryToCap = {
     community: "Community",
     transportation: "Transportation",
@@ -60,26 +60,26 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
         id: 1,
         icon: PeopleFill,
         title: "Community",
-        catLink: "/Categories/community",
+        catLink: "/Projects/community",
       },
       {
         id: 2,
         icon: BusFrontFill,
         title: "Transportation",
-        catLink: "/Categories/transportation",
+        catLink: "/Projects/transportation",
       },
-      { id: 3, icon: Book, title: "School", catLink: "/Categories/school" },
+      { id: 3, icon: Book, title: "School", catLink: "/Projects/school" },
       {
         id: 4,
         icon: Briefcase,
         title: "Employment",
-        catLink: "/Categories/employment",
+        catLink: "/Projects/employment",
       },
       {
         id: 5,
         icon: Shield,
         title: "Public Safety",
-        catLink: "/Categories/publicSafety",
+        catLink: "/Projects/publicSafety",
       },
     ],
     []
@@ -189,18 +189,18 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 <button
                   className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
                   style={{ width: "45px", height: "45px" }}
-                  title="Go to Dashboard"
+                  title="Dashboard"
                 >
                   <BarChart4 size={18} />
                 </button>
               </Link>
-              <Link href="../Projects/community" passHref>
+              <Link href="/Categories/community" passHref>
                 <button
                   className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
                   style={{ width: "45px", height: "45px" }}
-                  title="Go to Projects"
+                  title="Explore Data Categories"
                 >
-                  <Pencil size={18} />
+                  <LayoutGrid size={18} />
                 </button>
               </Link>
             </div>
@@ -316,7 +316,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
             ×
           </button>
           <div style={{ marginTop: "5rem" }}>
-            <Link href="/Categories/community" passHref>
+            <Link href="/Projects/community" passHref>
               <div
                 className="nav-link"
                 style={{
@@ -329,7 +329,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
               </div>
             </Link>
 
-            <Link href="/Categories/transportation" passHref>
+            <Link href="/Projects/transportation" passHref>
               <div
                 className="nav-link"
                 style={{
@@ -342,7 +342,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
               </div>
             </Link>
 
-            <Link href="/Categories/school" passHref>
+            <Link href="/Projects/school" passHref>
               <div
                 className="nav-link"
                 style={{
@@ -355,7 +355,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
               </div>
             </Link>
 
-            <Link href="/Categories/employment" passHref>
+            <Link href="/Projects/employment" passHref>
               <div
                 className="nav-link"
                 style={{
@@ -368,7 +368,7 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
               </div>
             </Link>
 
-            <Link href="/Categories/publicSafety" passHref>
+            <Link href="/Projects/publicSafety" passHref>
               <div
                 className="nav-link"
                 style={{
@@ -408,26 +408,26 @@ const CategoriesContent = ({ category }: CategoriesContentProps) => {
                 <h1
                   className={`display-4 display-md-3 display-lg-2 ${styles.title} text-breaktext-break`}
                 >
-                  {categoryToCap[category]} Data
+                  {categoryToCap[category]} Projects
                 </h1>
                 <h5 className={`${styles.catsubtitle}`}>
-                  Data Made Simple, Insights Made Powerful, and AI Made
-                  Accessible
+                  Discover Past Projects To Gain Inspiration And Connect With
+                  The Community
                 </h5>
               </div>
               <div
                 className={`${styles.rightLight} ${styles.rightLight1}`}
               ></div>
               <div className="datacardsContainer py-5">
-                <DownloadCSVFiles category={categoryToCap[category]} />
+                <ProjectCards category={categoryToCap[category]} />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <AISticker />
+      <UserUploadSticker />
     </div>
   );
 };
 
-export default CategoriesContent;
+export default ProjectContent;

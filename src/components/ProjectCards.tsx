@@ -7,10 +7,10 @@ import { database } from "../../.firebase/firebase";
 import { Download } from "react-bootstrap-icons";
 import SearchBar from "./SearchFilter";
 import "../styles/DataCard.css";
-import InfoModal from "./datacardComponents/infoModal";
-import DownloadModal from "./datacardComponents/downloadModal";
+import ProjectInfoModal from "./projectcardComponents/infoModal";
+import DownloadModal from "./projectcardComponents/downloadModal";
 import Bookmarks from "./Bookmark/Bookmarks";
-import SortOptions from "./datacardComponents/sortFilter";
+import SortOptions from "./projectcardComponents/sortFilter";
 
 export interface FileData {
   name: string;
@@ -27,7 +27,7 @@ export interface FileData {
   type?: string;
 }
 
-const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
+const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   const [sortOption, setSortOption] = useState("mostRecent");
 
   useEffect(() => {
-    const dbRefPath = dbRef(database, "Admin");
+    const dbRefPath = dbRef(database, "Projects");
 
     const unsubscribe = onValue(
       dbRefPath,
@@ -64,6 +64,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
               maintainer: fileList[key].maintainer,
               department: fileList[key].department,
               views: fileList[key].views || 0,
+              type: "project",
             }))
             .filter((file: FileData) => file.category === category);
 
@@ -102,15 +103,8 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   };
 
   const sortedFiles = sortFiles(
-    files.filter(
-      (file) =>
-        file.name.toLowerCase().includes(search.toLowerCase()) ||
-        file.description.toLowerCase().includes(search.toLowerCase()) ||
-        file.author.toLowerCase().includes(search.toLowerCase()) ||
-        file.department.toLowerCase().includes(search.toLowerCase()) ||
-        Object.values(file.file).some((arr) =>
-          arr.some((str) => str.toLowerCase().includes(search.toLowerCase()))
-        )
+    files.filter((file) =>
+      file.name.toLowerCase().includes(search.toLowerCase())
     )
   );
 
@@ -120,7 +114,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
 
   const incrementViews = async (fileData: FileData) => {
     try {
-      const adminRef = dbRef(database, "Admin");
+      const adminRef = dbRef(database, "Projects");
       const snapshot = await get(adminRef);
 
       if (snapshot.exists()) {
@@ -130,7 +124,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
         );
 
         if (fileKey) {
-          const fileRef = dbRef(database, `Admin/${fileKey}`);
+          const fileRef = dbRef(database, `Projects/${fileKey}`);
           const currentViews = fileData.views || 0;
 
           await update(fileRef, {
@@ -352,7 +346,7 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
           ))}
         </div>
       )}
-      <InfoModal
+      <ProjectInfoModal
         show={showInfoModal}
         onHide={() => setShowInfoModal(false)}
         fileData={selectedFileData}
@@ -370,4 +364,4 @@ const DownloadCSVFiles: React.FC<{ category: string }> = ({ category }) => {
   );
 };
 
-export default DownloadCSVFiles;
+export default ProjectCards;

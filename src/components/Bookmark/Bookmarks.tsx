@@ -18,6 +18,7 @@ export interface FileData {
   maintainer: string;
   department: string;
   views: number;
+  type?: string;
 }
 
 interface BookmarkManagerProps {
@@ -48,7 +49,7 @@ const Bookmarks: React.FC<BookmarkManagerProps> = ({
     setTimeout(() => {
       isProcessing.current = false;
       setButtonDisabled(false);
-    }, 100);
+    }, 50);
   };
 
   return (
@@ -58,11 +59,7 @@ const Bookmarks: React.FC<BookmarkManagerProps> = ({
       disabled={buttonDisabled}
       style={{ backgroundColor: isBookmarked(file.name) ? "white" : "inherit" }}
     >
-      {isBookmarked(file.name) ? (
-      <BookmarkFill />
-      ) : (
-      <BookmarkOutline />
-      )}
+      {isBookmarked(file.name) ? <BookmarkFill /> : <BookmarkOutline />}
     </button>
   );
 };

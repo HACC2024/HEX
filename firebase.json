@@ -12,6 +12,10 @@
         "destination": "/Admin.html"
       },
       {
+        "source": "/Project-Management",
+        "destination": "/Project-Management.html"
+      },
+      {
         "source": "/Dashboard",
         "destination": "/Dashboard.html"
       },
@@ -38,6 +42,26 @@
       {
         "source": "/Categories/publicSafety",
         "destination": "/Categories/publicSafety.html"
+      },
+      {
+        "source": "/Projects/community",
+        "destination": "/Projects/community.html"
+      },
+      {
+        "source": "/Projects/transportation",
+        "destination": "/Projects/transportation.html"
+      },
+      {
+        "source": "/Projects/school",
+        "destination": "/Projects/school.html"
+      },
+      {
+        "source": "/Projects/employment",
+        "destination": "/Projects/employment.html"
+      },
+      {
+        "source": "/Projects/publicSafety",
+        "destination": "/Projects/publicSafety.html"
       },
       {
         "source": "**",

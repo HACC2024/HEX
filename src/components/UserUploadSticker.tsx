@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import UncleChatbot from "./UncleChatbot";
 import "../styles.css";
 import "../styles/AISticker.css";
-import { MessageSquare } from "lucide-react";
+import { Pencil } from "lucide-react";
+import UserUploadManagement from "./UserUploadManagement";
 
 const calculatePosition = () => {
   return { x: 0, y: 0 };
 };
 
-const AISticker = () => {
+const UserUploadSticker = () => {
   const [position, setPosition] = useState(calculatePosition);
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -105,15 +105,15 @@ const AISticker = () => {
         onClick={(event) => event.preventDefault()}
       >
         <div className="icon-container">
-          <MessageSquare size={32} color="white" />
-          <span className="chat-text text-white">Uncle HEX</span>
+          <Pencil size={32} color="white" />
+          <span className="chat-text text-white">Manage</span>
         </div>
       </div>
 
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ width: "1000px" }}>
-            <UncleChatbot />
+          <div className="modal-content" style={{ width:"1000px", height: 'auto' }}>
+            <UserUploadManagement />
             <button className="close-button" onClick={handleCloseModal}>
               Close
             </button>
@@ -124,4 +124,4 @@ const AISticker = () => {
   );
 };
 
-export default AISticker;
+export default UserUploadSticker;

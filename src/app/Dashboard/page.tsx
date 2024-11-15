@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../../styles/csvReader.module.css";
 import UncleChatbot from "../../components/UncleChatbot";
-import Chatbot from "../../components/Chatbot";
 import SecurityReport from "../security-report/page";
 import AdminPortal from "../Admin/_components/AdminPortal";
 import BookmarkDropDown from "@/components/Bookmark/BookmarksDropdown";
@@ -21,8 +20,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
-import { House, MoonStarsFill, SunFill } from "react-bootstrap-icons";
+import { House, MoonStarsFill, SunFill, Pencil } from "react-bootstrap-icons";
 import { Row, Col } from "react-bootstrap";
+import NotepadEditor from "./Notebook/NotepadEditor";
 
 const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
   ssr: false,
@@ -41,14 +41,16 @@ const CsvReader = dynamic(() => import("../../components/csvTool/CsvReader"), {
 
 export default function Page() {
   const [showChatbot, setShowChatbot] = useState(false);
-  const [showAdminChatbot, setShowAdminChatbot] = useState(false);
+  const [showNotebook, setShowNotebook] = useState(false);
   const [showSecurityReport, setShowSecurityReport] = useState(false);
   const [showAdminPortal, setShowAdminPortal] = useState(false);
   const [activeSection, setActiveSection] = useState(1);
   const [isLightMode, setIsLightMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -72,13 +74,15 @@ export default function Page() {
 
   // Track active section AND handle responsive menu
   useEffect(() => {
-    
     // Debounce function
     interface DebouncedFunction {
       (...args: any[]): void;
     }
 
-    const debounce = (func: (...args: any[]) => void, wait: number): DebouncedFunction => {
+    const debounce = (
+      func: (...args: any[]) => void,
+      wait: number
+    ): DebouncedFunction => {
       let timeout: NodeJS.Timeout;
       return function executedFunction(...args: any[]): void {
         const later = () => {
@@ -165,16 +169,16 @@ export default function Page() {
       },
       {
         root: null,
-        rootMargin: '0px',
-        threshold: 0.1
+        rootMargin: "0px",
+        threshold: 0.1,
       }
     );
-  
+
     // Observe all sections
-    document.querySelectorAll('.tool-section').forEach((section) => {
+    document.querySelectorAll(".tool-section").forEach((section) => {
       observer.observe(section);
     });
-  
+
     return () => observer.disconnect();
   }, []);
 
@@ -252,12 +256,24 @@ export default function Page() {
                   <LayoutGrid size={18} />
                 </button>
               </Link>
+              <Link href="../Projects/community" passHref>
+                <button
+                  className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center mt-3 ${styles.themeIcon}`}
+                  style={{ width: "45px", height: "45px" }}
+                  title="Go to Projects"
+                >
+                  <Pencil size={18} />
+                </button>
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Centered Navigation Icons (Only for larger screens) */}
-        <div className="d-none d-md-flex align-items-center gap-3">
+        <div
+          className="d-none d-md-flex align-items-center gap-3"
+          style={{ paddingLeft: "55px" }}
+        >
           {[
             { id: 1, icon: BarChart, title: "Data Visualizer" },
             { id: 2, icon: MessageCircle, title: "AI Assistant" },
@@ -405,7 +421,7 @@ export default function Page() {
                   fontSize: "1rem",
                 }}
               >
-                Admin Assistant
+                Notebook Workspace
               </div>
             </Link>
             <Link href="#section-4" passHref>
@@ -467,9 +483,11 @@ export default function Page() {
               id="section-1"
               className={`tool-section mb-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-1') ? 1 : 0,
-                transform: visibleSections.has('section-1') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-1") ? 1 : 0,
+                transform: visibleSections.has("section-1")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
@@ -509,9 +527,11 @@ export default function Page() {
               id="section-2"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-2') ? 1 : 0,
-                transform: visibleSections.has('section-2') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-2") ? 1 : 0,
+                transform: visibleSections.has("section-2")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
@@ -576,9 +596,11 @@ export default function Page() {
               id="section-3"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-3') ? 1 : 0,
-                transform: visibleSections.has('section-3') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-3") ? 1 : 0,
+                transform: visibleSections.has("section-3")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
                 position: "relative",
                 zIndex: 10,
               }}
@@ -588,7 +610,7 @@ export default function Page() {
                 <div className={styles.toolIcon}>
                   <WrenchIcon size={24} />
                 </div>
-                <div className={styles.toolLabel}>Admin Portal Assistant</div>
+                <div className={styles.toolLabel}>Interactive Workspace</div>
               </div>
 
               <p
@@ -599,41 +621,40 @@ export default function Page() {
                   marginBottom: "5rem",
                 }}
               >
-                Need technical support or admin access? Our Admin Assistant is
-                here to help!
+                Create custom reports, explore insights, and drive your research
+                forward—all in one place.
               </p>
 
               <div className={`card mt-5 mb-5 ${styles.customCard}`}>
                 <div className="card-body text-center py-4">
                   <h2 className={styles.uncleTitle}>
-                    <span className={styles.wavingHand}>🔧</span> HEX Admin
-                    Assistant
+                    <span className={styles.wavingHand}>🔧</span> HEX InstaNote
                   </h2>
-                  <h3 className={styles.uncleSubtitle}>Your Technical Guide</h3>
+                  <h3 className={styles.uncleSubtitle}>Your All-in-One Report Notebook</h3>
 
                   <div className={styles.uncleDescription}>
                     <p>
-                      Get help with HEX administration and technical questions!
+                    Create, edit, and generate reports effortlessly, all in one place!
                     </p>
                   </div>
 
                   <button
                     className={`btn ${
-                      showAdminChatbot
+                      showNotebook
                         ? "btn-outline-danger"
                         : "btn-outline-primary"
                     } btn-lg mt-3`}
-                    onClick={() => setShowAdminChatbot(!showAdminChatbot)}
+                    onClick={() => setShowNotebook(!showNotebook)}
                   >
-                    {showAdminChatbot ? "× Close Chat" : "💬 Chat with Admin"}
+                    {showNotebook ? "× Close Notebook" : "✏️ Build A Report"}
                   </button>
                 </div>
               </div>
 
-              {showAdminChatbot && (
+              {showNotebook && (
                 <div className={`card mt-4 ${styles.chatbotContainer}`}>
                   <div className="card-body p-4">
-                    <Chatbot />
+                    <NotepadEditor />
                   </div>
                 </div>
               )}
@@ -647,9 +668,11 @@ export default function Page() {
               id="section-4"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-4') ? 1 : 0,
-                transform: visibleSections.has('section-4') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-4") ? 1 : 0,
+                transform: visibleSections.has("section-4")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>
@@ -724,9 +747,11 @@ export default function Page() {
               id="section-5"
               className={`tool-section mt-5 ${styles.section}`}
               style={{
-                opacity: visibleSections.has('section-5') ? 1 : 0,
-                transform: visibleSections.has('section-5') ? 'none' : 'translateY(20px)',
-                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                opacity: visibleSections.has("section-5") ? 1 : 0,
+                transform: visibleSections.has("section-5")
+                  ? "none"
+                  : "translateY(20px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
               }}
             >
               <div className={styles.toolBadge}>

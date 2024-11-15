@@ -6,13 +6,8 @@
 import dynamic from "next/dynamic";
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
-import {
-  toggleSignIn,
-  toggleSignOut,
-  stateChange,
-  checkAdminRole,
-} from "../../../../.firebase/auth";
-import { storage, database, auth } from "../../../../.firebase/firebase";
+import { toggleSignOut, stateChange, userRole } from "../../.firebase/auth";
+import { storage, database, auth } from "../../.firebase/firebase";
 import {
   ref,
   uploadBytesResumable,
@@ -26,26 +21,28 @@ import {
   update,
   remove,
   get,
+  set,
 } from "firebase/database";
 import "react-quill/dist/quill.snow.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../../styles.css";
-import AdminManagement from "./AdminManagement";
-import SecurityManagement from "./SecurityManagement";
-import UserManagement from "./UserManagement";
-import Chatbot from "../../../components/Chatbot";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import "../styles.css";
+import Chatbot from "./Chatbot";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import ReCAPTCHA from "react-google-recaptcha";
-import ProjectManagement from "./ProjectManagement";
 
 // Dynamically import ReactQuill and disable SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const AdminPortal: React.FC = () => {
+const UserUploadManagement: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
-  const [maintainer, setMaintainer] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
+  const [owner, setOwner] = useState<string>("");
+  const [displayName, setDisplayName] = useState("");
   const [user, setUser] = useState<any>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,9 +54,8 @@ const AdminPortal: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [authChecked, setAuthChecked] = useState<boolean>(false);
   const [isUnmounting, setIsUnmounting] = useState(false);
-  const [activeTab, setActiveTab] = useState<
-    "content" | "admins" | "security" | "users" | "projects"
-  >("content");
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [activeTab, setActiveTab] = useState<"content">("content");
   const [userName, setUserName] = useState<string>("");
   const [showChatbot, setShowChatbot] = useState(false);
 
@@ -68,7 +64,6 @@ const AdminPortal: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editName, setEditName] = useState("");
   const [editAuthor, setEditAuthor] = useState("");
-  const [editMaintainer, setEditMaintainer] = useState("");
   const [editDepartment, setEditDepartment] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
@@ -86,13 +81,25 @@ const AdminPortal: React.FC = () => {
     json?: File[];
     xml?: File[];
     rdf?: File[];
+    pdf?: File[];
+    docx?: File[];
+    doc?: File[];
+    xlsx?: File[];
+    pptx?: File[];
+    jpg?: File[];
+    png?: File[];
+    html?: File[];
+    md?: File[];
+    rtf?: File[];
+    py?: File[];
+    ipynb?: File[];
+    txt?: File[];
   }>({});
 
   interface UploadData {
     id: string;
     name: string;
     author?: string;
-    maintainer?: string;
     department?: string;
     description: string;
     category: string;
@@ -101,9 +108,23 @@ const AdminPortal: React.FC = () => {
       json?: string;
       xml?: string;
       rdf?: string;
+      pdf?: string;
+      docx?: string;
+      doc?: string;
+      xlsx?: string;
+      pptx?: string;
+      jpg?: string;
+      png?: string;
+      html?: string;
+      md?: string;
+      rtf?: string;
+      py?: string;
+      ipynb?: string;
+      txt?: string;
     };
     image: string;
     uploadedAt: string;
+    owner: string;
   }
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -143,22 +164,21 @@ const AdminPortal: React.FC = () => {
 
     const unsubscribeFromAuth = stateChange(auth, async (currentUser) => {
       setIsLoading(true);
+
       if (currentUser) {
         try {
-          const isAdminUser = await checkAdminRole(currentUser);
-          if (!isAdminUser) {
-            await toggleSignOut(auth);
-            Swal.fire(
-              "Error",
-              "You are attempting to access the Admin Control Center. Please close The Admin Panel below and Try Again!",
-              "error"
-            );
-            setUser(null);
+          // Check if role is available for the current user
+          const role = await userRole(currentUser);
+
+          // If no role exists yet, assume the user is just registered, so we skip sign-out
+          if (role === null) {
+            setUser(currentUser);
             setIsAdmin(false);
+            // Additional logic for a new registered user can go here if needed
           } else {
             setUser(currentUser);
             setIsAdmin(true);
-            // Fetch data immediately after confirming admin status
+            // Fetch data if confirmed as an admin
             unsubscribeFromData = fetchUploads();
           }
         } catch (error) {
@@ -169,20 +189,20 @@ const AdminPortal: React.FC = () => {
       } else {
         setUser(null);
         setIsAdmin(false);
-        // Clean up data subscription if it exists
+        // Cleanup data subscription if it exists
         if (unsubscribeFromData) {
           unsubscribeFromData();
         }
         // Clear uploads data when logged out
         setUploadsData([]);
       }
+
       setIsLoading(false);
       setAuthChecked(true);
     });
 
     // Cleanup function
     return () => {
-      setIsUnmounting(true);
       if (unsubscribeFromData) {
         unsubscribeFromData();
       }
@@ -197,28 +217,29 @@ const AdminPortal: React.FC = () => {
    * @param {React.FormEvent} e - The event triggered by the form submission.
    * @return {Promise<void>}
    */
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Get the reCAPTCHA token
       const token = await recaptchaRef.current?.getValue();
       if (!token) {
         Swal.fire("Please complete the reCAPTCHA verification.");
         return;
       }
-      // First get the user status from the database
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
+
+      // Check user status in database
       const userRef = dbRef(database, `users/${userCredential.user.uid}`);
       const userSnapshot = await get(userRef);
       const userData = userSnapshot.val();
 
       // Check if account is deactivated
       if (userData.status === "deactivated" || userData.active === false) {
-        await signOut(auth); // Sign out if deactivated
+        await signOut(auth);
         Swal.fire(
           "Error",
           "This account has been deactivated. Please contact an administrator.",
@@ -227,15 +248,51 @@ const AdminPortal: React.FC = () => {
         return;
       }
 
-      // Then check admin status
-      if (userData.role === "admin") {
-        Swal.fire("Success", "Logged in as administrator", "success");
-      } else {
-        await signOut(auth);
-        Swal.fire("Error", "Invalid admin credentials", "error");
-      }
+      setEmail("");
+      setPassword("");
     } catch (error: any) {
-      Swal.fire("Error", "Invalid admin credentials", "error");
+      Swal.fire("Error", "Wrong credentials", "error");
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const token = await recaptchaRef.current?.getValue();
+      if (!token) {
+        Swal.fire("Please complete the reCAPTCHA verification.");
+        return;
+      }
+      // Basic validation
+      if (!displayName.trim()) {
+        Swal.fire("Display name is required");
+        return;
+      }
+
+      // Create authentication user
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const { user: newUser } = userCredential;
+
+      // Create user record in database with all required fields
+      const userRef = dbRef(database, `users/${newUser.uid}`);
+      await set(userRef, {
+        uid: newUser.uid,
+        email: newUser.email,
+        displayName: displayName.trim(),
+        role: "user", // default role
+        createdAt: new Date().toISOString(),
+      });
+
+      setEmail("");
+      setPassword("");
+      setDisplayName("");
+      recaptchaRef.current?.reset();
+    } catch (error: any) {
+      Swal.fire(error.message);
     }
   };
 
@@ -282,11 +339,62 @@ const AdminPortal: React.FC = () => {
             newSelectedFiles.rdf = newSelectedFiles.rdf || [];
             newSelectedFiles.rdf.push(file);
             break;
+          case "application/pdf":
+            newSelectedFiles.pdf = newSelectedFiles.pdf || [];
+            newSelectedFiles.pdf.push(file);
+            break;
+          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            newSelectedFiles.docx = newSelectedFiles.docx || [];
+            newSelectedFiles.docx.push(file);
+            break;
+          case "application/msword":
+            newSelectedFiles.doc = newSelectedFiles.doc || [];
+            newSelectedFiles.doc.push(file);
+            break;
+          case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            newSelectedFiles.xlsx = newSelectedFiles.xlsx || [];
+            newSelectedFiles.xlsx.push(file);
+            break;
+          case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            newSelectedFiles.pptx = newSelectedFiles.pptx || [];
+            newSelectedFiles.pptx.push(file);
+            break;
+          case "image/jpeg":
+            newSelectedFiles.jpg = newSelectedFiles.jpg || [];
+            newSelectedFiles.jpg.push(file);
+            break;
+          case "image/png":
+            newSelectedFiles.png = newSelectedFiles.png || [];
+            newSelectedFiles.png.push(file);
+            break;
+          case "text/html":
+            newSelectedFiles.html = newSelectedFiles.html || [];
+            newSelectedFiles.html.push(file);
+            break;
+          case "text/markdown":
+            newSelectedFiles.md = newSelectedFiles.md || [];
+            newSelectedFiles.md.push(file);
+            break;
+          case "application/rtf":
+            newSelectedFiles.rtf = newSelectedFiles.rtf || [];
+            newSelectedFiles.rtf.push(file);
+            break;
+          case "application/x-python":
+            newSelectedFiles.py = newSelectedFiles.py || [];
+            newSelectedFiles.py.push(file);
+            break;
+          case "application/x-ipynb+json":
+            newSelectedFiles.ipynb = newSelectedFiles.ipynb || [];
+            newSelectedFiles.ipynb.push(file);
+            break;
+          case "text/plain":
+            newSelectedFiles.txt = newSelectedFiles.txt || [];
+            newSelectedFiles.txt.push(file);
+            break;
           default:
             setUploadStatus(`File type ${file.type} is not supported`);
         }
       });
-
       setSelectedFiles(newSelectedFiles);
     }
   };
@@ -313,10 +421,6 @@ const AdminPortal: React.FC = () => {
 
   const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAuthor(e.target.value);
-  };
-
-  const handleMaintainerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMaintainer(e.target.value);
   };
 
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -362,7 +466,7 @@ const AdminPortal: React.FC = () => {
 
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const storageRef = ref(storage, `Admin/${fileType}/${file.name}`);
+          const storageRef = ref(storage, `Projects/${fileType}/${file.name}`);
           const fileUploadTask = uploadBytesResumable(storageRef, file);
 
           await new Promise<void>((resolve, reject) => {
@@ -397,7 +501,7 @@ const AdminPortal: React.FC = () => {
       }
 
       // Upload the image to Firebase Storage
-      const imageRef = ref(storage, `Admin/Images/${selectedImage.name}`);
+      const imageRef = ref(storage, `Projects/Images/${selectedImage.name}`);
       const imageUploadTask = uploadBytesResumable(imageRef, selectedImage);
 
       await new Promise<string>((resolve, reject) => {
@@ -416,17 +520,17 @@ const AdminPortal: React.FC = () => {
         );
       }).then(async (imageUrl) => {
         // Save to Realtime Database with indexed file structure
-        const uploadsRef = dbRef(database, "Admin");
+        const uploadsRef = dbRef(database, "Projects");
         await push(uploadsRef, {
           name,
           author,
-          maintainer,
           department,
           description,
           category: selectedCategory,
           file: fileUrls, // This will now contain arrays of URLs for each file type
           image: imageUrl,
           uploadedAt: new Date().toISOString(),
+          owner: user.email,
         });
 
         setUploadStatus("Upload completed successfully");
@@ -442,7 +546,6 @@ const AdminPortal: React.FC = () => {
   const handleReset = () => {
     setName("");
     setAuthor("");
-    setMaintainer("");
     setDepartment("");
     setDescription("");
     setSelectedCategory("");
@@ -467,7 +570,7 @@ const AdminPortal: React.FC = () => {
    */
   const fetchUploads = (): (() => void) | undefined => {
     try {
-      const uploadsRef = dbRef(database, "Admin");
+      const uploadsRef = dbRef(database, "Projects");
 
       const unsubscribe = onValue(
         uploadsRef,
@@ -508,7 +611,6 @@ const AdminPortal: React.FC = () => {
     setEditingUpload(upload);
     setEditName(upload.name);
     setEditAuthor(upload.author || "");
-    setEditMaintainer(upload.maintainer || "");
     setEditDepartment(upload.department || "");
     setEditDescription(upload.description);
     setEditCategory(upload.category);
@@ -530,7 +632,6 @@ const AdminPortal: React.FC = () => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
       const newEditFiles = { ...editFiles };
-
       filesArray.forEach((file) => {
         let fileType = "";
         switch (file.type) {
@@ -547,10 +648,48 @@ const AdminPortal: React.FC = () => {
           case "application/rdf+xml":
             fileType = "RDF";
             break;
+          case "application/pdf":
+            fileType = "PDF";
+            break;
+          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            fileType = "DOCX";
+            break;
+          case "application/msword":
+            fileType = "DOC";
+            break;
+          case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            fileType = "XLSX";
+            break;
+          case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            fileType = "PPTX";
+            break;
+          case "image/jpeg":
+            fileType = "JPG";
+            break;
+          case "image/png":
+            fileType = "PNG";
+            break;
+          case "text/html":
+            fileType = "HTML";
+            break;
+          case "text/markdown":
+            fileType = "MD";
+            break;
+          case "application/rtf":
+            fileType = "RTF";
+            break;
+          case "application/x-python":
+            fileType = "PY";
+            break;
+          case "application/x-ipynb+json":
+            fileType = "IPYNB";
+            break;
+          case "text/plain":
+            fileType = "TXT";
+            break;
           default:
-            return;
+            return setUploadStatus(`File type ${file.type} is not supported`);
         }
-
         if (!newEditFiles[fileType]) {
           newEditFiles[fileType] = { existing: [], new: [] };
         }
@@ -601,7 +740,7 @@ const AdminPortal: React.FC = () => {
         }
 
         // Upload new image
-        const imageRef = ref(storage, `Admin/Images/${editImage.name}`);
+        const imageRef = ref(storage, `Projects/Images/${editImage.name}`);
         const imageUploadTask = uploadBytesResumable(imageRef, editImage);
         imageUrl = await new Promise((resolve, reject) => {
           imageUploadTask.on(
@@ -637,7 +776,7 @@ const AdminPortal: React.FC = () => {
         }
 
         for (const newFile of files.new) {
-          const fileRef = ref(storage, `Admin/${fileType}/${newFile.name}`);
+          const fileRef = ref(storage, `Projects/${fileType}/${newFile.name}`);
           const uploadTask = uploadBytesResumable(fileRef, newFile);
 
           const url = await new Promise<string>((resolve, reject) => {
@@ -660,11 +799,10 @@ const AdminPortal: React.FC = () => {
         }
       }
       // Update the database
-      const updateRef = dbRef(database, `Admin/${editingUpload.id}`);
+      const updateRef = dbRef(database, `Projects/${editingUpload.id}`);
       await update(updateRef, {
         name: editName,
         author: editAuthor,
-        maintainer: editMaintainer,
         department: editDepartment,
         description: editDescription,
         category: editCategory,
@@ -713,7 +851,7 @@ const AdminPortal: React.FC = () => {
         }
 
         // Delete the database entry
-        const dbItemRef = dbRef(database, `Admin/${upload.id}`);
+        const dbItemRef = dbRef(database, `Projects/${upload.id}`);
         await remove(dbItemRef);
 
         Swal.fire("Deleted!", "Record has been deleted.", "success");
@@ -729,13 +867,38 @@ const AdminPortal: React.FC = () => {
   if (!user || !isAdmin) {
     return (
       <div className="container mt-5">
-        <h3 className="text-center mb-4">Admin Portal</h3>
-
-        <form onSubmit={handleLogin} className="mb-3">
+        <form
+          onSubmit={isRegistering ? handleRegister : handleLogin}
+          className="mb-3"
+        >
           <div className="mb-3">
-            <div className="alert alert-info">
-              This portal is only accessible to administrators.
-            </div>
+            <h3 className="text-center mb-2" style={{ color: "white" }}>
+              {isRegistering
+                ? "Create a New Account"
+                : "Log In To Use This Feature"}
+            </h3>
+            <span
+              className="d-block text-center mb-4"
+              style={{ color: "white" }}
+            >
+              {isRegistering
+                ? "It's quick and easy"
+                : "Sign in to upload and manage your projects"}
+            </span>
+            {isRegistering && (
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  required
+                  placeholder="Enter your name"
+                />
+              </div>
+            )}
+
             <label className="form-label">Email:</label>
             <input
               type="email"
@@ -764,9 +927,23 @@ const AdminPortal: React.FC = () => {
             ref={recaptchaRef}
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
           />
+
           <button type="submit" className="btn btn-primary">
-            Login
+            {isRegistering ? "Register" : "Login"}
           </button>
+
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              className="btn btn-link"
+              onClick={() => setIsRegistering(!isRegistering)}
+              style={{ color: "white" }}
+            >
+              {isRegistering
+                ? "Already have an account? Log in here"
+                : "Need an account? Register here"}
+            </button>
+          </div>
         </form>
       </div>
     );
@@ -778,7 +955,7 @@ const AdminPortal: React.FC = () => {
         <div className="bg-dark text-white card-header">
           <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
             <h5 className="mb-0 text-info">
-              Welcome, {userName || user?.email || "Admin"}
+              Welcome, {userName || user?.email || "User"}
             </h5>
             <span
               className="badge bg-primary"
@@ -792,52 +969,12 @@ const AdminPortal: React.FC = () => {
             <ul className="nav nav-tabs">
               <li className="nav-item">
                 <button
-                  className={`nav-link text-primary ${
+                  className={`nav-link ${
                     activeTab === "content" ? "active" : ""
                   }`}
                   onClick={() => setActiveTab("content")}
                 >
-                  Content Management
-                </button>
-              </li>
-              <li className="nav-item">
-                <button
-                  className={`nav-link text-primary ${
-                    activeTab === "admins" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("admins")}
-                >
-                  Admin Management
-                </button>
-              </li>
-              <li className="nav-item">
-                <button
-                  className={`nav-link text-primary ${
-                    activeTab === "users" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("users")}
-                >
-                  User Management
-                </button>
-              </li>
-              <li className="nav-item">
-                <button
-                  className={`nav-link text-primary ${
-                    activeTab === "security" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("security")}
-                >
-                  Security Reports
-                </button>
-              </li>
-              <li className="nav-item">
-                <button
-                  className={`nav-link text-primary ${
-                    activeTab === "projects" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("projects")}
-                >
-                  Project Management
+                  Manage Your Projects
                 </button>
               </li>
               <li className="nav-item ms-auto">
@@ -855,191 +992,175 @@ const AdminPortal: React.FC = () => {
             )}
           </div>
 
-          {activeTab === "content" ? (
-            <>
-              <div className="card">
-                <div className="card-header bg-info">
-                  <h3 className="card-title mb-0">Content Management</h3>
-                </div>
-                <div className="card-body">
-                  <div className="row mb-3 g-3">
-                    <div className="col">
-                      <label className="form-label">Title:</label>
-                      <span style={{ color: "red" }}>*</span>
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={handleNameChange}
-                        placeholder="Enter the title"
-                        className="form-control"
-                        required
-                      />
-                    </div>
-                    <div className="col">
-                      <label className="form-label">Author:</label>
-                      <input
-                        type="text"
-                        value={author}
-                        onChange={handleAuthorChange}
-                        placeholder="Enter author name"
-                        className="form-control"
-                      />
-                    </div>
-                    <div className="col">
-                      <label className="form-label">Maintainer:</label>
-                      <input
-                        type="text"
-                        value={maintainer}
-                        onChange={handleMaintainerChange}
-                        placeholder="Enter maintainer name"
-                        className="form-control"
-                      />
-                    </div>
-                    <div className="col">
-                      <label className="form-label">Department/Agency:</label>
-                      <input
-                        type="text"
-                        value={department}
-                        onChange={handleDepartmentChange}
-                        placeholder="Enter department or agency"
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Description:</label>
-                    <span style={{ color: "red" }}>*</span>
-                    <ReactQuill
-                      value={description}
-                      onChange={handleDescriptionChange}
-                      theme="snow"
-                      className="border"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Category:</label>
-                    <span style={{ color: "red" }}>*</span>
-                    <select
-                      value={selectedCategory}
-                      onChange={handleCategoryChange}
-                      className="form-select"
-                      required
-                    >
-                      <option value="">Select a category</option>
-                      <option value="Transportation">Transportation</option>
-                      <option value="Community">Community</option>
-                      <option value="School">School</option>
-                      <option value="Employment">Employment</option>
-                      <option value="Public Safety">Public Safety</option>
-                    </select>
-                  </div>
-
-                  <div className="mb-3">
-                    <p className="mt-4" style={{ color: "grey" }}>
-                      Note: You can upload multiple files at once.
-                    </p>
-                    <label className="form-label">
-                      Upload Files (CSV, JSON, XML, RDF):
-                    </label>
+          <>
+            <div className="card">
+              <div className="card-header bg-info">
+                <h3 className="card-title mb-0">Manage Your Projects</h3>
+              </div>
+              <div className="card-body">
+                <div className="row mb-3 g-3">
+                  <div className="col">
+                    <label className="form-label">Title:</label>
                     <span style={{ color: "red" }}>*</span>
                     <input
-                      type="file"
-                      accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
-                      onChange={handleFileChange}
-                      ref={fileInputRef}
-                      multiple
-                      className="d-none"
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-sm ms-2"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      Add Files
-                    </button>
-                    {Object.entries(selectedFiles).map(([fileType, files]) => (
-                      <div key={fileType} className="mt-2">
-                        <strong>{fileType.toUpperCase()} files:</strong>
-                        <ul className="list-unstyled ms-3">
-                          {Array.isArray(files) &&
-                            files.map((file, index) => (
-                              <li key={index}>{file.name}</li>
-                            ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Image (PNG, JPEG):</label>
-                    <span style={{ color: "red" }}>*</span>
-                    <input
-                      type="file"
-                      accept=".png,.jpeg,.jpg"
-                      onChange={handleImageChange}
-                      ref={imageInputRef}
+                      type="text"
+                      value={name}
+                      onChange={handleNameChange}
+                      placeholder="Enter the title"
                       className="form-control"
                       required
                     />
                   </div>
+                  <div className="col">
+                    <label className="form-label">Author:</label>
+                    <input
+                      type="text"
+                      value={author}
+                      onChange={handleAuthorChange}
+                      placeholder="Enter author name"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col">
+                    <label className="form-label">Department/Agency:</label>
+                    <input
+                      type="text"
+                      value={department}
+                      onChange={handleDepartmentChange}
+                      placeholder="Enter department or agency"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
 
-                  <div className="d-flex justify-content-between">
-                    <button
-                      onClick={handleFileUpload}
-                      className="btn btn-primary"
-                    >
-                      Upload
-                    </button>
-                    <div>
-                      <button
-                        onClick={handleReset}
-                        className="btn btn-secondary"
-                      >
-                        Start Over
-                      </button>
+                <div className="mb-3">
+                  <label className="form-label">Description:</label>
+                  <span style={{ color: "red" }}>*</span>
+                  <ReactQuill
+                    value={description}
+                    onChange={handleDescriptionChange}
+                    theme="snow"
+                    className="border"
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Category:</label>
+                  <span style={{ color: "red" }}>*</span>
+                  <select
+                    value={selectedCategory}
+                    onChange={handleCategoryChange}
+                    className="form-select"
+                    required
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Community">Community</option>
+                    <option value="School">School</option>
+                    <option value="Employment">Employment</option>
+                    <option value="Public Safety">Public Safety</option>
+                  </select>
+                </div>
+
+                <div className="mb-3">
+                  <p className="mt-4" style={{ color: "grey" }}>
+                    Note: You can upload multiple files at once.
+                  </p>
+                  <label className="form-label">
+                    Upload Your Project Sources:
+                  </label>
+                  <span style={{ color: "red" }}>*</span>
+                  <input
+                    type="file"
+                    accept=".csv,application/json,application/msword, application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    multiple
+                    className="d-none"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm ms-2"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    Add Files
+                  </button>
+                  {Object.entries(selectedFiles).map(([fileType, files]) => (
+                    <div key={fileType} className="mt-2">
+                      <strong>{fileType.toUpperCase()} files:</strong>
+                      <ul className="list-unstyled ms-3">
+                        {Array.isArray(files) &&
+                          files.map((file, index) => (
+                            <li key={index}>{file.name}</li>
+                          ))}
+                      </ul>
                     </div>
+                  ))}
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Cover Image (PNG, JPEG):</label>
+                  <span style={{ color: "red" }}>*</span>
+                  <input
+                    type="file"
+                    accept=".png,.jpeg,.jpg"
+                    onChange={handleImageChange}
+                    ref={imageInputRef}
+                    className="form-control"
+                    required
+                  />
+                </div>
+
+                <div className="d-flex justify-content-between">
+                  <button
+                    onClick={handleFileUpload}
+                    className="btn btn-primary"
+                  >
+                    Upload
+                  </button>
+                  <div>
+                    <button onClick={handleReset} className="btn btn-secondary">
+                      Start Over
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {uploadStatus && (
-                <p className="mt-3 text-danger">{uploadStatus}</p>
-              )}
+            {uploadStatus && <p className="mt-3 text-danger">{uploadStatus}</p>}
 
-              <div className="mt-4">
-                <div className="card mb-4">
-                  <div className="card-header bg-info">
-                    <h3 className="card-title mb-0">View Uploaded Content</h3>
-                  </div>
-                  <div className="card-body mb-2">
-                    <div
-                      className="table-responsive"
-                      style={{ maxHeight: "500px" }}
-                    >
-                      <table className="table table-striped table-bordered">
-                        <thead className="sticky-top bg-white">
-                          <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Maintainer</th>
-                            <th>Department</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Files</th>
-                            <th>Image</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {uploadsData.map((upload) => (
+            <div className="mt-4">
+              <div className="card mb-4">
+                <div className="card-header bg-info">
+                  <h3 className="card-title mb-0">View Uploaded Projects</h3>
+                </div>
+                <div className="card-body mb-2">
+                  <div
+                    className="table-responsive"
+                    style={{ maxHeight: "500px" }}
+                  >
+                    <table className="table table-striped table-bordered">
+                      <thead className="sticky-top bg-white">
+                        <tr>
+                          <th>Title</th>
+                          <th>Author</th>
+                          <th>Department</th>
+                          <th>Category</th>
+                          <th>Description</th>
+                          <th>Files</th>
+                          <th>Image</th>
+                          <th>Date</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {uploadsData
+                          .filter((upload) => upload.owner === user.email)
+                          .map((upload) => (
                             <tr key={upload.id}>
                               <td>{upload.name}</td>
                               <td>{upload.author || "N/A"}</td>
-                              <td>{upload.maintainer || "N/A"}</td>
                               <td>{upload.department || "N/A"}</td>
                               <td>{upload.category}</td>
                               <td>
@@ -1126,246 +1247,220 @@ const AdminPortal: React.FC = () => {
                               </td>
                             </tr>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Edit Modal */}
-              {showEditModal && (
-                <div className="card">
-                  <div
-                    className="modal show d-block"
-                    style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-                  >
-                    <div className="modal-dialog modal-lg">
-                      <div className="modal-content" style={{ backgroundColor: "white" }}>
-                        <div className="modal-header bg-dark text-info">
-                          <h5 className="modal-title">Edit Record</h5>
-                          <button
-                            type="button"
-                            className="btn-close"
-                            onClick={() => setShowEditModal(false)}
-                          ></button>
+            {/* Edit Modal */}
+            {showEditModal && (
+              <div className="card">
+                <div
+                  className="modal show d-block"
+                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                >
+                  <div className="modal-dialog modal-lg" >
+                    <div className="modal-content" style={{ backgroundColor: "white", width: "800px" }}>
+                      <div className="modal-header bg-dark text-info">
+                        <h5 className="modal-title">Edit Record</h5>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          onClick={() => setShowEditModal(false)}
+                        ></button>
+                      </div>
+                      <div className="modal-body">
+                        <div className="mb-3">
+                          <label className="form-label">Title:</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                          />
                         </div>
-                        <div className="modal-body">
-                          <div className="mb-3">
-                            <label className="form-label">Title:</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={editName}
-                              onChange={(e) => setEditName(e.target.value)}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Author:</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={editAuthor}
-                              onChange={(e) => setEditAuthor(e.target.value)}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Maintainer:</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={editMaintainer}
-                              onChange={(e) =>
-                                setEditMaintainer(e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Department:</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={editDepartment}
-                              onChange={(e) =>
-                                setEditDepartment(e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Description:</label>
-                            <ReactQuill
-                              value={editDescription}
-                              onChange={setEditDescription}
-                              theme="snow"
-                            />
-                          </div>
-                          <div className="mb-5">
-                            <label className="form-label">Category:</label>
-                            <select
-                              className="form-select"
-                              value={editCategory}
-                              onChange={(e) => setEditCategory(e.target.value)}
-                            >
-                              <option value="">Select a category</option>
-                              <option value="Transportation">
-                                Transportation
-                              </option>
-                              <option value="Community">Community</option>
-                              <option value="School">School</option>
-                              <option value="Employment">Employment</option>
-                              <option value="Public Safety">
-                                Public Safety
-                              </option>
-                            </select>
-                          </div>
-                          <div className="mb-3">
+                        <div className="mb-3">
+                          <label className="form-label">Author:</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={editAuthor}
+                            onChange={(e) => setEditAuthor(e.target.value)}
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label">Department:</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={editDepartment}
+                            onChange={(e) => setEditDepartment(e.target.value)}
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label">Description:</label>
+                          <ReactQuill
+                            value={editDescription}
+                            onChange={setEditDescription}
+                            theme="snow"
+                          />
+                        </div>
+                        <div className="mb-5">
+                          <label className="form-label">Category:</label>
+                          <select
+                            className="form-select"
+                            value={editCategory}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                          >
+                            <option value="">Select a category</option>
+                            <option value="Transportation">
+                              Transportation
+                            </option>
+                            <option value="Community">Community</option>
+                            <option value="School">School</option>
+                            <option value="Employment">Employment</option>
+                            <option value="Public Safety">Public Safety</option>
+                          </select>
+                        </div>
+                        <div className="mb-3">
+                          {/* Existing Files */}
+                          {Object.entries(editFiles).map(
+                            ([fileType, files]) => (
+                              <div key={fileType} className="mb-3">
+                                <h6 className="text-center">
+                                  <u>{fileType} Files:</u>
+                                </h6>
 
-                            {/* Existing Files */}
-                            {Object.entries(editFiles).map(
-                              ([fileType, files]) => (
-                                <div key={fileType} className="mb-3">
-                                  <h6 className="text-center"><u>{fileType} Files:</u></h6>
-
-                                  {/* Existing Files List */}
-                                  {files.existing.length > 0 && (
-                                    <div className="mb-2">
-                                      <h6>Existing:</h6>
-                                      <ul className="list-group">
-                                        {files.existing.map((file, index) => (
-                                          <li
-                                            key={index}
-                                            className="list-group-item d-flex justify-content-between align-items-center"
+                                {/* Existing Files List */}
+                                {files.existing.length > 0 && (
+                                  <div className="mb-2">
+                                    <h6>Existing:</h6>
+                                    <ul className="list-group">
+                                      {files.existing.map((file, index) => (
+                                        <li
+                                          key={index}
+                                          className="list-group-item d-flex justify-content-between align-items-center"
+                                        >
+                                          <a
+                                            href={file.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={
+                                              file.toDelete
+                                                ? "text-decoration-line-through"
+                                                : ""
+                                            }
                                           >
-                                            <a
-                                              href={file.url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className={
-                                                file.toDelete
-                                                  ? "text-decoration-line-through"
-                                                  : ""
-                                              }
-                                            >
-                                              File {index + 1}
-                                            </a>
-                                            <button
-                                              type="button"
-                                              className={`btn btn-${
-                                                file.toDelete
-                                                  ? "warning"
-                                                  : "danger"
-                                              } btn-sm`}
-                                              onClick={() =>
-                                                toggleFileDelete(
-                                                  fileType,
-                                                  index
-                                                )
-                                              }
-                                            >
-                                              {file.toDelete
-                                                ? "Undo Delete"
-                                                : "Delete"}
-                                            </button>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                  )}
-
-                                  {/* New Files List */}
-                                  {files.new.length > 0 && (
-                                    <div className="mb-2">
-                                      <h6>New:</h6>
-                                      <ul className="list-group">
-                                        {files.new.map((file, index) => (
-                                          <li
-                                            key={index}
-                                            className="list-group-item d-flex justify-content-between align-items-center"
+                                            File {index + 1}
+                                          </a>
+                                          <button
+                                            type="button"
+                                            className={`btn btn-${
+                                              file.toDelete
+                                                ? "warning"
+                                                : "danger"
+                                            } btn-sm`}
+                                            onClick={() =>
+                                              toggleFileDelete(fileType, index)
+                                            }
                                           >
-                                            <span>{file.name}</span>
-                                            <button
-                                              type="button"
-                                              className="btn btn-danger btn-sm"
-                                              onClick={() =>
-                                                removeNewFile(fileType, index)
-                                              }
-                                            >
-                                              Remove
-                                            </button>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                  )}
-                                </div>
-                              )
-                            )}
+                                            {file.toDelete
+                                              ? "Undo Delete"
+                                              : "Delete"}
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
 
-                            {/* Add New Files */}
-                            <div className="mt-5">
-                              <label className="form-label">
-                                Add New Files:
-                              </label>
-                              <input
-                                type="file"
-                                accept=".csv,application/json,application/xml,text/xml,application/rdf+xml"
-                                onChange={handleEditFileChange}
-                                multiple
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
-                          <div className="mb-3">
+                                {/* New Files List */}
+                                {files.new.length > 0 && (
+                                  <div className="mb-2">
+                                    <h6>New:</h6>
+                                    <ul className="list-group">
+                                      {files.new.map((file, index) => (
+                                        <li
+                                          key={index}
+                                          className="list-group-item d-flex justify-content-between align-items-center"
+                                        >
+                                          <span>{file.name}</span>
+                                          <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() =>
+                                              removeNewFile(fileType, index)
+                                            }
+                                          >
+                                            Remove
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          )}
+
+                          {/* Add New Files */}
+                          <div className="mt-5">
                             <label className="form-label">
-                              New Image (optional):
+                              Add New Project Sources:
                             </label>
                             <input
                               type="file"
-                              accept=".png,.jpeg,.jpg"
-                              onChange={(e) => {
-                                if (e.target.files && e.target.files[0]) {
-                                  setEditImage(e.target.files[0]);
-                                }
-                              }}
+                              accept=".csv,application/json, application/msword, application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
+                              onChange={handleEditFileChange}
+                              multiple
                               className="form-control"
                             />
                           </div>
                         </div>
-                        <div className="modal-footer">
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={() => setShowEditModal(false)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={handleUpdate}
-                          >
-                            Save Changes
-                          </button>
+                        <div className="mb-3">
+                          <label className="form-label">
+                            New Cover Image (optional):
+                          </label>
+                          <input
+                            type="file"
+                            accept=".png,.jpeg,.jpg"
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                setEditImage(e.target.files[0]);
+                              }
+                            }}
+                            className="form-control"
+                          />
                         </div>
+                      </div>
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setShowEditModal(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={handleUpdate}
+                        >
+                          Save Changes
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
-            </>
-          ) : activeTab === "admins" ? (
-            <AdminManagement />
-          ) : activeTab === "security" ? (
-            <SecurityManagement />
-          ) : activeTab === "users" ? (
-            <UserManagement />
-          ) : activeTab === "projects" ? (
-            <ProjectManagement />
-          ) : null}
+              </div>
+            )}
+          </>
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminPortal;
+export default UserUploadManagement;
