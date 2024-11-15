@@ -27,7 +27,7 @@ export interface FileData {
   type?: string;
 }
 
-const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
+const ProjectCards: React.FC = () => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [bookmarkedFiles, setBookmarkedFiles] = useState<FileData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(
     null
   );
-  const [sortOption, setSortOption] = useState("mostRecent");
+  const [sortOption, setSortOption] = useState("mostPopular");
 
   useEffect(() => {
     const dbRefPath = dbRef(database, "Projects");
@@ -51,8 +51,8 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
       (snapshot) => {
         if (snapshot.exists()) {
           const fileList = snapshot.val();
-          const filteredFiles: FileData[] = Object.keys(fileList)
-            .map((key) => ({
+          const filteredFiles: FileData[] = Object.keys(fileList).map(
+            (key) => ({
               name: fileList[key].name,
               file: fileList[key].file,
               image: fileList[key].image,
@@ -65,8 +65,8 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
               department: fileList[key].department,
               views: fileList[key].views || 0,
               type: "project",
-            }))
-            .filter((file: FileData) => file.category === category);
+            })
+          );
 
           setFiles(filteredFiles);
         } else {
@@ -82,7 +82,7 @@ const ProjectCards: React.FC<{ category: string }> = ({ category }) => {
     );
 
     return () => unsubscribe();
-  }, [category]);
+  });
 
   const sortFiles = (files: FileData[]) => {
     switch (sortOption) {

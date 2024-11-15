@@ -12,20 +12,20 @@ const SortOptions: React.FC<SortOptionsProps> = ({
   onSortChange,
 }) => {
   return (
-    <select 
-      onChange={onSortChange} 
+    <select
+      onChange={onSortChange}
       value={sortOption}
       style={{
-        padding: '8px 8px',
-        borderRadius: '6px',
-        border: '1px solid #ddd',
-        backgroundColor: '#fff',
-        fontSize: '14px',
-        cursor: 'pointer',
-        outline: 'none',
-        minWidth: '140px',
-        appearance: 'auto',
-        color: '#333'
+        padding: "8px 8px",
+        borderRadius: "6px",
+        border: "1px solid #ddd",
+        backgroundColor: "#fff",
+        fontSize: "14px",
+        cursor: "pointer",
+        outline: "none",
+        minWidth: "140px",
+        appearance: "auto",
+        color: "#333",
       }}
     >
       <option value="nameAsc">Name Ascending</option>
