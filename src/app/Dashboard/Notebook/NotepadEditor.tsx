@@ -9,6 +9,7 @@ import { FaSave, FaFilePdf, FaFileWord, FaFileAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
+import html2pdf from 'html2pdf.js';
 
 interface NotepadProps {
   initialContent?: string;
@@ -151,189 +152,56 @@ const NotepadEditor: React.FC<NotepadProps> = ({
     }
   };
 
-  const exportAsPDF = async () => {
+  const exportAsPDF = () => {
     try {
-      // Show loading indicator
-      Swal.fire({
-        title: 'Generating PDF...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-  
-      // Create new PDF document
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-  
-      // Create temporary div to parse content
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = content;
-  
-      // Find all images
-      const images = tempDiv.getElementsByTagName('img');
+      // Create a hidden iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
       
-      // Convert images to base64 safely
-      const processImage = async (imgElement: HTMLImageElement): Promise<string> => {
-        return new Promise((resolve) => {
-          try {
-            // For base64 images, return directly
-            if (imgElement.src.startsWith('data:image/')) {
-              resolve(imgElement.src);
-              return;
-            }
-  
-            // For URLs, fetch with CORS proxy
-            const img = new Image();
-            img.crossOrigin = 'anonymous';  // Enable CORS
-            
-            img.onload = () => {
-              try {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                
-                const ctx = canvas.getContext('2d');
-                if (ctx) {
-                  ctx.drawImage(img, 0, 0);
-                  resolve(canvas.toDataURL('image/jpeg', 0.95));
-                } else {
-                  resolve(''); // Fallback if context fails
+      // Add content to iframe with styles
+      const iframeDoc = iframe.contentWindow?.document;
+      if (iframeDoc) {
+        iframeDoc.open();
+        iframeDoc.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Export PDF</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  line-height: 1.6;
+                  margin: 20px;
                 }
-              } catch (e) {
-                console.error('Image processing error:', e);
-                resolve(''); // Fallback on error
-              }
-            };
-  
-            img.onerror = () => {
-              console.error('Image loading failed');
-              resolve(''); // Fallback on error
-            };
-  
-            // Add timestamp to bypass cache
-            const timestamp = new Date().getTime();
-            img.src = `${imgElement.src}?t=${timestamp}`;
-          } catch (e) {
-            console.error('Image processing error:', e);
-            resolve(''); // Fallback on error
-          }
-        });
-      };
-  
-      // Process content
-      let y = 10;
-      const lineHeight = 7;
-      const margin = 10;
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-  
-      // Split content and handle each part
-      const parts = content.split(/(<img[^>]*>)/);
-      
-      for (const part of parts) {
-        if (part.startsWith('<img')) {
-          // Handle image
-          const imgMatch = part.match(/src="([^"]+)"/);
-          if (imgMatch) {
-            const imgElement = document.createElement('img');
-            imgElement.src = imgMatch[1];
-  
-            try {
-              const base64Data = await processImage(imgElement);
-              if (base64Data) {
-                // Calculate image dimensions
-                const maxWidth = pageWidth - (2 * margin);
-                const imgWidth = Math.min(maxWidth, 150); // Max width in mm
-                const aspectRatio = imgElement.height / imgElement.width;
-                const imgHeight = imgWidth * aspectRatio;
-  
-                // Check for page break
-                if (y + imgHeight > pageHeight - margin) {
-                  doc.addPage();
-                  y = margin;
+                img {
+                  max-width: 100%;
+                  height: auto;
                 }
+                p { margin: 10px 0; }
+              </style>
+            </head>
+            <body>
+              ${content}
+            </body>
+          </html>
+        `);
+        iframeDoc.close();
   
-                // Add image to PDF
-                doc.addImage(base64Data, 'JPEG', margin, y, imgWidth, imgHeight);
-                y += imgHeight + lineHeight;
-              }
-            } catch (imgError) {
-              console.error('Error processing image:', imgError);
-            }
-          }
-        } else {
-          // Handle text
-          const cleanText = part
-            .replace(/<br\s*\/?>/gi, '\n')
-            .replace(/<p.*?>/gi, '')
-            .replace(/<\/p>/gi, '\n')
-            .replace(/<div.*?>/gi, '')
-            .replace(/<\/div>/gi, '\n')
-            .replace(/<[^>]*>/g, '')
-            .trim();
+        // Print the iframe content
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
   
-          if (cleanText) {
-            const lines = cleanText.split('\n');
-            
-            for (const line of lines) {
-              const words = line.split(' ');
-              let currentLine = '';
-  
-              for (const word of words) {
-                const testLine = currentLine + word + ' ';
-                const testWidth = doc.getStringUnitWidth(testLine) * doc.getFontSize();
-  
-                if (testWidth > pageWidth - (2 * margin)) {
-                  // Check for page break
-                  if (y > pageHeight - margin) {
-                    doc.addPage();
-                    y = margin;
-                  }
-  
-                  doc.text(currentLine.trim(), margin, y);
-                  y += lineHeight;
-                  currentLine = word + ' ';
-                } else {
-                  currentLine = testLine;
-                }
-              }
-  
-              if (currentLine.trim()) {
-                // Check for page break
-                if (y > pageHeight - margin) {
-                  doc.addPage();
-                  y = margin;
-                }
-  
-                doc.text(currentLine.trim(), margin, y);
-                y += lineHeight;
-              }
-            }
-          }
-        }
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000);
       }
-  
-      // Save the PDF
-      doc.save('document.pdf');
-  
-      // Show success message
-      await Swal.fire({
-        icon: 'success',
-        title: 'PDF exported successfully',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000
-      });
     } catch (error) {
-      console.error('PDF Export error:', error);
-      await Swal.fire({
+      console.error('Export error:', error);
+      Swal.fire({
         icon: 'error',
-        title: 'Failed to export PDF',
+        title: 'Export failed',
         text: 'Please try again'
       });
     }
@@ -405,7 +273,7 @@ const NotepadEditor: React.FC<NotepadProps> = ({
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Export Options</h5>
+            <h5 className="modal-title">Export Your InstaNote</h5>
             <button 
               type="button" 
               className="btn-close" 
@@ -414,6 +282,7 @@ const NotepadEditor: React.FC<NotepadProps> = ({
           </div>
           <div className="modal-body">
             <div className="d-grid gap-2">
+              <span className="text-muted">Pro Tip: PDF export is recommended</span>
               <button 
                 className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2"
                 onClick={() => {
