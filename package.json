@@ -15,6 +15,7 @@
     "@types/lodash": "^4.17.13",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.5",
+    "docx": "^9.0.3",
     "file-saver": "^2.0.5",
     "firebase": "^10.14.1",
     "html2pdf.js": "^0.10.2",
