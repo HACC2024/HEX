@@ -304,6 +304,7 @@ const UserUploadManagement: React.FC = () => {
     try {
       setIsUnmounting(true); // Set flag before logout
       await toggleSignOut(auth);
+      setUserName("");
       Swal.fire("Success", "Logged out successfully", "success");
     } catch (error: any) {
       Swal.fire("Error", error.message, "error");

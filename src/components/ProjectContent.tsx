@@ -3,13 +3,28 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import styles from "../styles/Categories.module.css";
+import { auth, database } from "../../.firebase/firebase";
+import { ref as dbRef, onValue } from "firebase/database";
 
-import { House, MoonStarsFill, SunFill } from "react-bootstrap-icons";
+import {
+  ArrowBarRight,
+  House,
+  MoonStarsFill,
+  Person,
+  SunFill,
+} from "react-bootstrap-icons";
 import { BarChart4, ChevronDown, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import ProjectCards from "./ProjectCards";
 import BookmarkDropDown from "./Bookmark/BookmarksDropdown";
 import UserUploadSticker from "./UserUploadSticker";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import UserUploadManagement from "./UserUploadManagement";
+
+interface User {
+  uid?: string;
+  name?: string;
+}
 
 const ProjectContent = () => {
   useEffect(() => {
@@ -21,6 +36,9 @@ const ProjectContent = () => {
 
   const [isLightMode, setIsLightMode] = useState<boolean | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [userName, setUserName] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load saved theme from localStorage on mount (client-side)
   useEffect(() => {
@@ -30,6 +48,50 @@ const ProjectContent = () => {
       setIsLightMode(isLight);
     }
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user?.uid) {
+      const userRef = dbRef(database, `users/${user.uid}`);
+      const unsubscribe = onValue(userRef, (snapshot) => {
+        const userData = snapshot.val();
+        if (userData?.displayName) {
+          setUserName(userData.displayName);
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, [user]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUserName("");
+
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleButtonClick = () => {
+    setIsModalOpen(true); // Open the component
+  };
 
   const toggleLightMode = () => {
     const newTheme = isLightMode ? "dark" : "light";
@@ -76,6 +138,29 @@ const ProjectContent = () => {
               }}
             />
           </button>
+          {user ? (
+            <button
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ms-3 ${
+                isLightMode ? "" : ""
+              } ${styles.themeIcon}`}
+              style={{ width: "45px", height: "45px" }}
+              onClick={handleLogout}
+              title="Logout"
+            >
+              <ArrowBarRight size={18} />
+            </button>
+          ) : (
+            <button
+              className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ms-3 me-1 ${
+                isLightMode ? "" : ""
+              } ${styles.themeIcon}`}
+              style={{ width: "45px", height: "45px" }}
+              onClick={handleButtonClick}
+              title="Login Here"
+            >
+              <Person size={18} />
+            </button>
+          )}
           {/* Icons Container */}
           <div
             className="position-absolute"
@@ -127,19 +212,18 @@ const ProjectContent = () => {
 
         {/* Centered Text (Only for larger screens) */}
         <div
-          className="d-flex d-none d-md-flex align-items-center gap-3"
-          style={{ paddingLeft: "55px" }}
+          className="d-flex align-items-center gap-3"
+          style={{ paddingLeft: "5px" }}
         >
-          <h4 className="m-0 text-white">Community Showcase</h4>
+          <h4 className="m-0 text-white" style={{ fontSize: "1rem" }}>
+            Welcome {user?.name || userName || "Guest"}
+          </h4>
         </div>
 
         {/* Mobile Layout - Light/Dark Mode Toggle and Hamburger Menu */}
         <div className="d-flex align-items-center justify-content-between w-100 d-md-none">
           {/* Left spacer */}
-          <div></div>
-
-          {/* Centered Text for mobile */}
-          <BookmarkDropDown />
+          <div style={{ paddingLeft: "160px" }}></div>
 
           {/* Right controls */}
           <div className="d-flex align-items-center gap-2 me-5">
@@ -155,6 +239,7 @@ const ProjectContent = () => {
                 <SunFill size={18} />
               )}
             </button>
+            <BookmarkDropDown />
           </div>
         </div>
 
@@ -210,13 +295,58 @@ const ProjectContent = () => {
                 <h1
                   className={`display-4 display-md-3 display-lg-2 ${styles.title} text-break`}
                 >
-                  Project Showcase
+                  Showcase Your Projects
                 </h1>
                 <h5 className={`${styles.catsubtitle}`}>
                   Discover Past Projects To Gain Inspiration And Connect With
                   The Community
                 </h5>
               </div>
+              {isModalOpen && (
+                <div
+                  className="modal-overlay"
+                  style={{
+                    position: "fixed",
+                    top: "0",
+                    left: "0",
+                    right: "0",
+                    bottom: "0",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1050, // Ensure it's above other content
+                  }}
+                >
+                  <div
+                    className="modal-content"
+                    style={{
+                      width: "1000px", // Adjust modal width as necessary
+                      height: "500px", // Adjust modal height as necessary
+                      padding: "20px",
+                      backgroundColor: "#45ABFF81",
+                      borderRadius: "8px", // Optional: rounded corners
+                      zIndex: 1060, // Ensure it's above the overlay
+                      overflow: "auto",
+                    }}
+                  >
+                    <UserUploadManagement />
+                    <button
+                      className="close-button btn btn-danger"
+                      onClick={handleCloseModal}
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        border: "none",
+                        fontSize: "20px",
+                        color: "#333", // Button text color
+                      }}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                </div>
+              )}
               <div
                 className={`${styles.rightLight} ${styles.rightLight1}`}
               ></div>
@@ -227,7 +357,7 @@ const ProjectContent = () => {
           </div>
         </div>
       </div>
-      <UserUploadSticker />
+      {user ? <UserUploadSticker /> : null}
     </div>
   );
 };
