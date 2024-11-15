@@ -308,9 +308,14 @@ const ProjectCards: React.FC = () => {
                   <h3 className="file-name">{file.name}</h3>
                   <p className="file-category">{file.category}</p>
                   <div className="file-tags pt-1">
-                    {Object.keys(file.file).map((key) =>
-                      file.file[key].length > 0 &&
-                      file.file[key].some((url) => url !== "") ? (
+                    {Object.keys(file.file)
+                      .filter(
+                        (key) =>
+                          file.file[key].length > 0 &&
+                          file.file[key].some((url) => url !== "")
+                      )
+                      .slice(0, 4) // Display only the first 4 tags
+                      .map((key) => (
                         <span
                           key={key}
                           className="file-tag"
@@ -318,7 +323,20 @@ const ProjectCards: React.FC = () => {
                         >
                           {key}
                         </span>
-                      ) : null
+                      ))}
+                    {Object.keys(file.file).filter(
+                      (key) =>
+                        file.file[key].length > 0 &&
+                        file.file[key].some((url) => url !== "")
+                    ).length > 4 && (
+                      <span className="file-tag">
+                        +
+                        {Object.keys(file.file).filter(
+                          (key) =>
+                            file.file[key].length > 0 &&
+                            file.file[key].some((url) => url !== "")
+                        ).length - 4}
+                      </span>
                     )}
                   </div>
                   <div className="views-display">

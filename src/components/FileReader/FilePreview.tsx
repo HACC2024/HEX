@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import DocPreview from "./DocPreview";
 
 interface FilePreviewProps {
   file: { [key: string]: string[] } | null;
@@ -20,7 +19,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
   };
 
   const isDocumentType = (str: string): boolean => {
-    const docTypes = [".pdf", ".doc", ".docx", ".DOC", ".DOCX", ".PDF"];
+    const docTypes = [".pdf", ".PDF"];
     return docTypes.some((ext) =>
       str.toLowerCase().includes(ext.toLowerCase())
     );
@@ -52,8 +51,8 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
   };
 
   return (
-    <div className="file-preview-container">
-      <h5>Preview Your File</h5>
+    <div className="file-preview-container mt-3">
+      <h5>Preview PDF File</h5>
 
       <div className="dropdown">
         <select
@@ -76,18 +75,14 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
       </div>
 
       {selectedFileUrl && (
-        <div className="file-preview">
-          <h6>Preview: {fileName}</h6>
-          {selectedFileUrl.toLowerCase().includes(".pdf") ? (
-            <iframe
-              src={selectedFileUrl}
-              width="100%"
-              height="500px"
-              title="PDF Preview"
-            ></iframe>
-          ) : (
-            <DocPreview content={selectedFileUrl} className="mt-3" />
-          )}
+        <div className="file-preview pt-2">
+          <h6>Viewing: {fileName}</h6>
+          <iframe
+            src={selectedFileUrl}
+            width="100%"
+            height="500px"
+            title="PDF Preview"
+          ></iframe>
         </div>
       )}
     </div>
