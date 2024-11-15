@@ -136,13 +136,13 @@ const ProjectContent = () => {
         {/* Mobile Layout - Light/Dark Mode Toggle and Hamburger Menu */}
         <div className="d-flex align-items-center justify-content-between w-100 d-md-none">
           {/* Left spacer */}
-          <div style={{ width: "45px" }}></div>
+          <div></div>
 
           {/* Centered Text for mobile */}
           <BookmarkDropDown />
 
           {/* Right controls */}
-          <div className="d-flex align-items-center gap-2">
+          <div className="d-flex align-items-center gap-2 me-5">
             <button
               onClick={toggleLightMode}
               className={`btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center ${styles.themeIcon}`}
@@ -210,7 +210,7 @@ const ProjectContent = () => {
                 <h1
                   className={`display-4 display-md-3 display-lg-2 ${styles.title} text-break`}
                 >
-                  Community Projects
+                  Project Showcase
                 </h1>
                 <h5 className={`${styles.catsubtitle}`}>
                   Discover Past Projects To Gain Inspiration And Connect With

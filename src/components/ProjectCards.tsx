@@ -103,8 +103,16 @@ const ProjectCards: React.FC = () => {
   };
 
   const sortedFiles = sortFiles(
-    files.filter((file) =>
-      file.name.toLowerCase().includes(search.toLowerCase())
+    files.filter(
+      (file) =>
+        file.name.toLowerCase().includes(search.toLowerCase()) ||
+        file.description.toLowerCase().includes(search.toLowerCase()) ||
+        file.author.toLowerCase().includes(search.toLowerCase()) ||
+        file.department.toLowerCase().includes(search.toLowerCase()) ||
+        file.category.toLowerCase().includes(search.toLowerCase()) ||
+        Object.values(file.file).some((arr) =>
+          arr.some((str) => str.toLowerCase().includes(search.toLowerCase()))
+        )
     )
   );
 
