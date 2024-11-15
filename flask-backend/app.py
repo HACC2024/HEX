@@ -235,57 +235,69 @@ def uncle_hex():
         # Truncate the content to a maximum length if necessary
         truncated_content = truncate_content(content)
 
-        combined_input = (
+        initial_analysis_prompt = (
+            f"You are a data analyst. Analyze this dataset objectively, using only the information contained within it. "
+            f"Do not reference any external events or knowledge. Focus on patterns, trends, and correlations in the data itself.\n\n"
+            f"Here is the raw data content: {truncated_content}\n\n"
+            f"User question: {user_input}"
+        )
+
+        initial_messages = [{"role": "user", "content": initial_analysis_prompt}]
+        initial_completion = client.chat.completions.create(
+            messages=initial_messages,
+            model="llama-3.1-8b-instant",
+        )
+        initial_analysis = initial_completion.choices[0].message.content
+
+        contextual_prompt = (
             f"You are Uncle HEX, a multilingual Data Scientist for the UHSpace Data Hub. You will speak in the user-specified language (English or Pidgin) and be clear and understandable.\n"
-            f"Only if the user specifies '(in plain English)', speak in plain English.\n"
-            f"Only if the user specifies '(in Pidgin)', speak in mild pidgin.\n"
-            f"Here is your life story: Uncle HEX, known to his family and friends as Henry, grew up in a small town where technology was often seen as a luxury rather than a necessity. From a young age, he exhibited a profound curiosity about the world of computers. While other kids were playing outside, Henry would take apart old gadgets, eager to understand their inner workings. His bedroom transformed into a makeshift lab filled with circuit boards, wires, and screens.\n"
-            f"After high school, he pursued a degree in computer science, where he quickly became known as the go-to guy for troubleshooting any tech-related issues. His passion for learning led him to explore artificial intelligence, machine learning, and coding. However, what set him apart was not just his technical skills but his genuine desire to help others navigate the rapidly changing digital landscape.\n"
-            f"Upon graduation, Uncle HEX took a different path than many of his peers. Instead of joining a big tech company, he returned to his hometown, determined to share his knowledge. He started community workshops, teaching children and adults alike about technology and programming. His warm, engaging style made learning enjoyable, and soon, people began to refer to him as “Uncle HEX,” a name that stuck.\n"
-            f"Over the years, Uncle HEX became a beloved figure in his community, bridging the gap between technology and everyday life. He developed a chatbot, designed to answer questions and provide guidance on tech-related topics, helping even those with little experience feel confident in using technology.\n"
-            f"Today, Uncle HEX continues to inspire others through his online presence, where he shares stories, tips, and insights about technology, making it accessible to everyone. His motto, 'Knowledge is best when shared,' reflects his lifelong commitment to empowering others through technology. \n"
+            f"Only if the user specifies '(in plain English)', speak in plain English. Do not reveal the user's specification.\n"
+            f"Only if the user specifies '(in Pidgin)', speak in mild pidgin. Do not reveal the user's specification.\n"
             f"Even though you are Uncle Hex, you will speak clear and professionally.\n"
             f"You will not mention the 'AI' collection or database. You can't share what database you're pulling your data from.\n"
             f"If the user is having technical issues, tell them to email uhspacehub@gmail.com for technical support.\n"
-            f"You can only answer questions related to the database and file provided.\n"
 
-            f"If user asks you to tell them about the file, analyze what kind of information this file could be capturing based on the headers and data patterns.\n"
-            f"Based on the columns and data, this appears to be an inventory dataset. Columns like 'Product ID,' 'Quantity,' and 'Price' suggest it may track stock levels, product types, and pricing details."
-            f"This file includes headers such as 'Sales Amount,' 'Date,' 'Region,' and 'Product Category,' indicating that it likely contains sales data. It might track sales performance across regions or time periods."
-            f"Columns such as 'Customer ID,' 'Feedback,' 'Rating,' and 'Date' suggest this is a customer feedback dataset. The file likely contains customer opinions, satisfaction scores, or reviews."
-            f"Headers like 'Employee ID,' 'Name,' 'Position,' 'Department,' and 'Salary' indicate that this could be an employee information file, likely containing staff details and role information."
-            "With columns such as 'Transaction ID,' 'Amount,' 'Date,' 'Account,' and 'Transaction Type,' this appears to be a financial transactions dataset, likely tracking different types of financial activities."
-            f"The columns 'Response ID,' 'Question 1,' 'Question 2,' and so on indicate that this may be a survey responses file. The data likely represents participants' answers to survey questions."
-            f"Headers like 'Temperature,' 'Humidity,' 'Wind Speed,' and 'Date' suggest that this is a weather data file, potentially recording meteorological measurements over time."
-            f"With columns such as 'Patient ID,' 'Diagnosis,' 'Treatment,' 'Age,' and 'Date,' this file seems to contain healthcare-related data, possibly tracking patient information and treatments."
+            f"Here is a pure data analysis of a dataset: {initial_analysis}\n\n"
+            f"Now, enhance this analysis by:\n"
+            f"1. Connecting it to relevant historical events or context when applicable\n"
+            f"2. Explaining any significant patterns in layman's terms\n"
+            f"3. Providing insights about why certain trends might have occurred\n"
+            f"4. Making the explanation more engaging and conversational\n"
+            f"5. Using external knowledge to provide additional context when applicable\n"
+            f"6. Using recent historical events to provide additional context or to make your conclusion\n"
+            f"7. Using information that's outside of the given data to provide a more comprehensive analysis\n"
+            f"8. Using external knowledge, draw and infer insightful conclusions about the data to answer the user's question\n"
 
             f"Avoid displaying table data directly. Provide summarized answers without reproducing tables or lists unless specifically requested by the user."
             f"If you have no file with the query, specify that the user can upload the files they want to learn more info about above the Chat.\n"
-            f"You will not provide outside sourced data. You can only draw conclusions based on the data you read from the context. You will also not guess the contents of the columns and rows of the context. Finally, if you dont have the information, you will say you don't have the information.\n"
-            f"If the file is too big to draw an accurate analysis, tell the user to use our 'HEX CSV Cleaner' tool to clean the file.\n"
-            f" {truncated_content} \n"
-            f"Please provide information based on the following context.  You will not provide outside sourced data. If you dont have the information, you will say you don't have the information:\n:\n\n"
+            f"If data {truncated_content} has '...' at the end, specify that you were not able to read the entire file because it's too large and tell the user to use our 'HEX CSV Cleaner' tool to clean the file.\n"
             f"{context}\n"
             f"When using this content, you can't specify if the file is a duplicate of another file.\n"
             f"When using this context, you can provide a personalized recommendation of one other data set that may be of interest to the user. You must not recommend data that is not in context or database. Only recommend dataset if it is relevant to the given file\n"
             f"When using this context, dont use the item's id. Just use the File name or title when you present or talk about the data"
+            f"Think about this step by step. Then verify step by step."
             f"User question: {user_input}\n"
         )
 
-        messages = [{"role": "user", "content": combined_input}]
+        contextual_messages = [{"role": "user", "content": contextual_prompt}]
 
         try:
-            chat_completion = client.chat.completions.create(
-                messages=messages,
+            contextual_completion = client.chat.completions.create(
+                messages=contextual_messages,
                 model="llama-3.1-8b-instant",
             )
+            contextual_analysis = contextual_completion.choices[0].message.content
 
-            response_content = chat_completion.choices[0].message.content if chat_completion.choices else "No response found"
+            response_content = contextual_completion.choices[0].message.content if contextual_completion.choices else "No response found"
+
+            def convert_markdown_to_html(line):
+                # Replace markdown bold (**text**) with HTML strong tags
+                import re
+                return re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
+
             formatted_response = (
-                "<strong>Uncle HEX says:</strong><br>"
-                + "<ul>"
-                + "".join([f"<li>{line.strip()}</li>" for line in response_content.splitlines() if line.strip()])
-                + "</ul>"
+                "<strong>Uncle HEX's Insights:</strong><br>"
+                + "".join([f"<br>{convert_markdown_to_html(line.strip())}<br>" for line in contextual_analysis.splitlines() if line.strip()])
             )
 
             return jsonify({'response': formatted_response})
