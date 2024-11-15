@@ -83,6 +83,7 @@ const UserUploadManagement: React.FC = () => {
     rdf?: File[];
     pdf?: File[];
     docx?: File[];
+    doc?: File[];
     xlsx?: File[];
     pptx?: File[];
     jpg?: File[];
@@ -109,6 +110,7 @@ const UserUploadManagement: React.FC = () => {
       rdf?: string;
       pdf?: string;
       docx?: string;
+      doc?: string;
       xlsx?: string;
       pptx?: string;
       jpg?: string;
@@ -344,6 +346,10 @@ const UserUploadManagement: React.FC = () => {
           case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             newSelectedFiles.docx = newSelectedFiles.docx || [];
             newSelectedFiles.docx.push(file);
+            break;
+          case "application/msword":
+            newSelectedFiles.doc = newSelectedFiles.doc || [];
+            newSelectedFiles.doc.push(file);
             break;
           case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             newSelectedFiles.xlsx = newSelectedFiles.xlsx || [];
@@ -626,7 +632,6 @@ const UserUploadManagement: React.FC = () => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
       const newEditFiles = { ...editFiles };
-
       filesArray.forEach((file) => {
         let fileType = "";
         switch (file.type) {
@@ -643,10 +648,48 @@ const UserUploadManagement: React.FC = () => {
           case "application/rdf+xml":
             fileType = "RDF";
             break;
+          case "application/pdf":
+            fileType = "PDF";
+            break;
+          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            fileType = "DOCX";
+            break;
+          case "application/msword":
+            fileType = "DOC";
+            break;
+          case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            fileType = "XLSX";
+            break;
+          case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            fileType = "PPTX";
+            break;
+          case "image/jpeg":
+            fileType = "JPG";
+            break;
+          case "image/png":
+            fileType = "PNG";
+            break;
+          case "text/html":
+            fileType = "HTML";
+            break;
+          case "text/markdown":
+            fileType = "MD";
+            break;
+          case "application/rtf":
+            fileType = "RTF";
+            break;
+          case "application/x-python":
+            fileType = "PY";
+            break;
+          case "application/x-ipynb+json":
+            fileType = "IPYNB";
+            break;
+          case "text/plain":
+            fileType = "TXT";
+            break;
           default:
-            return;
+            return setUploadStatus(`File type ${file.type} is not supported`);
         }
-
         if (!newEditFiles[fileType]) {
           newEditFiles[fileType] = { existing: [], new: [] };
         }
@@ -1029,7 +1072,7 @@ const UserUploadManagement: React.FC = () => {
                   <span style={{ color: "red" }}>*</span>
                   <input
                     type="file"
-                    accept=".csv,application/json,application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
+                    accept=".csv,application/json,application/msword, application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
                     onChange={handleFileChange}
                     ref={fileInputRef}
                     multiple
@@ -1107,7 +1150,7 @@ const UserUploadManagement: React.FC = () => {
                           <th>Description</th>
                           <th>Files</th>
                           <th>Image</th>
-                          <th>Upload Date</th>
+                          <th>Date</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -1369,7 +1412,7 @@ const UserUploadManagement: React.FC = () => {
                             </label>
                             <input
                               type="file"
-                              accept=".csv,application/json,application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
+                              accept=".csv,application/json, application/msword, application/xml,text/xml,application/rdf+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/jpeg,image/png,text/html,text/markdown,application/rtf,application/x-python,application/x-ipynb+json,text/plain"
                               onChange={handleEditFileChange}
                               multiple
                               className="form-control"
