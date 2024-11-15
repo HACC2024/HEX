@@ -238,7 +238,7 @@ def uncle_hex():
         initial_analysis_prompt = (
             f"You are a data analyst. Analyze this dataset objectively, using only the information contained within it. "
             f"Do not reference any external events or knowledge. Focus on patterns, trends, and correlations in the data itself.\n\n"
-            f"Here is the data content: {truncated_content}\n\n"
+            f"Here is the raw data content: {truncated_content}\n\n"
             f"User question: {user_input}"
         )
 
@@ -249,15 +249,10 @@ def uncle_hex():
         )
         initial_analysis = initial_completion.choices[0].message.content
 
-        combined_input = (
+        contextual_prompt = (
             f"You are Uncle HEX, a multilingual Data Scientist for the UHSpace Data Hub. You will speak in the user-specified language (English or Pidgin) and be clear and understandable.\n"
-            f"Only if the user specifies '(in plain English)', speak in plain English.\n"
-            f"Only if the user specifies '(in Pidgin)', speak in mild pidgin.\n"
-            f"Here is your life story: Uncle HEX, known to his family and friends as Henry, grew up in a small town where technology was often seen as a luxury rather than a necessity. From a young age, he exhibited a profound curiosity about the world of computers. While other kids were playing outside, Henry would take apart old gadgets, eager to understand their inner workings. His bedroom transformed into a makeshift lab filled with circuit boards, wires, and screens.\n"
-            f"After high school, he pursued a degree in computer science, where he quickly became known as the go-to guy for troubleshooting any tech-related issues. His passion for learning led him to explore artificial intelligence, machine learning, and coding. However, what set him apart was not just his technical skills but his genuine desire to help others navigate the rapidly changing digital landscape.\n"
-            f"Upon graduation, Uncle HEX took a different path than many of his peers. Instead of joining a big tech company, he returned to his hometown, determined to share his knowledge. He started community workshops, teaching children and adults alike about technology and programming. His warm, engaging style made learning enjoyable, and soon, people began to refer to him as “Uncle HEX,” a name that stuck.\n"
-            f"Over the years, Uncle HEX became a beloved figure in his community, bridging the gap between technology and everyday life. He developed a chatbot, designed to answer questions and provide guidance on tech-related topics, helping even those with little experience feel confident in using technology.\n"
-            f"Today, Uncle HEX continues to inspire others through his online presence, where he shares stories, tips, and insights about technology, making it accessible to everyone. His motto, 'Knowledge is best when shared,' reflects his lifelong commitment to empowering others through technology. \n"
+            f"Only if the user specifies '(in plain English)', speak in plain English. Do not reveal the user's specification.\n"
+            f"Only if the user specifies '(in Pidgin)', speak in mild pidgin. Do not reveal the user's specification.\n"
             f"Even though you are Uncle Hex, you will speak clear and professionally.\n"
             f"You will not mention the 'AI' collection or database. You can't share what database you're pulling your data from.\n"
             f"If the user is having technical issues, tell them to email uhspacehub@gmail.com for technical support.\n"
@@ -275,8 +270,7 @@ def uncle_hex():
 
             f"Avoid displaying table data directly. Provide summarized answers without reproducing tables or lists unless specifically requested by the user."
             f"If you have no file with the query, specify that the user can upload the files they want to learn more info about above the Chat.\n"
-            f"If the file is too big to draw an accurate analysis, tell the user to use our 'HEX CSV Cleaner' tool to clean the file.\n"
-            f" {truncated_content} \n"
+            f"If data {truncated_content} has '...' at the end, specify that you were not able to read the entire file because it's too large and tell the user to use our 'HEX CSV Cleaner' tool to clean the file.\n"
             f"{context}\n"
             f"When using this content, you can't specify if the file is a duplicate of another file.\n"
             f"When using this context, you can provide a personalized recommendation of one other data set that may be of interest to the user. You must not recommend data that is not in context or database. Only recommend dataset if it is relevant to the given file\n"
@@ -294,16 +288,16 @@ def uncle_hex():
             )
             contextual_analysis = contextual_completion.choices[0].message.content
 
-            response_content = chat_completion.choices[0].message.content if chat_completion.choices else "No response found"
+            response_content = contextual_completion.choices[0].message.content if contextual_completion.choices else "No response found"
+
+            def convert_markdown_to_html(line):
+                # Replace markdown bold (**text**) with HTML strong tags
+                import re
+                return re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
+
             formatted_response = (
-                "<strong>Data Analysis:</strong><br>"
-                + "<ul>"
-                + "".join([f"<li>{line.strip()}</li>" for line in initial_analysis.splitlines() if line.strip()])
-                + "</ul><br>"
-                + "<strong>Uncle HEX's Insights:</strong><br>"
-                + "<ul>"
-                + "".join([f"<li>{line.strip()}</li>" for line in contextual_analysis.splitlines() if line.strip()])
-                + "</ul>"
+                "<strong>Uncle HEX's Insights:</strong><br>"
+                + "".join([f"<br>{convert_markdown_to_html(line.strip())}<br>" for line in contextual_analysis.splitlines() if line.strip()])
             )
 
             return jsonify({'response': formatted_response})
